@@ -1,0 +1,330 @@
+/**
+ * HappyTimesAZ – Sanity CMS Client
+ * Pure vanilla JS, no dependencies.
+ */
+
+const SANITY_PROJECT_ID = '7nd2gpk6';
+const SANITY_DATASET    = 'production';
+const SANITY_API_VER    = '2025-01-01';
+const SANITY_CDN        = `https://cdn.sanity.io/images/${SANITY_PROJECT_ID}/${SANITY_DATASET}`;
+const SANITY_API        = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VER}/data/query/${SANITY_DATASET}`;
+
+/** Build a Sanity image URL from an image field */
+window.sanityImage = function(image, w = 800, h = 600, mode = 'crop') {
+  if (!image || !image.asset || !image.asset._ref) return null;
+  const ref = image.asset._ref; // image-{id}-{WxH}-{ext}
+  const parts = ref.split('-');
+  const ext   = parts[parts.length - 1];
+  const dims  = parts[parts.length - 2];
+  const id    = parts.slice(1, parts.length - 2).join('-');
+  return `${SANITY_CDN}/${id}-${dims}.${ext}?w=${w}&h=${h}&fit=${mode}&auto=format&q=80`;
+};
+
+/** Low-res blur placeholder */
+window.sanityImageBlur = function(image) {
+  return window.sanityImage(image, 40, 30, 'crop');
+};
+
+/** Execute a GROQ query against the Sanity API */
+window.sanityFetch = async function(query, params = {}) {
+  try {
+    const encoded  = encodeURIComponent(query);
+    const paramStr = Object.keys(params).length
+      ? '&' + Object.entries(params).map(([k,v]) => `$${k}=${encodeURIComponent(JSON.stringify(v))}`).join('&')
+      : '';
+    const res = await fetch(`${SANITY_API}?query=${encoded}${paramStr}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    return json.result ?? null;
+  } catch (err) {
+    console.warn('[Sanity] fetch error:', err.message);
+    return null;
+  }
+};
+
+/** Format a Sanity datetime string */
+window.formatDate = function(dt) {
+  if (!dt) return '';
+  const d = new Date(dt);
+  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+};
+
+window.formatDateShort = function(dt) {
+  if (!dt) return '';
+  const d = new Date(dt);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+};
+
+window.formatDateTime = function(dt) {
+  if (!dt) return '';
+  const d = new Date(dt);
+  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+    + ' · ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+};
+
+// ─── GROQ Queries ─────────────────────────────────────────────────────────────
+
+window.getHomepageSettings = () => sanityFetch(`
+  *[_type == "homepageSettings"][0]{
+    featuredThemeLabel,
+    featuredHeadline,
+    featuredSubheadline,
+    "featuredImage": featuredImage{ asset{ _ref }, alt },
+    featuredCtaLabel,
+    featuredCtaUrl,
+    tileTop{ title, categoryTag, "image": image{ asset{ _ref }, alt }, linkUrl },
+    tileBottom{ title, categoryTag, "image": image{ asset{ _ref }, alt }, linkUrl }
+  }
+`);
+
+window.getLatestPosts = (limit = 12) => sanityFetch(`
+  *[_type == "post"] | order(_createdAt desc) [0...${limit}]{
+    title,
+    "slug": slug.current,
+    excerpt,
+    "publishedAt": _createdAt,
+    readTime,
+    "categories": [category->title],
+    "categorySlug": category->slug.current,
+    "heroImage": heroImage{ asset{ _ref }, alt }
+  }
+`);
+
+window.getPostsByCategory = (cat, limit = 12) => sanityFetch(`
+  *[_type == "post" && category->slug.current == $cat] | order(_createdAt desc) [0...${limit}]{
+    title,
+    "slug": slug.current,
+    excerpt,
+    "publishedAt": _createdAt,
+    readTime,
+    "categories": [category->title],
+    "categorySlug": category->slug.current,
+    "heroImage": heroImage{ asset{ _ref }, alt }
+  }
+`, { cat });
+
+window.getPostBySlug = (slug) => sanityFetch(`
+  *[_type == "post" && slug.current == $slug][0]{
+    title,
+    "slug": slug.current,
+    excerpt,
+    "publishedAt": _createdAt,
+    readTime,
+    "categories": [category->title],
+    "categorySlug": category->slug.current,
+    "heroImage": heroImage{ asset{ _ref }, alt },
+    body,
+    seoTitle,
+    seoDescription
+  }
+`, { slug });
+
+window.getRelatedPosts = (slug, categorySlug, limit = 4) => sanityFetch(`
+  *[_type == "post" && slug.current != $slug && category->slug.current == $categorySlug] | order(_createdAt desc) [0...${limit}]{
+    title,
+    "slug": slug.current,
+    excerpt,
+    "publishedAt": _createdAt,
+    readTime,
+    "categories": [category->title],
+    "heroImage": heroImage{ asset{ _ref }, alt }
+  }
+`, { slug, categorySlug: categorySlug || '' });
+
+window.getDispensaries = () => sanityFetch(`
+  *[_type == "listing" && listingType == "dispensary"] | order(featured desc, name asc){
+    name,
+    "slug": slug.current,
+    featured,
+    city,
+    address,
+    phone,
+    website,
+    "heroImage": heroImage{ asset{ _ref }, alt },
+    description,
+    hours,
+    amenities,
+    socials
+  }
+`);
+
+window.getFoodListings = () => sanityFetch(`
+  *[_type == "listing" && listingType == "food"] | order(featured desc, name asc){
+    name,
+    "slug": slug.current,
+    featured,
+    city,
+    address,
+    phone,
+    website,
+    "heroImage": heroImage{ asset{ _ref }, alt },
+    description,
+    hours,
+    amenities
+  }
+`);
+
+window.getNightlifeListings = () => sanityFetch(`
+  *[_type == "listing" && listingType == "nightlife"] | order(featured desc, name asc){
+    name,
+    "slug": slug.current,
+    featured,
+    city,
+    address,
+    phone,
+    website,
+    "heroImage": heroImage{ asset{ _ref }, alt },
+    description,
+    hours
+  }
+`);
+
+window.getListingBySlug = (slug) => sanityFetch(`
+  *[_type == "listing" && slug.current == $slug][0]{
+    name,
+    "slug": slug.current,
+    listingType,
+    featured,
+    city,
+    address,
+    phone,
+    website,
+    "heroImage": heroImage{ asset{ _ref }, alt },
+    description,
+    hours,
+    amenities,
+    socials,
+    location
+  }
+`, { slug });
+
+window.getDeals = (limit = 12) => sanityFetch(`
+  *[_type == "deal"] | order(priority desc, startDate desc) [0...${limit}]{
+    title,
+    "slug": slug.current,
+    featured,
+    brandName,
+    dispensaryName,
+    city,
+    startDate,
+    endDate,
+    link,
+    "heroImage": heroImage{ asset{ _ref }, alt }
+  }
+`);
+
+window.getEvents = (limit = 12) => sanityFetch(`
+  *[_type == "event"] | order(dateTime asc) [0...${limit}]{
+    title,
+    "slug": slug.current,
+    dateTime,
+    city,
+    venueName,
+    link,
+    "heroImage": heroImage{ asset{ _ref }, alt },
+    "excerpt": pt::text(description)[0...200]
+  }
+`);
+
+window.getRadioStations = () => sanityFetch(`
+  *[_type == "station" && active == true] | order(order asc){
+    title,
+    streamUrl,
+    "coverImage": coverImage{ asset{ _ref }, alt },
+    genre
+  }
+`);
+
+/** Fetch a single active ad for a named placement (highest priority wins) */
+window.getAdByPlacement = (placement) => sanityFetch(`
+  *[
+    _type == "ad" &&
+    active == true &&
+    placement == $placement &&
+    (!defined(startDate) || dateTime(startDate) <= now()) &&
+    (!defined(endDate)   || dateTime(endDate)   >= now())
+  ] | order(priority desc) [0] {
+    advertiser,
+    adType,
+    "image": image{ asset{ _ref }, alt },
+    html,
+    headline,
+    cta,
+    url
+  }
+`, { placement });
+
+/** Fetch multiple active ads for a placement (for grid tiles) */
+window.getAdsByPlacement = (placement, limit = 3) => sanityFetch(`
+  *[
+    _type == "ad" &&
+    active == true &&
+    placement == $placement &&
+    (!defined(startDate) || dateTime(startDate) <= now()) &&
+    (!defined(endDate)   || dateTime(endDate)   >= now())
+  ] | order(priority desc) [0...${limit}] {
+    advertiser,
+    adType,
+    "image": image{ asset{ _ref }, alt },
+    html,
+    headline,
+    cta,
+    url
+  }
+`, { placement });
+
+// ─── Portable Text renderer (vanilla JS) ─────────────────────────────────────
+
+window.renderPortableText = function(blocks) {
+  if (!blocks || !Array.isArray(blocks)) return '';
+  return blocks.map(block => renderBlock(block)).join('');
+};
+
+function renderBlock(block) {
+  if (!block) return '';
+
+  if (block._type === 'image') {
+    const url = sanityImage(block, 900, 500, 'max');
+    if (!url) return '';
+    return `<figure class="article-image"><img src="${url}" alt="${block.alt || ''}" loading="lazy"><figcaption>${block.caption || ''}</figcaption></figure>`;
+  }
+
+  if (block._type !== 'block') return '';
+
+  const style = block.style || 'normal';
+  const content = (block.children || []).map(span => renderSpan(span, block.markDefs || [])).join('');
+
+  const tag = {
+    h1: 'h1', h2: 'h2', h3: 'h3', h4: 'h4',
+    blockquote: 'blockquote',
+    normal: 'p'
+  }[style] || 'p';
+
+  if (block.listItem === 'bullet') return `<li>${content}</li>`;
+  if (block.listItem === 'number') return `<li>${content}</li>`;
+
+  return `<${tag} class="body-${style}">${content}</${tag}>`;
+}
+
+function renderSpan(span, markDefs) {
+  if (!span || span._type !== 'span') return '';
+  let text = span.text || '';
+
+  // Escape HTML
+  text = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  (span.marks || []).forEach(mark => {
+    if (mark === 'strong')    text = `<strong>${text}</strong>`;
+    else if (mark === 'em')   text = `<em>${text}</em>`;
+    else if (mark === 'underline') text = `<u>${text}</u>`;
+    else if (mark === 'code') text = `<code>${text}</code>`;
+    else {
+      const def = markDefs.find(d => d._key === mark);
+      if (def && def._type === 'link') {
+        const rel = def.href && def.href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
+        text = `<a href="${def.href}"${rel}>${text}</a>`;
+      }
+    }
+  });
+  return text;
+}

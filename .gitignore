@@ -1,0 +1,19 @@
+# Dependencies (npx, local installs)
+node_modules/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor (optional local settings)
+.idea/

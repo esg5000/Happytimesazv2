@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arizona Dispensary Directory – HappyTimes AZ</title>
+  <meta name="description" content="Find cannabis dispensaries across Arizona. Browse hours, deals, and locations by city.">
+  <meta name="theme-color" content="#2d7a3a">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="dispensaries">
+
+  <header id="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="site-logo"><img src="assets/logos/main-logo.png" alt="HappyTimes AZ" height="48"></a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="food.html" class="nav-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>Food</a>
+        <a href="cannabis.html" class="nav-link active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10c0 2.8-1.2 5.4-3 7.2C17.5 20.8 12 22 12 22s-5.5-1.2-7-2.8C3.2 17.4 2 14.8 2 12A10 10 0 0 1 12 2z"/><path d="M12 22V12"/></svg>Cannabis</a>
+        <a href="nightlife.html" class="nav-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Nightlife</a>
+        <a href="mushrooms.html" class="nav-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a8 8 0 0 1 8 8H4a8 8 0 0 1 8-8z"/><path d="M9 10v4a3 3 0 0 0 6 0v-4"/></svg>Mushrooms</a>
+        <a href="events.html" class="nav-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Events</a>
+        <a href="classes.html" class="nav-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Classes</a>
+        <a href="gta-radio.html" class="nav-link nav-link--radio"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>GTA Radio</a>
+      </nav>
+      <div class="header-actions">
+        <div id="search-bar"><input type="text" id="search-input" placeholder="Search AZ…" aria-label="Search"></div>
+        <button id="search-toggle" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+        <button id="mobile-nav-toggle" aria-label="Open menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <div id="mobile-nav-overlay"></div>
+  <nav id="mobile-nav-drawer" aria-label="Mobile navigation">
+    <button id="mobile-nav-close" aria-label="Close menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <a href="food.html" class="mobile-nav-link">Food</a>
+    <a href="cannabis.html" class="mobile-nav-link active">Cannabis</a>
+    <a href="nightlife.html" class="mobile-nav-link">Nightlife</a>
+    <a href="mushrooms.html" class="mobile-nav-link">Mushrooms</a>
+    <a href="events.html" class="mobile-nav-link">Events</a>
+    <a href="classes.html" class="mobile-nav-link">Classes</a>
+    <div class="mobile-nav-divider"></div>
+    <a href="gta-radio.html" class="mobile-nav-link mobile-nav-link--radio">GTA Radio</a>
+    <div class="mobile-nav-divider"></div>
+    <a href="dispensaries.html" class="mobile-nav-link">Dispensary Directory</a>
+    <a href="advertise.html" class="mobile-nav-link">Advertise</a>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <section style="background:linear-gradient(135deg,#0f2a14 0%,#2d7a3a 100%);background-image:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),url('assets/heroes/cannabis.png');background-size:cover;background-position:center;color:#fff;padding:4rem 1.5rem;text-align:center;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-30%;right:-5%;width:400px;height:400px;background:radial-gradient(circle,rgba(212,160,60,.12) 0%,transparent 60%);pointer-events:none"></div>
+    <div style="max-width:600px;margin:0 auto;position:relative">
+      <div style="font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#f0c870;margin-bottom:.75rem">Arizona Cannabis</div>
+      <h1 style="font-family:'Fraunces',Georgia,serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;color:#fff;margin-bottom:.75rem;line-height:1.15">Dispensary Directory</h1>
+      <p style="color:rgba(255,255,255,.8);font-size:1.0625rem;max-width:480px;margin:0 auto">Find licensed cannabis dispensaries across the Valley. Filter by city, check hours, and discover current deals.</p>
+    </div>
+  </section>
+
+  <!-- Leaderboard below hero -->
+  <div class="ad-slot ad-slot--leaderboard" data-placement="cannabis_listing_leaderboard" data-size="leaderboard" style="padding-inline:1.5rem"></div>
+
+  <main id="dispensary-page" class="section" style="background:var(--cream)">
+    <div class="container">
+
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem">
+        <div>
+          <nav class="breadcrumb">
+            <a href="index.html">Home</a>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            <a href="cannabis.html">Cannabis</a>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            <span>Dispensaries</span>
+          </nav>
+          <h2 class="section-title" style="margin:0">All Arizona Dispensaries</h2>
+        </div>
+        <a href="cannabis.html" class="btn btn--outline">View Cannabis Deals</a>
+      </div>
+
+      <!-- City Filters -->
+      <div id="city-filters" class="city-filters"></div>
+
+      <!-- Dispensary Grid -->
+      <div id="dispensary-grid">
+        <div class="skeleton-card"><div class="skeleton-img tall"></div><div class="skeleton-line w-60" style="margin-top:1rem"></div><div class="skeleton-line w-40"></div><div style="height:1.5rem"></div></div>
+        <div class="skeleton-card"><div class="skeleton-img tall"></div><div class="skeleton-line w-60" style="margin-top:1rem"></div><div class="skeleton-line w-40"></div></div>
+        <div class="skeleton-card"><div class="skeleton-img tall"></div><div class="skeleton-line w-60" style="margin-top:1rem"></div><div class="skeleton-line w-40"></div></div>
+        <div class="skeleton-card"><div class="skeleton-img tall"></div><div class="skeleton-line w-60" style="margin-top:1rem"></div><div class="skeleton-line w-40"></div></div>
+        <div class="skeleton-card"><div class="skeleton-img tall"></div><div class="skeleton-line w-60" style="margin-top:1rem"></div><div class="skeleton-line w-40"></div></div>
+        <div class="skeleton-card"><div class="skeleton-img tall"></div><div class="skeleton-line w-60" style="margin-top:1rem"></div><div class="skeleton-line w-40"></div></div>
+      </div>
+
+    </div>
+  </main>
+
+  <div class="ad-slot ad-slot--footer-leaderboard" data-placement="cannabis_footer_leaderboard" data-size="leaderboard" style="padding-inline:1.5rem"></div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="site-logo" style="margin-bottom:1rem;display:inline-flex"><img src="assets/logos/logo-white.png" alt="HappyTimes AZ" height="40"></a>
+          <p>Arizona's premier lifestyle magazine covering food, cannabis, nightlife, events, and everything that makes the Valley a great place to live.</p>
+        </div>
+        <div class="footer-col"><h4>Explore</h4><div class="footer-links"><a href="food.html">Food &amp; Dining</a><a href="cannabis.html">Cannabis</a><a href="nightlife.html">Nightlife</a><a href="mushrooms.html">Mushrooms</a><a href="events.html">Events</a><a href="classes.html">Classes</a></div></div>
+        <div class="footer-col"><h4>Directory</h4><div class="footer-links"><a href="dispensaries.html">Dispensaries</a><a href="food.html">Restaurants</a><a href="nightlife.html">Bars &amp; Clubs</a><a href="gta-radio.html">GTA Radio</a></div></div>
+        <div class="footer-col"><h4>Company</h4><div class="footer-links"><a href="advertise.html">Advertise</a><a href="about.html">About</a><a href="contact.html">Contact</a></div></div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2025 HappyTimes AZ. All rights reserved.</span>
+        <div class="footer-legal"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/sanity.js"></script>
+  <script src="js/radio.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

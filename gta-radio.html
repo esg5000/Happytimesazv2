@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GTA Radio – HappyTimes AZ</title>
+  <meta name="description" content="GTA Radio — Arizona's streaming radio stations. Chill desert vibes, hip-hop, electronic, and more.">
+  <meta name="theme-color" content="#1a1412">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body { background: #0e0b09; }
+
+    .radio-page {
+      min-height: calc(100vh - var(--header-h) - var(--radio-h));
+      background: linear-gradient(160deg, #0e0b09 0%, #1a1210 40%, #2a1a0e 100%);
+      color: #fff;
+      padding-block: 4rem;
+    }
+
+    .radio-page-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: .5rem;
+      line-height: 1.1;
+    }
+
+    .radio-page-title span { color: var(--gold); }
+
+    .radio-page-sub {
+      font-size: 1.0625rem;
+      color: rgba(255,255,255,.55);
+      margin-bottom: 3rem;
+    }
+
+    .radio-big-player {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 1.5rem;
+      padding: 2.5rem;
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      backdrop-filter: blur(12px);
+    }
+
+    .radio-big-cover {
+      width: 120px;
+      height: 120px;
+      border-radius: 1rem;
+      overflow: hidden;
+      background: rgba(255,255,255,.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,.3);
+      flex-shrink: 0;
+    }
+
+    .radio-big-cover img { width:100%; height:100%; object-fit:cover; }
+
+    .radio-big-info { flex: 1; min-width: 0; }
+
+    .radio-big-label {
+      font-size: .7rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .5rem;
+    }
+
+    .radio-big-name {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: .25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .radio-big-genre {
+      font-size: .9375rem;
+      color: rgba(255,255,255,.5);
+      margin-bottom: 1.5rem;
+    }
+
+    .radio-big-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .radio-big-play {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--terracotta);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+      flex-shrink: 0;
+    }
+
+    .radio-big-play:hover { background: var(--terracotta-deep); transform: scale(1.05); }
+    .radio-big-play.playing { background: var(--gold); }
+
+    .radio-big-vol {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      color: rgba(255,255,255,.4);
+    }
+
+    .radio-big-vol input[type=range] {
+      width: 120px;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      background: rgba(255,255,255,.2);
+      border-radius: 999px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .radio-big-vol input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--gold);
+      cursor: pointer;
+    }
+
+    /* Station grid */
+    .station-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .station-tile {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-align: left;
+    }
+
+    .station-tile:hover {
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255,255,255,.18);
+      transform: translateY(-2px);
+    }
+
+    .station-tile.active {
+      background: rgba(212,160,60,.12);
+      border-color: rgba(212,160,60,.35);
+    }
+
+    .station-tile-cover {
+      width: 52px;
+      height: 52px;
+      border-radius: .625rem;
+      overflow: hidden;
+      background: rgba(255,255,255,.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,.3);
+      flex-shrink: 0;
+    }
+
+    .station-tile-cover img { width:100%; height:100%; object-fit:cover; }
+
+    .station-tile-info { flex: 1; min-width: 0; }
+
+    .station-tile-name {
+      font-weight: 700;
+      font-size: .9375rem;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .station-tile-genre {
+      font-size: .8125rem;
+      color: rgba(255,255,255,.45);
+      margin-top: 2px;
+    }
+
+    .station-tile-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.15);
+      flex-shrink: 0;
+    }
+
+    .station-tile.active .station-tile-indicator { background: var(--gold); }
+    .station-tile.playing .station-tile-indicator { background: var(--green); animation: pulse 1.5s ease-in-out infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .5; transform: scale(1.4); }
+    }
+
+    /* Loading spinner for big player */
+    .radio-big-loading {
+      display: none;
+      width: 60px;
+      height: 60px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .radio-big-spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid rgba(255,255,255,.15);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 640px) {
+      .radio-big-player { flex-direction: column; text-align: center; }
+      .radio-big-controls { justify-content: center; flex-wrap: wrap; }
+      .station-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 400px) {
+      .station-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-page="gta-radio">
+
+  <header id="site-header">
+    <div class="header-inner" style="border-bottom-color:rgba(255,255,255,.06)">
+      <a href="index.html" class="site-logo"><img src="assets/logos/logo-white.png" alt="HappyTimes AZ" height="48"></a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="food.html" class="nav-link" style="color:rgba(255,255,255,.6)">Food</a>
+        <a href="cannabis.html" class="nav-link" style="color:rgba(255,255,255,.6)">Cannabis</a>
+        <a href="nightlife.html" class="nav-link" style="color:rgba(255,255,255,.6)">Nightlife</a>
+        <a href="mushrooms.html" class="nav-link" style="color:rgba(255,255,255,.6)">Mushrooms</a>
+        <a href="events.html" class="nav-link" style="color:rgba(255,255,255,.6)">Events</a>
+        <a href="classes.html" class="nav-link" style="color:rgba(255,255,255,.6)">Classes</a>
+        <a href="gta-radio.html" class="nav-link nav-link--radio active">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+          GTA Radio
+        </a>
+      </nav>
+      <div class="header-actions">
+        <button id="mobile-nav-toggle" aria-label="Open menu" style="color:#fff"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <div id="mobile-nav-overlay"></div>
+  <nav id="mobile-nav-drawer" aria-label="Mobile navigation">
+    <button id="mobile-nav-close" aria-label="Close menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <a href="food.html" class="mobile-nav-link">Food</a>
+    <a href="cannabis.html" class="mobile-nav-link">Cannabis</a>
+    <a href="nightlife.html" class="mobile-nav-link">Nightlife</a>
+    <a href="mushrooms.html" class="mobile-nav-link">Mushrooms</a>
+    <a href="events.html" class="mobile-nav-link">Events</a>
+    <a href="classes.html" class="mobile-nav-link">Classes</a>
+    <div class="mobile-nav-divider"></div>
+    <a href="gta-radio.html" class="mobile-nav-link mobile-nav-link--radio active">GTA Radio</a>
+    <div class="mobile-nav-divider"></div>
+    <a href="dispensaries.html" class="mobile-nav-link">Dispensary Directory</a>
+  </nav>
+
+  <main class="radio-page">
+    <div class="container">
+
+      <div style="font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem">HappyTimes AZ</div>
+      <h1 class="radio-page-title"><span>GTA</span> Radio</h1>
+      <p class="radio-page-sub">Desert vibes, hip-hop, electronic and more — streaming live from Arizona.</p>
+
+      <!-- Big Player -->
+      <div class="radio-big-player">
+        <div class="radio-big-cover" id="big-cover">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        </div>
+        <div class="radio-big-info">
+          <div class="radio-big-label">Now Playing</div>
+          <div class="radio-big-name" id="big-name">Select a station</div>
+          <div class="radio-big-genre" id="big-genre">—</div>
+          <div class="radio-big-controls">
+            <div class="radio-big-loading" id="big-loading"><div class="radio-big-spinner"></div></div>
+            <button class="radio-big-play" id="big-play" aria-label="Play / Pause">
+              <svg class="icon-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+              <svg class="icon-pause" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            </button>
+            <div class="radio-big-vol">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+              <input type="range" id="big-volume" min="0" max="1" step="0.05" value="0.7">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Station Grid -->
+      <h2 style="font-family:'Fraunces',Georgia,serif;font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:1.25rem">Stations</h2>
+      <div id="station-grid" class="station-grid">
+        <!-- Populated by JS -->
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:1rem;padding:1.25rem;display:flex;align-items:center;gap:1rem">
+          <div style="width:52px;height:52px;border-radius:.625rem;background:rgba(255,255,255,.06);flex-shrink:0"></div>
+          <div style="flex:1"><div class="skeleton-line w-80" style="margin:0 0 .5rem;background:rgba(255,255,255,.08)"></div><div class="skeleton-line w-50" style="margin:0;background:rgba(255,255,255,.06)"></div></div>
+        </div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:1rem;padding:1.25rem;display:flex;align-items:center;gap:1rem">
+          <div style="width:52px;height:52px;border-radius:.625rem;background:rgba(255,255,255,.06);flex-shrink:0"></div>
+          <div style="flex:1"><div class="skeleton-line w-80" style="margin:0 0 .5rem;background:rgba(255,255,255,.08)"></div><div class="skeleton-line w-50" style="margin:0;background:rgba(255,255,255,.06)"></div></div>
+        </div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:1rem;padding:1.25rem;display:flex;align-items:center;gap:1rem">
+          <div style="width:52px;height:52px;border-radius:.625rem;background:rgba(255,255,255,.06);flex-shrink:0"></div>
+          <div style="flex:1"><div class="skeleton-line w-80" style="margin:0 0 .5rem;background:rgba(255,255,255,.08)"></div><div class="skeleton-line w-50" style="margin:0;background:rgba(255,255,255,.06)"></div></div>
+        </div>
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:1rem;padding:1.25rem;display:flex;align-items:center;gap:1rem">
+          <div style="width:52px;height:52px;border-radius:.625rem;background:rgba(255,255,255,.06);flex-shrink:0"></div>
+          <div style="flex:1"><div class="skeleton-line w-80" style="margin:0 0 .5rem;background:rgba(255,255,255,.08)"></div><div class="skeleton-line w-50" style="margin:0;background:rgba(255,255,255,.06)"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer style="background:#0a0806;border-top:1px solid rgba(255,255,255,.06);padding:2rem 1.5rem;text-align:center;color:rgba(255,255,255,.3);font-size:.875rem;margin-bottom:var(--radio-h)">
+    <a href="index.html" style="text-decoration:none;display:inline-block;vertical-align:middle"><img src="assets/logos/logo-white.png" alt="HappyTimes AZ" height="32" style="opacity:.5"></a>
+    <span style="margin-inline:.75rem">·</span>
+    &copy; 2025 All rights reserved
+    <span style="margin-inline:.75rem">·</span>
+    <a href="advertise.html" style="color:var(--gold);text-decoration:none">Advertise</a>
+  </footer>
+
+  <script src="js/sanity.js"></script>
+  <script src="js/radio.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+  // Full-page radio player that syncs with mini player
+  (function() {
+    const FALLBACK = [
+      { title: 'GTA Radio – Desert Vibes', streamUrl: '', genre: 'Desert Rock' },
+      { title: 'Chill AZ', streamUrl: '', genre: 'Chill' },
+      { title: 'The Vibe 480', streamUrl: '', genre: 'Hip-Hop / R&B' },
+      { title: 'Sunset FM', streamUrl: '', genre: 'Electronic' }
+    ];
+
+    let stations = [], currentIdx = 0, audio = null, playing = false, volume = 0.7;
+
+    async function init() {
+      volume = parseFloat(localStorage.getItem('ht_radio_volume') || '0.7');
+      currentIdx = parseInt(localStorage.getItem('ht_radio_station') || '0', 10) || 0;
+
+      const remote = await window.getRadioStations().catch(() => null);
+      stations = (remote && remote.length) ? remote : FALLBACK;
+      if (currentIdx >= stations.length) currentIdx = 0;
+
+      document.getElementById('big-volume').value = volume;
+      renderGrid();
+      updateBigPlayer();
+    }
+
+    function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    function renderGrid() {
+      const grid = document.getElementById('station-grid');
+      if (!grid) return;
+      grid.innerHTML = stations.map((s, i) => {
+        const coverUrl = s.coverImage ? window.sanityImage(s.coverImage, 104, 104) : null;
+        return `
+          <button class="station-tile ${i === currentIdx ? 'active' : ''}" data-idx="${i}">
+            <div class="station-tile-cover">${coverUrl ? `<img src="${coverUrl}" alt="${esc(s.title)}" loading="lazy">` : `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`}</div>
+            <div class="station-tile-info">
+              <div class="station-tile-name">${esc(s.title)}</div>
+              ${s.genre ? `<div class="station-tile-genre">${esc(s.genre)}</div>` : ''}
+            </div>
+            <div class="station-tile-indicator"></div>
+          </button>
+        `;
+      }).join('');
+
+      grid.querySelectorAll('.station-tile').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.idx, 10);
+          if (idx === currentIdx) { togglePlay(); return; }
+          currentIdx = idx;
+          localStorage.setItem('ht_radio_station', idx);
+          if (audio) { audio.pause(); audio.src = ''; playing = false; }
+          renderGrid();
+          updateBigPlayer();
+          play();
+        });
+      });
+    }
+
+    function updateBigPlayer() {
+      const s = stations[currentIdx];
+      if (!s) return;
+      document.getElementById('big-name').textContent = s.title;
+      document.getElementById('big-genre').textContent = s.genre || '—';
+      const coverEl = document.getElementById('big-cover');
+      if (coverEl) {
+        const url = s.coverImage ? window.sanityImage(s.coverImage, 240, 240) : null;
+        coverEl.innerHTML = url ? `<img src="${url}" alt="${esc(s.title)}">` : `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`;
+      }
+    }
+
+    function getAudio() {
+      if (!audio) {
+        audio = new Audio();
+        audio.volume = volume;
+        audio.addEventListener('waiting', () => setLoading(true));
+        audio.addEventListener('playing', () => { setLoading(false); playing = true; updatePlayBtn(); });
+        audio.addEventListener('error', () => { setLoading(false); playing = false; updatePlayBtn(); });
+      }
+      return audio;
+    }
+
+    function play() {
+      const s = stations[currentIdx];
+      if (!s || !s.streamUrl) { document.getElementById('big-name').textContent = 'No stream URL configured'; return; }
+      const a = getAudio();
+      if (a.src !== s.streamUrl) a.src = s.streamUrl;
+      const p = a.play();
+      if (p) p.catch(() => { playing = false; updatePlayBtn(); });
+      localStorage.setItem('ht_radio_playing', 'true');
+      localStorage.setItem('ht_radio_station', currentIdx);
+    }
+
+    function pause() {
+      if (audio) audio.pause();
+      playing = false;
+      updatePlayBtn();
+      localStorage.setItem('ht_radio_playing', 'false');
+    }
+
+    function togglePlay() {
+      playing ? pause() : play();
+    }
+
+    function updatePlayBtn() {
+      const btn = document.getElementById('big-play');
+      if (!btn) return;
+      btn.querySelector('.icon-play').style.display = playing ? 'none' : '';
+      btn.querySelector('.icon-pause').style.display = playing ? '' : 'none';
+      btn.classList.toggle('playing', playing);
+      // Update tile indicator
+      document.querySelectorAll('.station-tile').forEach((t, i) => {
+        t.classList.toggle('playing', i === currentIdx && playing);
+      });
+    }
+
+    function setLoading(v) {
+      document.getElementById('big-loading').style.display = v ? 'flex' : 'none';
+      document.getElementById('big-play').style.display = v ? 'none' : 'flex';
+    }
+
+    document.getElementById('big-play').addEventListener('click', togglePlay);
+    document.getElementById('big-volume').addEventListener('input', e => {
+      volume = parseFloat(e.target.value);
+      if (audio) audio.volume = volume;
+      localStorage.setItem('ht_radio_volume', volume);
+    });
+
+    init();
+  })();
+  </script>
+</body>
+</html>
