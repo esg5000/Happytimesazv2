@@ -437,9 +437,13 @@ p:last-child { margin-bottom: 0; }
   background: rgba(26,20,18,0.5);
   z-index: 200;
   opacity: 0;
+  pointer-events: none; /* critical: invisible overlay must not steal taps */
   transition: opacity var(--transition);
 }
-#mobile-nav-overlay.visible { opacity: 1; }
+#mobile-nav-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
 
 #mobile-nav-drawer {
   position: fixed;
@@ -459,8 +463,12 @@ p:last-child { margin-bottom: 0; }
   -webkit-overflow-scrolling: touch;
   transition: right var(--transition-slow);
   box-shadow: var(--shadow-xl);
+  pointer-events: none;
 }
-#mobile-nav-drawer.open { right: 0; }
+#mobile-nav-drawer.open {
+  right: 0;
+  pointer-events: auto;
+}
 
 #mobile-nav-close {
   align-self: flex-end;
