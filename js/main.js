@@ -294,7 +294,7 @@
     const hero = document.getElementById('hero-mosaic');
     if (!hero) return;
 
-    // ── Main tile: update overlay text only, preserve the static video background ──
+    // ── Main tile: update copy; optional Sanity featured image replaces default hero photo ──
     const mainTile = document.getElementById('hero-main-tile');
     if (mainTile) {
       let title, subtitle, ctaLabel, ctaUrl, themeLabel;
@@ -305,10 +305,13 @@
         ctaLabel   = settings.featuredCtaLabel || 'Read More';
         ctaUrl     = settings.featuredCtaUrl   || '#';
         themeLabel = settings.featuredThemeLabel;
-        // If Sanity provides an explicit hero image, use it instead of video
         if (settings.featuredImage) {
           const bg = window.sanityImage(settings.featuredImage, 1200, 700);
-          if (bg) mainTile.style.backgroundImage = `url(${bg})`;
+          if (bg) {
+            mainTile.style.backgroundImage = `url(${bg})`;
+            mainTile.style.backgroundSize = 'cover';
+            mainTile.style.backgroundPosition = 'center';
+          }
         }
       } else if (posts && posts.length > 0) {
         const p = posts[0];
@@ -346,7 +349,7 @@
         tileBg    = settingsTile.image ? window.sanityImage(settingsTile.image, 600, 350) : null;
       } else if (post) {
         tileTitle = post.title;
-        tileUrl   = `article?slug=${encodeURIComponent(post.slug)}`;
+        tileUrl   = `article.html?slug=${encodeURIComponent(post.slug)}`;
         tileCat   = (post.categories || [])[0];
         tileBg    = post.heroImage ? window.sanityImage(post.heroImage, 600, 350) : null;
       }
@@ -730,6 +733,10 @@
     toggle.addEventListener('click', openDrawer);
     close?.addEventListener('click', closeDrawer);
     overlay?.addEventListener('click', closeDrawer);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer();
+    });
 
     // Active nav item
     const path = window.location.pathname.split('/').pop() || 'index.html';

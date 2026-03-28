@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>HappyTimes AZ – Arizona Lifestyle Magazine</title>
   <meta name="description" content="Arizona's guide to food, cannabis, nightlife, mushrooms, events, and culture. Your happy place in the desert.">
   <meta property="og:title" content="HappyTimes AZ – Arizona Lifestyle Magazine">
@@ -120,18 +120,10 @@
     <!-- Hero Mosaic -->
     <section id="hero-mosaic">
       <div class="hero-mosaic__grid">
-        <!-- Main tile: video hero with image fallback, Sanity content overlaid -->
-        <a href="#" class="hero-tile hero-tile--main" id="hero-main-tile" style="background:#1b1d1d">
-          <!-- Video hero background -->
-          <video
-            class="hero-video-bg"
-            autoplay muted loop playsinline
-            poster="assets/heroes/homepage.png"
-            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0">
-            <source src="assets/heroes/homepage-video.mp4" type="video/mp4">
-          </video>
-          <div class="hero-tile__overlay" style="z-index:1"></div>
-          <div class="hero-tile__content" style="z-index:2">
+        <!-- Main tile: static hero image, Sanity can override with featured image -->
+        <a href="#" class="hero-tile hero-tile--main" id="hero-main-tile" style="background-color:#1b1d1d;background-image:url('assets/heroes/homepage.png');background-size:cover;background-position:center">
+          <div class="hero-tile__overlay"></div>
+          <div class="hero-tile__content">
             <div class="hero-theme-label">Arizona Lifestyle</div>
             <h1 class="hero-tile__title">Happy Times AZ</h1>
             <p class="hero-tile__sub">Your guide to food, cannabis, nightlife, events, and more in the Valley of the Sun.</p>
