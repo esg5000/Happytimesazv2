@@ -111,12 +111,6 @@
     return new URLSearchParams(window.location.search).get(name);
   }
 
-  /** Extract slug from clean URL /article/my-slug */
-  function getArticleSlug() {
-    const m = window.location.pathname.match(/\/article\/([^/]+)\/?$/);
-    return m ? decodeURIComponent(m[1]) : null;
-  }
-
   function imgOrPlaceholder(image, w, h, alt) {
     const url = window.sanityImage && image ? window.sanityImage(image, w, h) : null;
     if (url) return `<img src="${url}" alt="${esc(alt || '')}" loading="lazy">`;
@@ -488,7 +482,7 @@
   // ─── ARTICLE PAGE ─────────────────────────────────────────────────────────────
 
   async function initArticlePage() {
-    const slug = getArticleSlug();
+    const slug = window.location.pathname.split('/').filter(Boolean).pop();
     if (!slug) {
       document.getElementById('article-main').innerHTML = '<div class="error-state"><h1>Article not found</h1><a href="index.html" class="btn btn--primary">Go Home</a></div>';
       return;
