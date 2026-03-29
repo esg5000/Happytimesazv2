@@ -163,7 +163,8 @@
   // ─── Article Card ────────────────────────────────────────────────────────────
 
   function renderArticleCard(post, size = 'normal') {
-    const url  = `article?slug=${encodeURIComponent(post.slug)}`;
+    // Use clean URLs for Vercel rewrites: /article/:slug → /article.html
+    const url  = `/article/${encodeURIComponent(post.slug)}`;
     const date = window.formatDateShort ? window.formatDateShort(post.publishedAt) : '';
     const mins = post.readTime ? `${post.readTime} min read` : '';
     return `
@@ -326,7 +327,7 @@
         title    = p.title;
         subtitle = p.excerpt;
         ctaLabel = 'Read Story';
-        ctaUrl   = `article.html?slug=${encodeURIComponent(p.slug)}`;
+        ctaUrl   = `/article/${encodeURIComponent(p.slug)}`;
         themeLabel = (p.categories || [])[0] || 'Latest';
       }
 
@@ -357,7 +358,7 @@
         tileBg    = settingsTile.image ? window.sanityImage(settingsTile.image, 600, 350) : null;
       } else if (post) {
         tileTitle = post.title;
-        tileUrl   = `article.html?slug=${encodeURIComponent(post.slug)}`;
+        tileUrl   = `/article/${encodeURIComponent(post.slug)}`;
         tileCat   = (post.categories || [])[0];
         tileBg    = post.heroImage ? window.sanityImage(post.heroImage, 600, 350) : null;
       }
