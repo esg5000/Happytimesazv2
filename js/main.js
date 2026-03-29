@@ -111,10 +111,8 @@
     return new URLSearchParams(window.location.search).get(name);
   }
 
-  /** Query ?slug= or clean URL /article/my-slug (e.g. after Vercel rewrite) */
+  /** Extract slug from clean URL /article/my-slug */
   function getArticleSlug() {
-    const q = getParam('slug');
-    if (q) return decodeURIComponent(q);
     const m = window.location.pathname.match(/\/article\/([^/]+)\/?$/);
     return m ? decodeURIComponent(m[1]) : null;
   }
