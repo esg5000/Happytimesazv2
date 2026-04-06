@@ -90,11 +90,28 @@
       results[p] = await window.getAdByPlacement(p).catch(() => null);
     }));
 
+    // Optional fallback: category-based ads (new "advertisement" document type)
+    const categorySlug = document.body?.dataset?.category || '';
+    let categoryAd = null;
+    if (categorySlug && typeof window.getCategoryAdvertisement === 'function') {
+      categoryAd = await window.getCategoryAdvertisement(categorySlug).catch(() => null);
+    }
+
     slots.forEach(slot => {
       const ad   = results[slot.dataset.placement];
       const size = slot.dataset.size || 'leaderboard';
-      if (!ad) return; // no ad → slot stays display:none
-      const html = renderAdHTML(ad, size);
+      const finalAd = ad || (categoryAd ? {
+        adType: 'image',
+        image: categoryAd.image,
+        headline: categoryAd.title,
+        cta: 'Learn More',
+        url: categoryAd.linkUrl,
+        advertiser: 'Partner'
+      } : null);
+
+      if (!finalAd) return; // no ad → slot stays display:none
+
+      const html = renderAdHTML(finalAd, size);
       if (!html) return;
       slot.innerHTML = html;
       slot.classList.add('loaded');
@@ -557,6 +574,24 @@
       }
     }
 
+    // Affiliate ads (2-3) after article body, matching the article category slug
+    if (post.categorySlug && typeof window.getAffiliateAdsByCategory === 'function') {
+      const aff = await window.getAffiliateAdsByCategory(post.categorySlug, 3).catch(() => null);
+      if (aff && aff.length) {
+        const wrap = document.createElement('section');
+        wrap.className = 'affiliate-ads';
+        wrap.innerHTML = `
+          <div class="affiliate-ads__header">
+            <h3 class="affiliate-ads__title">Recommended</h3>
+          </div>
+          <div class="affiliate-ads__grid">
+            ${aff.map(a => renderAffiliateAdCard(a)).join('')}
+          </div>
+        `;
+        bodyEl?.parentElement?.appendChild(wrap);
+      }
+    }
+
     // Related articles
     const related = await window.getRelatedPosts(slug, post.categorySlug, 4);
     const relEl = document.getElementById('related-articles');
@@ -565,6 +600,27 @@
     } else if (relEl) {
       relEl.closest('.related-section')?.remove();
     }
+  }
+
+  function renderAffiliateAdCard(ad) {
+    if (!ad) return '';
+    const href = esc(ad.linkUrl || '#');
+    const img = ad.image ? window.sanityImage(ad.image, 640, 400) : null;
+    return `
+      <article class="affiliate-card">
+        <a class="affiliate-card__link" href="${href}" target="_blank" rel="noopener sponsored">
+          <div class="affiliate-card__image">
+            ${img ? `<img src="${img}" alt="${esc(ad.title || '')}" loading="lazy">` : `<div class="img-placeholder" style="background:linear-gradient(135deg,#f3ede6,#e8ddd4);aspect-ratio:16/10"></div>`}
+          </div>
+          <div class="affiliate-card__body">
+            <div class="badge" style="--badge-color: var(--terracotta);">Affiliate</div>
+            <h4 class="affiliate-card__title">${esc(ad.title || '')}</h4>
+            ${ad.description ? `<p class="affiliate-card__desc">${esc(ad.description)}</p>` : ''}
+            <span class="affiliate-card__cta">Shop now</span>
+          </div>
+        </a>
+      </article>
+    `;
   }
 
   // ─── EVENTS PAGE ──────────────────────────────────────────────────────────────

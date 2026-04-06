@@ -273,6 +273,47 @@ window.getAdsByPlacement = (placement, limit = 3) => sanityFetch(`
   }
 `, { placement });
 
+// ─── New ad models (category-based) ───────────────────────────────────────────
+
+/** Fetch the best active category advertisement for a category slug (e.g. "food") */
+window.getCategoryAdvertisement = (categorySlug) => sanityFetch(`
+  *[
+    _type == "advertisement" &&
+    isActive == true &&
+    (!defined(startDate) || dateTime(startDate) <= now()) &&
+    (!defined(endDate)   || dateTime(endDate)   >= now()) &&
+    (
+      $categorySlug in targetCategories ||
+      "all" in targetCategories
+    )
+  ] | order(coalesce(startDate, _createdAt) desc) [0]{
+    title,
+    linkUrl,
+    targetCategories,
+    startDate,
+    endDate,
+    "image": image{ asset{ _ref }, alt }
+  }
+`, { categorySlug });
+
+/** Fetch active affiliate ads for a category slug */
+window.getAffiliateAdsByCategory = (categorySlug, limit = 3) => sanityFetch(`
+  *[
+    _type == "affiliateAd" &&
+    isActive == true &&
+    (
+      $categorySlug in categories ||
+      "all" in categories
+    )
+  ] | order(_createdAt desc) [0...${limit}]{
+    title,
+    linkUrl,
+    description,
+    categories,
+    "image": image{ asset{ _ref }, alt }
+  }
+`, { categorySlug });
+
 // ─── Portable Text renderer (vanilla JS) ─────────────────────────────────────
 
 window.renderPortableText = function(blocks) {

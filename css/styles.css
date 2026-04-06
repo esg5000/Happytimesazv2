@@ -1266,6 +1266,87 @@ p:last-child { margin-bottom: 0; }
 .related-section { background: var(--cream-dark); padding-block: var(--space-12); }
 .related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-5); }
 
+/* === AFFILIATE ADS (article page) === */
+.affiliate-ads {
+  margin-top: var(--space-10);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--sand);
+}
+
+.affiliate-ads__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.affiliate-ads__title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0;
+}
+
+.affiliate-ads__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+}
+
+.affiliate-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--sand);
+}
+
+.affiliate-card__link { display: block; color: inherit; text-decoration: none; }
+.affiliate-card__image { aspect-ratio: 16/10; overflow: hidden; }
+.affiliate-card__image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.affiliate-card__body {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.affiliate-card__title {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  line-height: 1.25;
+  margin: 0;
+  color: var(--ink);
+}
+
+.affiliate-card__desc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ink-light);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.affiliate-card__cta {
+  margin-top: auto;
+  font-weight: 800;
+  color: var(--terracotta);
+}
+
+@media (max-width: 900px) {
+  .affiliate-ads__grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .affiliate-ads__grid { grid-template-columns: 1fr; }
+}
+
 /* === EVENTS PAGE === */
 .events-page { background: var(--cream); }
 
