@@ -146,7 +146,9 @@
       cannabis: '#2d7a3a', marijuana: '#2d7a3a', dispensary: '#2d7a3a',
       food: '#e85d2a', restaurant: '#e85d2a',
       nightlife: '#6b2fa0', bar: '#6b2fa0', club: '#6b2fa0',
-      mushroom: '#8b4513', mushrooms: '#8b4513',
+      'health-wellness': '#8b4513', 'health & wellness': '#8b4513',
+      mushroom: '#8b4513', mushrooms: '#8b4513', wellness: '#8b4513',
+      news: '#1a6fa0',
       events: '#d4a03c', event: '#d4a03c',
       classes: '#1a6fa0', class: '#1a6fa0', education: '#1a6fa0',
       music: '#c94a1f',
@@ -838,7 +840,23 @@
     input?.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
   }
 
-  // ─── CATEGORY PAGE (food / nightlife / mushrooms / classes) ──────────────────
+  // ─── NEWS PAGE ───────────────────────────────────────────────────────────────
+
+  async function initNewsPage() {
+    setMeta('News – HappyTimes AZ', 'Breaking stories and headlines from NewsAPI and our News desk.');
+    const gridEl = document.getElementById('category-grid');
+    if (!gridEl) return;
+    showSkeleton(gridEl, 9, 'card');
+
+    const posts = await window.getNewsPosts(24).catch(() => null);
+    if (!posts || posts.length === 0) {
+      gridEl.innerHTML = '<p class="empty-msg" style="grid-column:1/-1">No news articles found yet.</p>';
+      return;
+    }
+    gridEl.innerHTML = posts.map(p => renderArticleCard(p)).join('');
+  }
+
+  // ─── CATEGORY PAGE (food / nightlife / health-wellness / classes) ───────────
 
   async function initCategoryPage() {
     const cat   = document.body.dataset.category || '';
@@ -878,6 +896,7 @@
       cannabis:     initCannabisPage,
       listing:      initListingPage,
       category:     initCategoryPage,
+      news:         initNewsPage,
     };
 
     const fn = pageInits[page];

@@ -103,6 +103,24 @@ window.getPostsByCategory = (cat, limit = 12) => sanityFetch(`
   }
 `, { cat });
 
+/** News: posts syndicated from NewsAPI or filed under News category */
+window.getNewsPosts = (limit = 24) => sanityFetch(`
+  *[
+    _type == "post" &&
+    (source == "newsapi" || category->slug.current == "news")
+  ] | order(_createdAt desc) [0...${limit}]{
+    title,
+    "slug": slug.current,
+    excerpt,
+    "publishedAt": _createdAt,
+    readTime,
+    source,
+    "categories": [category->title],
+    "categorySlug": category->slug.current,
+    "heroImage": heroImage{ asset{ _ref }, alt }
+  }
+`);
+
 window.getPostBySlug = (slug) => sanityFetch(`
   *[_type == "post" && slug.current == $slug][0]{
     title,
@@ -110,6 +128,7 @@ window.getPostBySlug = (slug) => sanityFetch(`
     excerpt,
     "publishedAt": _createdAt,
     readTime,
+    source,
     "categories": [category->title],
     "categorySlug": category->slug.current,
     "heroImage": heroImage{ asset{ _ref }, alt },
