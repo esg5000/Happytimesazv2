@@ -605,12 +605,22 @@
 
   async function initDispensariesPage() {
     setMeta('Dispensaries – Arizona Cannabis Directory');
+    console.log('[Dispensaries] init start');
+    console.log('[Dispensaries] document.readyState =', document.readyState);
+
     const el = document.getElementById('dispensary-grid');
-    if (!el) return;
+    if (!el) {
+      console.error('[Dispensaries] #dispensary-grid not found');
+      return;
+    }
+    console.log('[Dispensaries] #dispensary-grid found');
     showSkeleton(el, 9, 'card');
 
+    console.log('[Dispensaries] fetching from', window.getActiveDispensaries ? 'getActiveDispensaries' : 'getDispensaries');
     const dispensariesRaw = await (window.getActiveDispensaries ? window.getActiveDispensaries() : window.getDispensaries());
+    console.log('[Dispensaries] raw result type =', Array.isArray(dispensariesRaw) ? 'array' : typeof dispensariesRaw);
     const dispensaries = Array.isArray(dispensariesRaw) ? dispensariesRaw.filter(Boolean) : [];
+    console.log('[Dispensaries] count =', dispensaries.length);
     if (!dispensaries || dispensaries.length === 0) {
       el.innerHTML = '<p class="empty-msg">No dispensaries found.</p>';
       return;
@@ -627,6 +637,9 @@
       const cities = [...new Set(dispensaries.map(d => (d.city || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
       citySelect.innerHTML =
         `<option value="all">All cities</option>` + cities.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+      console.log('[Dispensaries] cities populated =', cities.length);
+    } else {
+      console.warn('[Dispensaries] #disp-city not found (filters will still render cards)');
     }
 
     function passesCategory(d, cat) {
@@ -637,6 +650,7 @@
 
     function applyFilters() {
       try {
+        console.log('[Dispensaries] applyFilters');
         const q = (searchInput?.value || '').trim().toLowerCase();
         const city = citySelect?.value || 'all';
         const cat = catSelect?.value || 'all';
@@ -650,10 +664,13 @@
           return cityOk && catOk && qOk;
         });
 
+        console.log('[Dispensaries] filtered count =', filtered.length, { q, city, cat });
         if (countEl) countEl.textContent = `${filtered.length} result${filtered.length === 1 ? '' : 's'}`;
-        el.innerHTML = filtered.length
+        const html = filtered.length
           ? filtered.map(d => renderDispensaryDirectoryCard(d)).join('')
           : '<p class="empty-msg" style="grid-column:1/-1">No dispensaries match your filters.</p>';
+        console.log('[Dispensaries] setting grid innerHTML (len chars)=', html.length);
+        el.innerHTML = html;
       } catch (e) {
         console.error('[Dispensaries] render error', e);
         el.innerHTML = '<p class="empty-msg" style="grid-column:1/-1">Could not render dispensaries. Please refresh.</p>';
@@ -671,6 +688,7 @@
     });
 
     applyFilters();
+    console.log('[Dispensaries] init end');
   }
 
   function filterDispensaries(all, city) {
@@ -1263,6 +1281,8 @@
     const page = document.body.dataset.page;
     if (!page) return;
 
+    console.log('[Route] data-page =', page);
+
     initMobileNav();
     initStickyHeader();
     initSearch();
@@ -1283,10 +1303,20 @@
 
     const fn = pageInits[page];
     if (fn) {
+      console.log('[Route] init fn found for', page);
       // Init static ad slots immediately (leaderboards etc. in the HTML)
       initAds();
       // Run page content fetch, then re-run initAds to catch dynamically injected slots
-      fn().then(() => initAds()).catch(() => {});
+      fn()
+        .then(() => {
+          console.log('[Route] init complete for', page);
+          initAds();
+        })
+        .catch((e) => {
+          console.error('[Route] init failed for', page, e);
+        });
+    } else {
+      console.warn('[Route] no init fn for', page);
     }
   }
 
