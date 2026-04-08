@@ -146,18 +146,44 @@
 
   function showNoStream() {
     const label = document.getElementById('radio-station-name');
+    const headerLabel = document.getElementById('radio-header-station');
     if (label) {
       const orig = label.textContent;
       label.textContent = 'No stream configured';
-      setTimeout(() => { label.textContent = orig; }, 2000);
+      if (headerLabel) headerLabel.textContent = 'No stream configured';
+      setTimeout(() => {
+        label.textContent = orig;
+        const st = stations[currentIdx];
+        if (headerLabel && st) headerLabel.textContent = st.title || 'GTA Radio';
+      }, 2000);
     }
   }
 
   // ─── UI Builder ───────────────────────────────────────────────────────────
 
+  function buildHeaderMini() {
+    const wrap = document.getElementById('radio-header-mini');
+    if (!wrap || document.getElementById('radio-header-play')) return;
+    wrap.innerHTML = `
+      <button type="button" class="radio-header-mini__play" id="radio-header-play" aria-label="Play or pause radio">
+        <svg class="icon-play-h" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+        <svg class="icon-pause-h" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      </button>
+      <div class="radio-header-mini__text">
+        <span class="radio-header-mini__station" id="radio-header-station">GTA Radio</span>
+        <a href="gta-radio.html" class="radio-header-mini__link">Listen</a>
+      </div>
+    `;
+    document.getElementById('radio-header-play')?.addEventListener('click', togglePlay);
+  }
+
   function buildUI() {
     const existing = document.getElementById('radio-player');
-    if (existing) { uiReady = true; return; }
+    if (existing) {
+      uiReady = true;
+      buildHeaderMini();
+      return;
+    }
 
     const player = document.createElement('div');
     player.id = 'radio-player';
@@ -225,6 +251,7 @@
     });
 
     uiReady = true;
+    buildHeaderMini();
   }
 
   function renderStations() {
@@ -250,7 +277,9 @@
     const nameEl  = document.getElementById('radio-station-name');
     const genreEl = document.getElementById('radio-genre');
     const coverEl = document.getElementById('radio-cover');
+    const headerStation = document.getElementById('radio-header-station');
     if (nameEl)  nameEl.textContent  = station.title || 'Unknown Station';
+    if (headerStation) headerStation.textContent = station.title || 'GTA Radio';
     if (genreEl) genreEl.textContent = station.genre || '';
     if (coverEl && station.coverImage) {
       const url = window.sanityImage(station.coverImage, 56, 56, 'crop');
@@ -273,6 +302,21 @@
       play.style.display  = '';
       pause.style.display = 'none';
       btn.classList.remove('playing');
+    }
+
+    const hPlay  = document.querySelector('#radio-header-play .icon-play-h');
+    const hPause = document.querySelector('#radio-header-play .icon-pause-h');
+    const hBtn   = document.getElementById('radio-header-play');
+    if (hPlay && hPause && hBtn) {
+      if (isPlaying) {
+        hPlay.style.display  = 'none';
+        hPause.style.display = '';
+        hBtn.classList.add('playing');
+      } else {
+        hPlay.style.display  = '';
+        hPause.style.display = 'none';
+        hBtn.classList.remove('playing');
+      }
     }
   }
 

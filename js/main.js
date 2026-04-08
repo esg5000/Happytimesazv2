@@ -291,8 +291,152 @@
 
   // ─── HOMEPAGE ─────────────────────────────────────────────────────────────────
 
+  const HOME_HERO_TAKE = 9;
+
+  function renderHomeMastheadDate() {
+    const el = document.getElementById('home-masthead-date');
+    if (!el) return;
+    const d = new Date();
+    el.textContent = d.toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  }
+
+  async function fetchPhoenixWeather() {
+    const el = document.getElementById('home-weather');
+    if (!el) return;
+    try {
+      const res = await fetch(
+        'https://api.open-meteo.com/v1/forecast?latitude=33.4484&longitude=-112.0740&current=temperature_2m&temperature_unit=fahrenheit&timezone=America%2FPhoenix'
+      );
+      const data = await res.json();
+      const t = data?.current?.temperature_2m;
+      el.textContent = t != null ? `Phoenix ${Math.round(t)}°F` : 'Phoenix';
+    } catch (e) {
+      el.textContent = 'Phoenix';
+    }
+    el.classList.remove('is-loading');
+  }
+
+  function renderHeadlineTicker(posts) {
+    const track = document.getElementById('headline-ticker-track');
+    if (!track || !posts || posts.length === 0) {
+      if (track) {
+        track.innerHTML =
+          '<span class="headline-ticker__sep"> · </span><span>HappyTimes AZ — Arizona lifestyle &amp; culture</span>';
+      }
+      return;
+    }
+    const slice = posts.slice(0, 28);
+    const sep = '<span class="headline-ticker__sep"> · </span>';
+    const block = slice
+      .map(p => {
+        const url = `/article/${encodeURIComponent(p.slug)}`;
+        return `<a href="${esc(url)}">${esc(p.title)}</a>`;
+      })
+      .join(sep);
+    track.innerHTML = block + sep + block;
+  }
+
+  function renderHomeHero(settings, posts) {
+    const leadWrap = document.getElementById('home-hero-lead');
+    const featuredLink = document.getElementById('home-hero-featured-link');
+    const featuredImg = document.getElementById('home-hero-featured-img');
+    const trendingList = document.getElementById('home-trending-list');
+    if (!leadWrap || !featuredLink || !featuredImg || !trendingList) return;
+
+    let featuredTitle;
+    let featuredUrl = 'index.html';
+    let featuredCat = 'Arizona Lifestyle';
+    let featuredImage = null;
+
+    if (settings && settings.featuredHeadline) {
+      featuredTitle = settings.featuredHeadline;
+      featuredUrl = settings.featuredCtaUrl || featuredUrl;
+      featuredCat = settings.featuredThemeLabel || 'Featured';
+      featuredImage = settings.featuredImage || null;
+    } else if (posts && posts[0]) {
+      const p = posts[0];
+      featuredTitle = p.title;
+      featuredUrl = `/article/${encodeURIComponent(p.slug)}`;
+      featuredCat = (p.categories || [])[0] || 'Latest';
+      featuredImage = p.heroImage;
+    } else {
+      featuredTitle = 'HappyTimes AZ';
+      featuredCat = 'Arizona Lifestyle';
+    }
+
+    if (!featuredImage && posts && posts[0] && posts[0].heroImage) {
+      featuredImage = posts[0].heroImage;
+    }
+
+    const secondaryPosts = [1, 2, 3].map(i => posts && posts[i]).filter(Boolean);
+    const secondaryBlock =
+      secondaryPosts.length > 0
+        ? `<div class="home-hero__secondary">
+            <div class="home-hero__secondary-title">Also in the news</div>
+            <ul>${secondaryPosts
+              .map(
+                p =>
+                  `<li><a href="/article/${encodeURIComponent(p.slug)}">${esc(p.title)}</a></li>`
+              )
+              .join('')}</ul>
+          </div>`
+        : '';
+
+    leadWrap.innerHTML = `
+      <span class="home-hero__lead-tag">${esc(featuredCat)}</span>
+      <h1 class="home-hero__headline"><a href="${esc(featuredUrl)}">${esc(featuredTitle)}</a></h1>
+      ${secondaryBlock}
+    `;
+
+    featuredLink.href = featuredUrl;
+    const imgUrl =
+      featuredImage && window.sanityImage
+        ? window.sanityImage(featuredImage, 1200, 750)
+        : null;
+    featuredImg.innerHTML = imgUrl
+      ? `<img src="${esc(imgUrl)}" alt="${esc(featuredTitle)}" width="1200" height="750" loading="eager">`
+      : `<img src="assets/heroes/homepage.png" alt="" width="1200" height="750" loading="eager">`;
+
+    const trendingPosts = (posts || []).slice(4, 9);
+    if (trendingPosts.length === 0) {
+      trendingList.innerHTML =
+        '<p class="empty-msg" style="margin:0;font-size:.875rem">More stories coming soon.</p>';
+      return;
+    }
+    trendingList.innerHTML = trendingPosts
+      .map(p => {
+        const url = `/article/${encodeURIComponent(p.slug)}`;
+        return `
+      <a href="${url}" class="home-trending__item">
+        <div class="home-trending__thumb">${imgOrPlaceholder(p.heroImage, 200, 200, p.title)}</div>
+        <div class="home-trending__headline">${esc(p.title)}</div>
+      </a>`;
+      })
+      .join('');
+  }
+
+  function initNewsletterForm() {
+    const form = document.getElementById('newsletter-form');
+    const msg = document.getElementById('newsletter-form-msg');
+    if (!form) return;
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      if (msg) msg.textContent = 'Thanks! We will be in touch.';
+      form.reset();
+    });
+  }
+
   async function initHomepage() {
     setMeta('HappyTimes AZ – Arizona Lifestyle Magazine', 'Your guide to Arizona food, cannabis, nightlife, events and more.');
+
+    renderHomeMastheadDate();
+    fetchPhoenixWeather();
+    initNewsletterForm();
 
     // Fire all fetches in parallel
     const [settings, posts, events, deals, dispensaries] = await Promise.all([
@@ -303,90 +447,12 @@
       window.getDispensaries().catch(() => null)
     ]);
 
-    renderHeroMosaic(settings, posts);
-    renderEditorialGrid(pickPostsForEditorialGrid(posts, 3, 12));
+    renderHeadlineTicker(posts);
+    renderHomeHero(settings, posts);
+    renderEditorialGrid(pickPostsForEditorialGrid(posts, HOME_HERO_TAKE, 12));
     renderEventsSection(events);
     renderCannabisSpotlight(deals, dispensaries);
     renderDispensaryHighlights(dispensaries);
-  }
-
-  function renderHeroMosaic(settings, posts) {
-    const hero = document.getElementById('hero-mosaic');
-    if (!hero) return;
-
-    // ── Main tile: update copy; optional Sanity featured image replaces default hero photo ──
-    const mainTile = document.getElementById('hero-main-tile');
-    if (mainTile) {
-      let title, subtitle, ctaLabel, ctaUrl, themeLabel;
-
-      if (settings && settings.featuredHeadline) {
-        title      = settings.featuredHeadline;
-        subtitle   = settings.featuredSubheadline;
-        ctaLabel   = settings.featuredCtaLabel || 'Read More';
-        ctaUrl     = settings.featuredCtaUrl   || '#';
-        themeLabel = settings.featuredThemeLabel;
-        if (settings.featuredImage) {
-          const bg = window.sanityImage(settings.featuredImage, 1200, 700);
-          if (bg) {
-            mainTile.style.backgroundImage = `url(${bg})`;
-            mainTile.style.backgroundSize = 'cover';
-            mainTile.style.backgroundPosition = 'center';
-          }
-        }
-      } else if (posts && posts.length > 0) {
-        const p = posts[0];
-        title    = p.title;
-        subtitle = p.excerpt;
-        ctaLabel = 'Read Story';
-        ctaUrl   = `/article/${encodeURIComponent(p.slug)}`;
-        themeLabel = (p.categories || [])[0] || 'Latest';
-      }
-
-      if (title) {
-        mainTile.href = esc(ctaUrl || '#');
-        const content = mainTile.querySelector('.hero-tile__content');
-        if (content) {
-          content.innerHTML = `
-            ${themeLabel ? `<div class="hero-theme-label">${esc(themeLabel)}</div>` : ''}
-            <h1 class="hero-tile__title">${esc(title)}</h1>
-            ${subtitle ? `<p class="hero-tile__sub">${esc(subtitle)}</p>` : ''}
-            <span class="hero-tile__cta">${esc(ctaLabel || 'Read More')} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
-          `;
-        }
-      }
-    }
-
-    // ── Side tiles: update with posts 1 & 2 if no Sanity settings override ──
-    const sideTiles = hero.querySelectorAll('.hero-tile--sm');
-
-    function updateSideTile(tile, post, settingsTile) {
-      if (!tile) return;
-      let tileTitle, tileUrl, tileCat, tileBg;
-      if (settingsTile && settingsTile.title) {
-        tileTitle = settingsTile.title;
-        tileUrl   = settingsTile.linkUrl || '#';
-        tileCat   = settingsTile.categoryTag;
-        tileBg    = settingsTile.image ? window.sanityImage(settingsTile.image, 600, 350) : null;
-      } else if (post) {
-        tileTitle = post.title;
-        tileUrl   = `/article/${encodeURIComponent(post.slug)}`;
-        tileCat   = (post.categories || [])[0];
-        tileBg    = post.heroImage ? window.sanityImage(post.heroImage, 600, 350) : null;
-      }
-      if (!tileTitle) return;
-      tile.href = esc(tileUrl || '#');
-      if (tileBg) { tile.style.backgroundImage = `url(${tileBg})`; tile.style.backgroundSize = 'cover'; tile.style.backgroundPosition = 'center'; }
-      const content = tile.querySelector('.hero-tile__content');
-      if (content) {
-        content.innerHTML = `
-          ${tileCat ? `<div class="hero-cat-tag">${esc(tileCat)}</div>` : ''}
-          <h3 class="hero-tile__title">${esc(tileTitle)}</h3>
-        `;
-      }
-    }
-
-    updateSideTile(sideTiles[0], posts && posts[1], settings && settings.tileTop);
-    updateSideTile(sideTiles[1], posts && posts[2], settings && settings.tileBottom);
   }
 
   /** Mix categories in the homepage grid so one vertical (e.g. news) does not dominate. */
