@@ -311,18 +311,21 @@
   }
 
   function renderDispensaryDirectoryCard(d) {
-    const url = `listing?slug=${encodeURIComponent(d.slug)}`;
+    if (!d) return '';
+    const name = d.name || d.dispensaryName || 'Dispensary';
+    const slug = (d.slug && typeof d.slug === 'object') ? d.slug.current : d.slug;
+    const url = slug ? `listing?slug=${encodeURIComponent(slug)}` : '#';
     const tags = getDispensaryCategoryTags(d);
     const hours = formatHoursCompact(d.hours);
     return `
       <article class="dispensary-card">
         <a href="${url}" class="dispensary-card__image-link">
           <div class="dispensary-card__image">
-            ${imgOrPlaceholder(d.heroImage, 520, 390, d.name)}
+            ${imgOrPlaceholder(d.heroImage, 520, 390, name)}
           </div>
         </a>
         <div class="dispensary-card__body">
-          <h3 class="dispensary-card__name"><a href="${url}">${esc(d.name)}</a></h3>
+          <h3 class="dispensary-card__name"><a href="${url}">${esc(name)}</a></h3>
           ${d.address ? `<div class="dispensary-card__address">${esc(d.address)}</div>` : ''}
           ${d.city ? `<div class="dispensary-card__city"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(d.city)}, AZ</div>` : ''}
           ${tags.length ? `<div class="dispensary-card__tags">${tags.map(t => `<span class="badge" style="--badge-color:${t.color}">${esc(t.label)}</span>`).join('')}</div>` : ''}
@@ -606,7 +609,8 @@
     if (!el) return;
     showSkeleton(el, 9, 'card');
 
-    const dispensaries = await (window.getActiveDispensaries ? window.getActiveDispensaries() : window.getDispensaries());
+    const dispensariesRaw = await (window.getActiveDispensaries ? window.getActiveDispensaries() : window.getDispensaries());
+    const dispensaries = Array.isArray(dispensariesRaw) ? dispensariesRaw.filter(Boolean) : [];
     if (!dispensaries || dispensaries.length === 0) {
       el.innerHTML = '<p class="empty-msg">No dispensaries found.</p>';
       return;
@@ -632,22 +636,28 @@
     }
 
     function applyFilters() {
-      const q = (searchInput?.value || '').trim().toLowerCase();
-      const city = citySelect?.value || 'all';
-      const cat = catSelect?.value || 'all';
+      try {
+        const q = (searchInput?.value || '').trim().toLowerCase();
+        const city = citySelect?.value || 'all';
+        const cat = catSelect?.value || 'all';
 
-      const filtered = dispensaries.filter(d => {
-        const cityOk = city === 'all' ? true : String(d.city || '').trim() === city;
-        const catOk = passesCategory(d, cat);
-        const hay = `${d.name || ''} ${d.address || ''} ${d.city || ''}`.toLowerCase();
-        const qOk = q ? hay.includes(q) : true;
-        return cityOk && catOk && qOk;
-      });
+        const filtered = dispensaries.filter(d => {
+          if (!d) return false;
+          const cityOk = city === 'all' ? true : String(d.city || '').trim() === city;
+          const catOk = passesCategory(d, cat);
+          const hay = `${d.name || d.dispensaryName || ''} ${d.address || ''} ${d.city || ''}`.toLowerCase();
+          const qOk = q ? hay.includes(q) : true;
+          return cityOk && catOk && qOk;
+        });
 
-      if (countEl) countEl.textContent = `${filtered.length} result${filtered.length === 1 ? '' : 's'}`;
-      el.innerHTML = filtered.length
-        ? filtered.map(d => renderDispensaryDirectoryCard(d)).join('')
-        : '<p class="empty-msg" style="grid-column:1/-1">No dispensaries match your filters.</p>';
+        if (countEl) countEl.textContent = `${filtered.length} result${filtered.length === 1 ? '' : 's'}`;
+        el.innerHTML = filtered.length
+          ? filtered.map(d => renderDispensaryDirectoryCard(d)).join('')
+          : '<p class="empty-msg" style="grid-column:1/-1">No dispensaries match your filters.</p>';
+      } catch (e) {
+        console.error('[Dispensaries] render error', e);
+        el.innerHTML = '<p class="empty-msg" style="grid-column:1/-1">Could not render dispensaries. Please refresh.</p>';
+      }
     }
 
     searchInput?.addEventListener('input', applyFilters);
