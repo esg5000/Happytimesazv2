@@ -1278,8 +1278,18 @@
   // ─── Router ───────────────────────────────────────────────────────────────────
 
   function route() {
-    const page = document.body.dataset.page;
+    let page = document.body.dataset.page;
     if (!page) return;
+
+    // Defensive routing: if the HTML has the wrong data-page attribute (or a host rewrite
+    // serves the wrong shell), try to infer the intended page from the URL / DOM.
+    try {
+      const path = (window.location?.pathname || '').toLowerCase();
+      const hasDispGrid = !!document.getElementById('dispensary-grid');
+      if (hasDispGrid || path.endsWith('/dispensaries.html') || path.endsWith('dispensaries.html') || path.includes('/dispensaries')) {
+        page = 'dispensaries';
+      }
+    } catch (e) {}
 
     console.log('[Route] data-page =', page);
 
