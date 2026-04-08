@@ -166,6 +166,7 @@ window.getDispensaries = () => sanityFetch(`
   *[_type == "listing" && listingType == "dispensary"] | order(featured desc, name asc){
     name,
     "slug": slug.current,
+    isActive,
     featured,
     city,
     address,
@@ -174,8 +175,33 @@ window.getDispensaries = () => sanityFetch(`
     "heroImage": heroImage{ asset{ _ref }, alt },
     description,
     hours,
+    medical,
+    recreational,
+    categoryTags,
     amenities,
     socials
+  }
+`);
+
+// Active dispensaries for the public directory
+window.getActiveDispensaries = () => sanityFetch(`
+  *[
+    _type == "listing" &&
+    listingType == "dispensary" &&
+    isActive == true
+  ] | order(name asc){
+    name,
+    "slug": slug.current,
+    featured,
+    city,
+    address,
+    phone,
+    website,
+    "heroImage": heroImage{ asset{ _ref }, alt },
+    hours,
+    medical,
+    recreational,
+    categoryTags
   }
 `);
 

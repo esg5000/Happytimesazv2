@@ -78,8 +78,31 @@
         <a href="cannabis.html" class="btn btn--outline">View Cannabis Deals</a>
       </div>
 
-      <!-- City Filters -->
-      <div id="city-filters" class="city-filters"></div>
+      <!-- Search / Filters -->
+      <div class="disp-filterbar" id="disp-filterbar" aria-label="Dispensary filters">
+        <div class="disp-filterbar__field">
+          <label for="disp-search" class="disp-filterbar__label">Search</label>
+          <input id="disp-search" class="disp-filterbar__input" type="search" placeholder="Search name or address…" autocomplete="off" aria-label="Search dispensaries">
+        </div>
+        <div class="disp-filterbar__field">
+          <label for="disp-city" class="disp-filterbar__label">City</label>
+          <select id="disp-city" class="disp-filterbar__select" aria-label="Filter by city">
+            <option value="all">All cities</option>
+          </select>
+        </div>
+        <div class="disp-filterbar__field">
+          <label for="disp-category" class="disp-filterbar__label">Category</label>
+          <select id="disp-category" class="disp-filterbar__select" aria-label="Filter by category">
+            <option value="all">All</option>
+            <option value="medical">Medical</option>
+            <option value="recreational">Recreational</option>
+          </select>
+        </div>
+        <div class="disp-filterbar__meta">
+          <span id="disp-results-count"></span>
+          <button type="button" id="disp-clear-filters" class="disp-filterbar__clear">Clear</button>
+        </div>
+      </div>
 
       <!-- Dispensary Grid -->
       <div id="dispensary-grid">

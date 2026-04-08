@@ -279,6 +279,63 @@
     `;
   }
 
+  function getDispensaryCategoryTags(d) {
+    const tags = [];
+    const arr = Array.isArray(d?.categoryTags) ? d.categoryTags : [];
+    const normArr = arr.map(x => String(x || '').toLowerCase());
+    const medical = d?.medical === true || normArr.includes('medical');
+    const recreational = d?.recreational === true || normArr.includes('recreational') || normArr.includes('rec');
+    if (medical) tags.push({ label: 'Medical', color: '#2d7a3a' });
+    if (recreational) tags.push({ label: 'Recreational', color: '#d4a03c' });
+    return tags;
+  }
+
+  function formatHoursCompact(hours) {
+    if (!hours || typeof hours !== 'object') return '';
+    const order = [
+      ['monday', 'Mon'],
+      ['tuesday', 'Tue'],
+      ['wednesday', 'Wed'],
+      ['thursday', 'Thu'],
+      ['friday', 'Fri'],
+      ['saturday', 'Sat'],
+      ['sunday', 'Sun'],
+    ];
+    const rows = [];
+    order.forEach(([k, label]) => {
+      const v = hours[k];
+      if (!v) return;
+      rows.push(`${label}: ${String(v)}`);
+    });
+    return rows.length ? rows.join(' · ') : '';
+  }
+
+  function renderDispensaryDirectoryCard(d) {
+    const url = `listing?slug=${encodeURIComponent(d.slug)}`;
+    const tags = getDispensaryCategoryTags(d);
+    const hours = formatHoursCompact(d.hours);
+    return `
+      <article class="dispensary-card">
+        <a href="${url}" class="dispensary-card__image-link">
+          <div class="dispensary-card__image">
+            ${imgOrPlaceholder(d.heroImage, 520, 390, d.name)}
+          </div>
+        </a>
+        <div class="dispensary-card__body">
+          <h3 class="dispensary-card__name"><a href="${url}">${esc(d.name)}</a></h3>
+          ${d.address ? `<div class="dispensary-card__address">${esc(d.address)}</div>` : ''}
+          ${d.city ? `<div class="dispensary-card__city"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(d.city)}, AZ</div>` : ''}
+          ${tags.length ? `<div class="dispensary-card__tags">${tags.map(t => `<span class="badge" style="--badge-color:${t.color}">${esc(t.label)}</span>`).join('')}</div>` : ''}
+          ${hours ? `<div class="dispensary-card__hours"><strong>Hours</strong><div>${esc(hours)}</div></div>` : ''}
+          <div class="dispensary-card__actions">
+            ${d.website ? `<a href="${esc(d.website)}" target="_blank" rel="noopener" class="btn btn--sm btn--outline">Website</a>` : ''}
+            ${d.phone ? `<a href="tel:${esc(d.phone)}" class="btn btn--sm btn--ghost">${esc(d.phone)}</a>` : ''}
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
   function getOpenStatus(hours) {
     if (!hours) return null;
     const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
@@ -549,45 +606,61 @@
     if (!el) return;
     showSkeleton(el, 9, 'card');
 
-    const dispensaries = await window.getDispensaries();
+    const dispensaries = await (window.getActiveDispensaries ? window.getActiveDispensaries() : window.getDispensaries());
     if (!dispensaries || dispensaries.length === 0) {
       el.innerHTML = '<p class="empty-msg">No dispensaries found.</p>';
       return;
     }
 
-    // Group by city
-    const cities = {};
-    dispensaries.forEach(d => {
-      const city = d.city || 'Other';
-      if (!cities[city]) cities[city] = [];
-      cities[city].push(d);
+    // Populate city dropdown
+    const citySelect = document.getElementById('disp-city');
+    const searchInput = document.getElementById('disp-search');
+    const catSelect = document.getElementById('disp-category');
+    const clearBtn = document.getElementById('disp-clear-filters');
+    const countEl = document.getElementById('disp-results-count');
+
+    if (citySelect) {
+      const cities = [...new Set(dispensaries.map(d => (d.city || '').trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
+      citySelect.innerHTML =
+        `<option value="all">All cities</option>` + cities.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+    }
+
+    function passesCategory(d, cat) {
+      if (!cat || cat === 'all') return true;
+      const tags = getDispensaryCategoryTags(d).map(t => t.label.toLowerCase());
+      return tags.includes(cat);
+    }
+
+    function applyFilters() {
+      const q = (searchInput?.value || '').trim().toLowerCase();
+      const city = citySelect?.value || 'all';
+      const cat = catSelect?.value || 'all';
+
+      const filtered = dispensaries.filter(d => {
+        const cityOk = city === 'all' ? true : String(d.city || '').trim() === city;
+        const catOk = passesCategory(d, cat);
+        const hay = `${d.name || ''} ${d.address || ''} ${d.city || ''}`.toLowerCase();
+        const qOk = q ? hay.includes(q) : true;
+        return cityOk && catOk && qOk;
+      });
+
+      if (countEl) countEl.textContent = `${filtered.length} result${filtered.length === 1 ? '' : 's'}`;
+      el.innerHTML = filtered.length
+        ? filtered.map(d => renderDispensaryDirectoryCard(d)).join('')
+        : '<p class="empty-msg" style="grid-column:1/-1">No dispensaries match your filters.</p>';
+    }
+
+    searchInput?.addEventListener('input', applyFilters);
+    citySelect?.addEventListener('change', applyFilters);
+    catSelect?.addEventListener('change', applyFilters);
+    clearBtn?.addEventListener('click', () => {
+      if (searchInput) searchInput.value = '';
+      if (citySelect) citySelect.value = 'all';
+      if (catSelect) catSelect.value = 'all';
+      applyFilters();
     });
 
-    const container = document.getElementById('dispensary-page');
-    if (!container) {
-      el.innerHTML = dispensaries.map(d => renderDispensaryCard(d)).join('');
-      return;
-    }
-
-    // Render filter buttons
-    const filterBar = document.getElementById('city-filters');
-    if (filterBar) {
-      const allCities = Object.keys(cities).sort();
-      filterBar.innerHTML = `
-        <button class="filter-btn active" data-city="all">All Cities</button>
-        ${allCities.map(c => `<button class="filter-btn" data-city="${esc(c)}">${esc(c)}</button>`).join('')}
-      `;
-      filterBar.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          filterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          const city = btn.dataset.city;
-          filterDispensaries(dispensaries, city);
-        });
-      });
-    }
-
-    el.innerHTML = dispensaries.map(d => renderDispensaryCard(d)).join('');
+    applyFilters();
   }
 
   function filterDispensaries(all, city) {
