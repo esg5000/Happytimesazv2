@@ -297,14 +297,14 @@
     // Fire all fetches in parallel
     const [settings, posts, events, deals, dispensaries] = await Promise.all([
       window.getHomepageSettings().catch(() => null),
-      window.getLatestPosts(12),
+      window.getLatestPosts(48),
       window.getEvents(6).catch(() => null),
       window.getDeals(6).catch(() => null),
       window.getDispensaries().catch(() => null)
     ]);
 
     renderHeroMosaic(settings, posts);
-    renderEditorialGrid(posts);
+    renderEditorialGrid(pickPostsForEditorialGrid(posts, 3, 12));
     renderEventsSection(events);
     renderCannabisSpotlight(deals, dispensaries);
     renderDispensaryHighlights(dispensaries);
@@ -389,19 +389,52 @@
     updateSideTile(sideTiles[1], posts && posts[2], settings && settings.tileBottom);
   }
 
-  function renderEditorialGrid(posts) {
+  /** Mix categories in the homepage grid so one vertical (e.g. news) does not dominate. */
+  function pickPostsForEditorialGrid(posts, heroTake, gridLimit) {
+    if (!posts || posts.length === 0) return [];
+    const heroSlugs = new Set(posts.slice(0, heroTake).map(p => p.slug).filter(Boolean));
+    const pool = posts.filter(p => p.slug && !heroSlugs.has(p.slug));
+    const byCat = new Map();
+    pool.forEach(p => {
+      const k = String(p.categorySlug || 'other').toLowerCase();
+      if (!byCat.has(k)) byCat.set(k, []);
+      byCat.get(k).push(p);
+    });
+    const out = [];
+    const used = new Set();
+    let progress = true;
+    while (out.length < gridLimit && progress) {
+      progress = false;
+      for (const arr of byCat.values()) {
+        const next = arr.find(p => !used.has(p.slug));
+        if (next) {
+          out.push(next);
+          used.add(next.slug);
+          progress = true;
+          if (out.length >= gridLimit) break;
+        }
+      }
+    }
+    for (const p of pool) {
+      if (out.length >= gridLimit) break;
+      if (p.slug && !used.has(p.slug)) {
+        out.push(p);
+        used.add(p.slug);
+      }
+    }
+    return out.slice(0, gridLimit);
+  }
+
+  function renderEditorialGrid(gridPosts) {
     const grid = document.getElementById('editorial-grid');
     if (!grid) return;
-    if (!posts || posts.length === 0) {
+    if (!gridPosts || gridPosts.length === 0) {
       grid.innerHTML = '<p class="empty-msg">No articles found.</p>';
       return;
     }
-    // Skip first 3 (used in hero mosaic)
-    const gridPosts = posts.slice(3);
     const items = [];
     gridPosts.forEach((p, i) => {
       items.push(renderArticleCard(p));
-      // Insert a native sponsored slot after every 6th article card
       if ((i + 1) % 6 === 0) {
         items.push(`<div class="ad-slot ad-slot--native" data-placement="homepage_grid_sponsored" data-size="native"></div>`);
       }
@@ -627,48 +660,161 @@
 
   // ─── EVENTS PAGE ──────────────────────────────────────────────────────────────
 
+  function eventOccurrenceTime(ev) {
+    const raw = ev.dateTime || ev.date;
+    if (!raw) return NaN;
+    return new Date(raw).getTime();
+  }
+
+  function startOfDayLocal(d) {
+    const x = new Date(d);
+    x.setHours(0, 0, 0, 0);
+    return x;
+  }
+
+  function endOfDayLocal(d) {
+    const x = new Date(d);
+    x.setHours(23, 59, 59, 999);
+    return x;
+  }
+
+  function startOfWeekMondayLocal(ref) {
+    const d = startOfDayLocal(ref);
+    const day = d.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    d.setDate(d.getDate() + diff);
+    return d;
+  }
+
+  function endOfWeekSundayLocal(ref) {
+    const s = startOfWeekMondayLocal(ref);
+    const e = new Date(s);
+    e.setDate(s.getDate() + 6);
+    e.setHours(23, 59, 59, 999);
+    return e;
+  }
+
+  function thisWeekendRangeLocal(ref = new Date()) {
+    const r = new Date(ref);
+    const day = r.getDay();
+    const sat = startOfDayLocal(r);
+    let daysToSat;
+    if (day === 0) daysToSat = -1;
+    else if (day === 6) daysToSat = 0;
+    else daysToSat = 6 - day;
+    sat.setDate(r.getDate() + daysToSat);
+    const end = new Date(sat);
+    end.setDate(sat.getDate() + 1);
+    end.setHours(23, 59, 59, 999);
+    return { start: sat, end };
+  }
+
+  function thisMonthRangeLocal(ref = new Date()) {
+    const start = new Date(ref.getFullYear(), ref.getMonth(), 1);
+    const end = new Date(ref.getFullYear(), ref.getMonth() + 1, 0, 23, 59, 59, 999);
+    return { start, end };
+  }
+
+  function filterEventsByRange(events, rangeKey) {
+    const now = new Date();
+    let start;
+    let end;
+    if (rangeKey === 'today') {
+      start = startOfDayLocal(now);
+      end = endOfDayLocal(now);
+    } else if (rangeKey === 'week') {
+      start = startOfWeekMondayLocal(now);
+      end = endOfWeekSundayLocal(now);
+    } else if (rangeKey === 'weekend') {
+      const w = thisWeekendRangeLocal(now);
+      start = w.start;
+      end = w.end;
+    } else if (rangeKey === 'month') {
+      const m = thisMonthRangeLocal(now);
+      start = m.start;
+      end = m.end;
+    } else {
+      return events;
+    }
+    const t0 = start.getTime();
+    const t1 = end.getTime();
+    return events.filter(ev => {
+      const t = eventOccurrenceTime(ev);
+      if (Number.isNaN(t)) return false;
+      return t >= t0 && t <= t1;
+    });
+  }
+
+  function renderEventPageCard(event) {
+    const dt = new Date(event.dateTime || event.date || Date.now());
+    const dateStr = dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+    const timeStr = dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    const href = event.link || '#';
+    const target = href !== '#' ? ' target="_blank" rel="noopener"' : '';
+    const img = imgOrPlaceholder(event.heroImage, 480, 300, event.title);
+    const venue = [event.venueName, event.city].filter(Boolean).join(' · ');
+    return `
+      <article class="event-page-card">
+        <div class="event-page-card__image">${img}</div>
+        <div class="event-page-card__body">
+          <span class="badge" style="--badge-color:#d4a03c">Event</span>
+          <h3 class="event-page-card__title">${esc(event.title)}</h3>
+          <div class="event-page-card__meta">
+            <span>${esc(dateStr)} · ${esc(timeStr)}</span>
+            ${venue ? `<span class="event-page-card__venue">${esc(venue)}</span>` : ''}
+          </div>
+          <a href="${esc(href)}" class="btn btn--sm btn--primary event-page-card__cta"${target}>Details</a>
+        </div>
+      </article>`;
+  }
+
   async function initEventsPage() {
     setMeta('Events – Arizona Events & Shows');
     const el = document.getElementById('events-list');
+    const tabRoot = document.getElementById('events-date-tabs');
     if (!el) return;
-    showSkeleton(el, 8, 'list');
+    showSkeleton(el, 8, 'card');
 
-    const events = await window.getEvents(24);
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    const events = await window.getActiveEventsFrom(d.toISOString(), 150).catch(() => null);
     if (!events || events.length === 0) {
       el.innerHTML = '<p class="empty-msg">No upcoming events found. Check back soon!</p>';
+      if (tabRoot) tabRoot.style.display = 'none';
       return;
     }
-    el.innerHTML = events.map(e => renderEventCardFull(e)).join('');
-  }
 
-  function renderEventCardFull(event) {
-    const dt   = new Date(event.dateTime || Date.now());
-    const day  = dt.toLocaleDateString('en-US', { day: 'numeric' });
-    const mon  = dt.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
-    const dow  = dt.toLocaleDateString('en-US', { weekday: 'long' });
-    const time = dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-    const href = event.link || '#';
-    const imgUrl = event.heroImage ? window.sanityImage(event.heroImage, 500, 300) : null;
-    return `
-      <article class="event-full-card">
-        <div class="event-full-date">
-          <span class="event-full-day">${day}</span>
-          <span class="event-full-mon">${mon}</span>
-          <span class="event-full-dow">${dow}</span>
-        </div>
-        ${imgUrl ? `<div class="event-full-image"><img src="${imgUrl}" alt="${esc(event.title)}" loading="lazy"></div>` : ''}
-        <div class="event-full-body">
-          <h2 class="event-full-title"><a href="${href}" ${href !== '#' ? 'target="_blank" rel="noopener"' : ''}>${esc(event.title)}</a></h2>
-          <div class="event-full-meta">
-            <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${time}</span>
-            ${event.venueName ? `<span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(event.venueName)}</span>` : ''}
-            ${event.city ? `<span>${esc(event.city)}, AZ</span>` : ''}
-          </div>
-          ${event.excerpt ? `<p class="event-full-desc">${esc(event.excerpt)}</p>` : ''}
-          ${href !== '#' ? `<a href="${href}" target="_blank" rel="noopener" class="btn btn--primary btn--sm">Get Tickets / Info</a>` : ''}
-        </div>
-      </article>
-    `;
+    function setActiveTab(range) {
+      if (!tabRoot) return;
+      tabRoot.querySelectorAll('.events-filter-tab').forEach(btn => {
+        const on = btn.dataset.range === range;
+        btn.classList.toggle('active', on);
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
+
+    function renderRange(range) {
+      const filtered = filterEventsByRange(events, range);
+      if (!filtered.length) {
+        el.innerHTML = '<p class="empty-msg">No events in this time range.</p>';
+        return;
+      }
+      el.innerHTML = filtered.map(renderEventPageCard).join('');
+    }
+
+    if (tabRoot) {
+      tabRoot.querySelectorAll('.events-filter-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const range = btn.dataset.range;
+          if (!range) return;
+          setActiveTab(range);
+          renderRange(range);
+        });
+      });
+    }
+
+    setActiveTab('week');
+    renderRange('week');
   }
 
   // ─── CANNABIS PAGE ────────────────────────────────────────────────────────────

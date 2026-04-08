@@ -232,18 +232,37 @@ window.getDeals = (limit = 12) => sanityFetch(`
   }
 `);
 
-window.getEvents = (limit = 12) => sanityFetch(`
-  *[_type == "event"] | order(dateTime asc) [0...${limit}]{
-    title,
-    "slug": slug.current,
-    dateTime,
-    city,
-    venueName,
-    link,
-    "heroImage": heroImage{ asset{ _ref }, alt },
-    "excerpt": pt::text(description)[0...200]
-  }
-`);
+/**
+ * Active events on or after local midnight passed as ISO (client-computed).
+ * Uses coalesce(dateTime, date) so either field can drive scheduling.
+ */
+window.getActiveEventsFrom = (dayStartISO, limit = 120) => {
+  const n = Math.min(Math.max(1, limit), 200);
+  return sanityFetch(`
+    *[
+      _type == "event" &&
+      isActive == true &&
+      defined(coalesce(dateTime, date)) &&
+      dateTime(coalesce(dateTime, date)) >= dateTime($dayStart)
+    ] | order(dateTime(coalesce(dateTime, date)) asc) [0...${n}]{
+      title,
+      "slug": slug.current,
+      dateTime,
+      date,
+      city,
+      venueName,
+      link,
+      "heroImage": heroImage{ asset{ _ref }, alt },
+      "excerpt": pt::text(description)[0...200]
+    }
+  `, { dayStart: dayStartISO });
+};
+
+window.getEvents = (limit = 12) => {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return window.getActiveEventsFrom(d.toISOString(), limit);
+};
 
 window.getRadioStations = () => sanityFetch(`
   *[_type == "station" && active == true] | order(order asc){
