@@ -186,8 +186,7 @@ window.getDispensaries = () => sanityFetch(`
 // Active dispensaries for the public directory
 window.getActiveDispensaries = () => sanityFetch(`
   *[
-    _type == "listing" &&
-    listingType == "dispensary" &&
+    _type == "dispensary" &&
     isActive == true
   ] | order(name asc){
     name,
