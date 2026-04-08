@@ -130,7 +130,7 @@
 
   function imgOrPlaceholder(image, w, h, alt) {
     const url = window.sanityImage && image ? window.sanityImage(image, w, h) : null;
-    if (url) return `<img src="${url}" alt="${esc(alt || '')}" loading="lazy">`;
+    if (url) return `<img src="${esc(url)}" alt="${esc(alt || '')}" loading="lazy">`;
     return `<div class="img-placeholder" style="background:linear-gradient(135deg,#f3ede6 0%,#e8ddd4 100%)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c9b8a8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
   }
 
@@ -202,11 +202,11 @@
   // ─── Event Card ──────────────────────────────────────────────────────────────
 
   function renderEventCard(event) {
-    const dt  = new Date(event.dateTime || Date.now());
+    const dt  = new Date(event.dateTime || event.date || Date.now());
     const day = dt.toLocaleDateString('en-US', { day: 'numeric' });
     const mon = dt.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
     const time = dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-    const href = event.link || '#';
+    const href = ((event.ticketUrl || '').trim() || (event.link || '').trim() || '#');
     return `
       <article class="event-card">
         <div class="event-card__date-badge">
@@ -217,7 +217,7 @@
           ${imgOrPlaceholder(event.heroImage, 300, 200, event.title)}
         </div>
         <div class="event-card__body">
-          <h3 class="event-card__title"><a href="${href}" ${href !== '#' ? 'target="_blank" rel="noopener"' : ''}>${esc(event.title)}</a></h3>
+          <h3 class="event-card__title"><a href="${esc(href)}" ${href !== '#' && /^https?:/i.test(href) ? 'target="_blank" rel="noopener"' : ''}>${esc(event.title)}</a></h3>
           <div class="event-card__meta">
             ${event.venueName ? `<span class="event-venue">${esc(event.venueName)}</span>` : ''}
             ${event.city ? `<span class="event-city">${esc(event.city)}</span>` : ''}
@@ -745,16 +745,85 @@
     });
   }
 
-  function renderEventPageCard(event) {
+  function eventOutboundUrl(event) {
+    const t = (event.ticketUrl || '').trim();
+    const l = (event.link || '').trim();
+    return t || l || '';
+  }
+
+  function isUsableOutboundHref(u) {
+    if (!u || u === '#') return false;
+    return /^https?:\/\//i.test(u) || u.startsWith('/') || /^mailto:/i.test(u) || /^tel:/i.test(u);
+  }
+
+  function formatEventDetailWhen(event) {
+    const dt = new Date(event.dateTime || event.date || Date.now());
+    return dt.toLocaleString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit'
+    });
+  }
+
+  function eventDetailAddressLines(event) {
+    const lines = [];
+    if (event.venueName) lines.push(String(event.venueName));
+    const street = [event.streetAddress, event.venueAddress, event.address].filter(Boolean).join(', ');
+    if (street) lines.push(street);
+    if (event.city) {
+      const c = String(event.city);
+      lines.push(/az$/i.test(c.trim()) ? c : `${c}, AZ`);
+    }
+    return lines.filter(Boolean);
+  }
+
+  function descriptionBlocksHtml(text) {
+    if (!text || !String(text).trim()) return '';
+    return String(text)
+      .trim()
+      .split(/\n\n+/)
+      .map(p => p.trim())
+      .filter(Boolean)
+      .map(p => `<p>${esc(p).replace(/\n/g, '<br>')}</p>`)
+      .join('');
+  }
+
+  function renderEventPageCard(event, index) {
     const dt = new Date(event.dateTime || event.date || Date.now());
     const dateStr = dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
     const timeStr = dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-    const href = event.link || '#';
-    const target = href !== '#' ? ' target="_blank" rel="noopener"' : '';
-    const img = imgOrPlaceholder(event.heroImage, 480, 300, event.title);
+    const outUrl = eventOutboundUrl(event);
+    const hasOutbound = isUsableOutboundHref(outUrl);
+    const slugKey = event.slug ? String(event.slug).replace(/[^a-zA-Z0-9_-]/g, '-') : `i-${index}`;
+    const expandId = `event-expand-${slugKey}-${index}`;
+    const img = imgOrPlaceholder(event.heroImage, 960, 600, event.title);
     const venue = [event.venueName, event.city].filter(Boolean).join(' · ');
+    const addrLines = eventDetailAddressLines(event);
+    const descHtml = descriptionBlocksHtml(event.descriptionText);
+
+    const targetBlank = hasOutbound && /^https?:\/\//i.test(outUrl) ? ' target="_blank" rel="noopener"' : '';
+
+    const cta = hasOutbound
+      ? `<a href="${esc(outUrl)}" class="btn btn--sm btn--primary event-page-card__cta"${targetBlank}>Details</a>`
+      : `<button type="button" class="btn btn--sm btn--primary event-page-card__cta event-page-card__toggle" aria-expanded="false" aria-controls="${esc(expandId)}">Details</button>`;
+
+    const expandSection = hasOutbound ? '' : `
+        <div class="event-page-card__expand" id="${esc(expandId)}" hidden>
+          <div class="event-page-card__expand-inner">
+            <dl class="event-page-card__details">
+              <dt>When</dt>
+              <dd>${esc(formatEventDetailWhen(event))}</dd>
+              ${addrLines.length ? `<dt>Where</dt><dd>${addrLines.map(l => esc(l)).join('<br>')}</dd>` : ''}
+            </dl>
+            ${descHtml ? `<div class="event-page-card__description">${descHtml}</div>` : '<p class="event-page-card__nodesc">No additional description for this event.</p>'}
+          </div>
+        </div>`;
+
     return `
-      <article class="event-page-card">
+      <article class="event-page-card${hasOutbound ? '' : ' event-page-card--expandable'}"${hasOutbound ? '' : ' data-expandable="true"'}>
         <div class="event-page-card__image">${img}</div>
         <div class="event-page-card__body">
           <span class="badge" style="--badge-color:#d4a03c">Event</span>
@@ -763,8 +832,8 @@
             <span>${esc(dateStr)} · ${esc(timeStr)}</span>
             ${venue ? `<span class="event-page-card__venue">${esc(venue)}</span>` : ''}
           </div>
-          <a href="${esc(href)}" class="btn btn--sm btn--primary event-page-card__cta"${target}>Details</a>
-        </div>
+          ${cta}
+        </div>${expandSection}
       </article>`;
   }
 
@@ -784,6 +853,24 @@
       return;
     }
 
+    if (!el.dataset.eventExpandBound) {
+      el.dataset.eventExpandBound = '1';
+      el.addEventListener('click', (e) => {
+        const card = e.target.closest('.event-page-card[data-expandable="true"]');
+        if (!card) return;
+        if (e.target.closest('.event-page-card__expand')) return;
+        if (e.target.closest('a[href]:not([href="#"])')) return;
+        const btn = card.querySelector('.event-page-card__toggle');
+        const panel = card.querySelector('.event-page-card__expand');
+        if (!btn || !panel) return;
+        e.preventDefault();
+        const open = !card.classList.contains('is-expanded');
+        card.classList.toggle('is-expanded', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        panel.hidden = !open;
+      });
+    }
+
     function setActiveTab(range) {
       if (!tabRoot) return;
       tabRoot.querySelectorAll('.events-filter-tab').forEach(btn => {
@@ -799,7 +886,7 @@
         el.innerHTML = '<p class="empty-msg">No events in this time range.</p>';
         return;
       }
-      el.innerHTML = filtered.map(renderEventPageCard).join('');
+      el.innerHTML = filtered.map((ev, i) => renderEventPageCard(ev, i)).join('');
     }
 
     if (tabRoot) {

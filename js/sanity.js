@@ -9,10 +9,22 @@ const SANITY_API_VER    = '2025-01-01';
 const SANITY_CDN        = `https://cdn.sanity.io/images/${SANITY_PROJECT_ID}/${SANITY_DATASET}`;
 const SANITY_API        = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VER}/data/query/${SANITY_DATASET}`;
 
-/** Build a Sanity image URL from an image field */
+/** Resolve image asset _ref from common Sanity image field shapes */
+function sanityImageRef(image) {
+  if (!image) return null;
+  if (typeof image === 'string' && image.startsWith('image-')) return image;
+  if (image._ref && String(image._ref).startsWith('image-')) return image._ref;
+  if (image.asset) {
+    if (typeof image.asset === 'string' && image.asset.startsWith('image-')) return image.asset;
+    if (image.asset._ref) return image.asset._ref;
+  }
+  return null;
+}
+
+/** Build a Sanity CDN image URL from an image field or raw asset _ref */
 window.sanityImage = function(image, w = 800, h = 600, mode = 'crop') {
-  if (!image || !image.asset || !image.asset._ref) return null;
-  const ref = image.asset._ref; // image-{id}-{WxH}-{ext}
+  const ref = sanityImageRef(image);
+  if (!ref) return null;
   const parts = ref.split('-');
   const ext   = parts[parts.length - 1];
   const dims  = parts[parts.length - 2];
@@ -251,9 +263,17 @@ window.getActiveEventsFrom = (dayStartISO, limit = 120) => {
       date,
       city,
       venueName,
+      venueAddress,
+      streetAddress,
+      address,
       link,
-      "heroImage": heroImage{ asset{ _ref }, alt },
-      "excerpt": pt::text(description)[0...200]
+      ticketUrl,
+      "descriptionText": pt::text(description),
+      "excerpt": pt::text(description)[0...200],
+      "heroImage": coalesce(heroImage, image, poster, coverImage) {
+        asset { _ref },
+        alt
+      }
     }
   `, { dayStart: dayStartISO });
 };
