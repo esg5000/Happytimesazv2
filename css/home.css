@@ -623,14 +623,23 @@ body.page-home .section-title {
 
   .home-hero__grid {
     grid-template-columns: 1fr;
-    grid-template-areas: none;
+    /* On mobile, show the featured image ABOVE the lead headline. */
+    grid-template-areas:
+      "visual"
+      "lead"
+      "trend";
   }
 
   .home-hero__col--lead,
   .home-hero__col--visual,
   .home-hero__col--trending {
+    /* Ensure areas from wider breakpoints still apply consistently */
     grid-area: auto;
   }
+
+  .home-hero__col--visual { grid-area: visual; }
+  .home-hero__col--lead { grid-area: lead; }
+  .home-hero__col--trending { grid-area: trend; }
 
   .home-trending__list {
     grid-template-columns: 1fr;
