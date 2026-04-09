@@ -144,6 +144,7 @@ window.getPostBySlug = (slug) => sanityFetch(`
     "categories": [category->title],
     "categorySlug": category->slug.current,
     "heroImage": heroImage{ asset{ _ref }, alt },
+    "additionalImages": additionalImages[]{ asset{ _ref }, alt },
     body,
     seoTitle,
     seoDescription

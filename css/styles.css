@@ -1270,6 +1270,50 @@ p:last-child { margin-bottom: 0; }
 .article-body code { font-family: 'Fira Code', monospace; background: var(--cream-dark); padding: 0.1em 0.4em; border-radius: var(--radius-sm); font-size: 0.9em; color: var(--ember); }
 .article-body strong { color: var(--ink); }
 
+/* Additional images (Sanity additionalImages) — after lead paragraphs */
+.article-body .article-additional-images {
+  margin-block: var(--space-10);
+}
+
+.article-body .article-additional-images--single .article-additional-images__item {
+  margin: 0;
+}
+
+.article-body .article-additional-images--single .article-additional-images__item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-lg);
+}
+
+.article-body .article-additional-images--grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.article-body .article-additional-images__item {
+  margin: 0;
+}
+
+.article-body .article-additional-images__item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  aspect-ratio: 16 / 10;
+}
+
+.article-body .article-additional-images__caption {
+  margin-top: var(--space-2);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--ink-light);
+  text-align: center;
+}
+
 .article-page .article-share {
   display: flex;
   align-items: center;
@@ -2331,6 +2375,10 @@ button.event-page-card__toggle {
 
   .article-header { padding-block: var(--space-8); }
   .article-layout { padding-block: var(--space-6); }
+
+  .article-body .article-additional-images--grid {
+    grid-template-columns: 1fr;
+  }
 
   .page-hero,
   .events-page-hero,

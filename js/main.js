@@ -700,6 +700,83 @@
 
   // ─── ARTICLE PAGE ─────────────────────────────────────────────────────────────
 
+  const ARTICLE_GALLERY_AFTER_PARAS = 2;
+
+  function renderArticleAdditionalImages(images) {
+    if (!images || !Array.isArray(images) || images.length === 0) return '';
+    const single = images.length === 1;
+    const mod = single ? 'article-additional-images--single' : 'article-additional-images--grid';
+    const items = images
+      .map(img => {
+        if (!img || !window.sanityImage) return '';
+        const url = single
+          ? window.sanityImage(img, 1100, 620, 'crop')
+          : window.sanityImage(img, 700, 440, 'crop');
+        if (!url) return '';
+        const alt = img.alt || '';
+        return `<figure class="article-additional-images__item">
+          <img src="${esc(url)}" alt="${esc(alt)}" loading="lazy" width="700" height="440">
+          <figcaption class="article-additional-images__caption">${esc(alt)}</figcaption>
+        </figure>`;
+      })
+      .filter(Boolean)
+      .join('');
+    if (!items) return '';
+    return `<div class="article-additional-images ${mod}" aria-label="Article images">${items}</div>`;
+  }
+
+  /**
+   * Renders portable-text body; after ARTICLE_GALLERY_AFTER_PARAS normal paragraphs,
+   * inserts galleryHtml (additional images). If fewer paragraphs, appends gallery at end.
+   */
+  function buildArticleBodyHtmlWithGallery(blocks, galleryHtml) {
+    if (!blocks || !Array.isArray(blocks)) return galleryHtml || '';
+    let html = '';
+    let listType = null;
+    let paraCount = 0;
+    let galleryInserted = false;
+
+    function closeListIfNeeded() {
+      if (listType) {
+        html += listType === 'bullet' ? '</ul>' : '</ol>';
+        listType = null;
+      }
+    }
+
+    blocks.forEach(block => {
+      if (block.listItem) {
+        if (block.listItem !== listType) {
+          closeListIfNeeded();
+          listType = block.listItem;
+          html += listType === 'bullet' ? '<ul class="article-list">' : '<ol class="article-list">';
+        }
+      } else {
+        closeListIfNeeded();
+      }
+
+      html += window.renderPortableText([block]);
+
+      if (
+        galleryHtml &&
+        !galleryInserted &&
+        block &&
+        block._type === 'block' &&
+        !block.listItem &&
+        (!block.style || block.style === 'normal')
+      ) {
+        paraCount += 1;
+        if (paraCount >= ARTICLE_GALLERY_AFTER_PARAS) {
+          html += galleryHtml;
+          galleryInserted = true;
+        }
+      }
+    });
+
+    closeListIfNeeded();
+    if (galleryHtml && !galleryInserted) html += galleryHtml;
+    return html;
+  }
+
   async function initArticlePage() {
     const slug = window.location.pathname.split('/').filter(Boolean).pop();
     if (!slug) {
@@ -750,29 +827,15 @@
       excEl.style.display = 'block';
     }
 
-    // Body
+    // Body (+ optional additional images after first paragraphs)
     const bodyEl = document.getElementById('article-body');
     if (bodyEl) {
+      const galleryHtml = renderArticleAdditionalImages(post.additionalImages);
       if (post.body && Array.isArray(post.body)) {
-        // Group list items
-        let html = '';
-        let listType = null;
-        post.body.forEach(block => {
-          if (block.listItem) {
-            if (block.listItem !== listType) {
-              if (listType) html += listType === 'bullet' ? '</ul>' : '</ol>';
-              listType = block.listItem;
-              html += listType === 'bullet' ? '<ul class="article-list">' : '<ol class="article-list">';
-            }
-          } else {
-            if (listType) { html += listType === 'bullet' ? '</ul>' : '</ol>'; listType = null; }
-          }
-          html += window.renderPortableText([block]);
-        });
-        if (listType) html += listType === 'bullet' ? '</ul>' : '</ol>';
-        bodyEl.innerHTML = html;
+        bodyEl.innerHTML = buildArticleBodyHtmlWithGallery(post.body, galleryHtml);
       } else {
-        bodyEl.innerHTML = '<p class="empty-msg">Article content coming soon.</p>';
+        bodyEl.innerHTML =
+          (galleryHtml || '') + '<p class="empty-msg">Article content coming soon.</p>';
       }
     }
 
