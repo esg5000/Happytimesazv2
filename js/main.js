@@ -438,11 +438,16 @@
       secondaryPosts.length > 0
         ? `<div class="home-hero__secondary">
             <div class="home-hero__secondary-title">Also in the news</div>
-            <ul>${secondaryPosts
-              .map(
-                p =>
-                  `<li><a href="/article/${encodeURIComponent(p.slug)}">${esc(p.title)}</a></li>`
-              )
+            <ul class="home-hero__secondary-list">${secondaryPosts
+              .map(p => {
+                const url = `/article/${encodeURIComponent(p.slug)}`;
+                return `<li class="home-hero__secondary-item">
+                  <a href="${url}" class="home-hero__secondary-link">
+                    <span class="home-hero__secondary-thumb">${imgOrPlaceholder(p.heroImage, 160, 160, p.title)}</span>
+                    <span class="home-hero__secondary-text">${esc(p.title)}</span>
+                  </a>
+                </li>`;
+              })
               .join('')}</ul>
           </div>`
         : '';
@@ -1341,7 +1346,7 @@
   // ─── NEWS PAGE ───────────────────────────────────────────────────────────────
 
   async function initNewsPage() {
-    setMeta('News – HappyTimes AZ', 'Breaking stories and headlines from NewsAPI and our News desk.');
+    setMeta('News – HappyTimes AZ', 'Local stories and headlines from across the Valley.');
     const gridEl = document.getElementById('category-grid');
     if (!gridEl) return;
     showSkeleton(gridEl, 9, 'card');

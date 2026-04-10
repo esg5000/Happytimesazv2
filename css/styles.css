@@ -18,8 +18,8 @@
   --brand-gray-mid:    #b0afaf;   /* Muted text */
 
   /* ── Mapped aliases (used throughout components) ── */
-  --cream:          #f0efef;   /* was #faf6f1 */
-  --cream-dark:     #e4e3e3;   /* was #f3ede6 */
+  --cream:          #fff7ed;   /* warm masthead / page ground (aligned with homepage) */
+  --cream-dark:     #ffedd5;   /* subtle section tint, not gray */
   --ink:            #1b1d1d;   /* was #1a1412 */
   --ink-muted:      #3d3f3f;   /* was #4a4039 */
   --ink-light:      #6b6d6d;   /* was #7a6e67 */
@@ -280,7 +280,7 @@ p:last-child { margin-bottom: 0; }
   padding-top: var(--safe-top);
   height: calc(var(--header-h) + var(--safe-top));
   box-sizing: border-box;
-  background: rgba(250,246,241,0.96);
+  background: rgba(255, 247, 237, 0.97);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid transparent;
@@ -846,7 +846,7 @@ p:last-child { margin-bottom: 0; }
 }
 
 /* === EVENTS SECTION === */
-.events-section { background: var(--cream-dark); }
+.events-section { background: var(--cream); }
 
 .events-grid {
   display: grid;
@@ -1377,7 +1377,7 @@ p:last-child { margin-bottom: 0; }
 }
 
 /* Related articles */
-.related-section { background: var(--cream-dark); padding-block: var(--space-12); }
+.related-section { background: var(--cream); padding-block: var(--space-12); }
 .related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-5); }
 
 /* === AFFILIATE ADS (article page) === */
@@ -2279,7 +2279,15 @@ button.event-page-card__toggle {
   #mobile-nav-toggle { display: flex; }
   #mobile-nav-overlay { display: block; }
 
-  .header-actions { margin-left: auto; }
+  .header-inner {
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  .header-actions {
+    margin-left: 0;
+    flex-shrink: 0;
+  }
 
   .hero-mosaic__grid {
     grid-template-columns: 1fr;
@@ -2310,6 +2318,32 @@ button.event-page-card__toggle {
   :root {
     --content-pad: 1rem;
     --header-h: 60px;
+  }
+
+  .events-date-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: var(--space-2);
+    padding-bottom: var(--space-2);
+    margin-inline: calc(-1 * var(--content-pad));
+    padding-inline: var(--content-pad);
+    scrollbar-width: thin;
+  }
+
+  .events-date-tabs .filter-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    min-width: max-content;
+  }
+
+  .event-page-card__body {
+    flex: 0 1 auto;
+    gap: var(--space-2);
+  }
+
+  .event-page-card__cta {
+    margin-top: var(--space-3);
   }
 
   #search-bar.open {
