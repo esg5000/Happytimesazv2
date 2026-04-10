@@ -4,7 +4,7 @@
   ],
   "rewrites": [
     { "source": "/", "destination": "/public/index.html" },
-    { "source": "/article/:slug", "destination": "/public/article.html" },
+    { "source": "/article/:path*", "destination": "/public/article.html" },
     { "source": "/(.*)", "destination": "/public/$1" }
   ]
 }

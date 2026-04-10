@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/article/:slug", "destination": "/article.html" }
+    { "source": "/article/:path*", "destination": "/article.html" }
   ],
   "redirects": [
     { "source": "/mushrooms.html", "destination": "/health-wellness.html", "permanent": true }

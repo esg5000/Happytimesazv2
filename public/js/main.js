@@ -128,6 +128,23 @@
     return new URLSearchParams(window.location.search).get(name);
   }
 
+  /** Full article page URL (static-friendly; no server rewrite required). */
+  function articleUrl(slug) {
+    if (!slug) return '/article.html';
+    return `/article.html?slug=${encodeURIComponent(slug)}`;
+  }
+
+  /** Slug from ?slug= or legacy /article/:slug (if host rewrites to article.html). */
+  function getArticleSlugFromLocation() {
+    const q = new URLSearchParams(window.location.search).get('slug');
+    if (q != null && String(q).trim() !== '') return String(q).trim();
+    const parts = window.location.pathname.split('/').filter(Boolean);
+    if (parts.length >= 2 && parts[0] === 'article') {
+      return decodeURIComponent(parts.slice(1).join('/'));
+    }
+    return '';
+  }
+
   function imgOrPlaceholder(image, w, h, alt) {
     const url = window.sanityImage && image ? window.sanityImage(image, w, h) : null;
     if (url) return `<img src="${esc(url)}" alt="${esc(alt || '')}" loading="lazy">`;
@@ -174,20 +191,19 @@
   // ─── Article Card ────────────────────────────────────────────────────────────
 
   function renderArticleCard(post, size = 'normal') {
-    // Use clean URLs for Vercel rewrites: /article/:slug → /article.html
-    const url  = `/article/${encodeURIComponent(post.slug)}`;
+    const url = articleUrl(post.slug);
     const date = window.formatDateShort ? window.formatDateShort(post.publishedAt) : '';
     const mins = post.readTime ? `${post.readTime} min read` : '';
     return `
       <article class="article-card article-card--${size}">
-        <a href="${url}" class="article-card__image-link">
+        <a href="${esc(url)}" class="article-card__image-link">
           <div class="article-card__image">
             ${imgOrPlaceholder(post.heroImage, size === 'large' ? 800 : 400, size === 'large' ? 500 : 280, post.title)}
           </div>
           ${categoryBadge(post.categories)}
         </a>
         <div class="article-card__body">
-          <h3 class="article-card__title"><a href="${url}">${esc(post.title)}</a></h3>
+          <h3 class="article-card__title"><a href="${esc(url)}">${esc(post.title)}</a></h3>
           ${post.excerpt ? `<p class="article-card__excerpt">${esc(post.excerpt)}</p>` : ''}
           <div class="article-card__meta">
             ${date ? `<span>${date}</span>` : ''}
@@ -394,7 +410,7 @@
     const sep = '<span class="headline-ticker__sep"> · </span>';
     const block = slice
       .map(p => {
-        const url = `/article/${encodeURIComponent(p.slug)}`;
+        const url = articleUrl(p.slug);
         return `<a href="${esc(url)}">${esc(p.title)}</a>`;
       })
       .join(sep);
@@ -421,7 +437,7 @@
     } else if (posts && posts[0]) {
       const p = posts[0];
       featuredTitle = p.title;
-      featuredUrl = `/article/${encodeURIComponent(p.slug)}`;
+      featuredUrl = articleUrl(p.slug);
       featuredCat = (p.categories || [])[0] || 'Latest';
       featuredImage = p.heroImage;
     } else {
@@ -440,9 +456,9 @@
             <div class="home-hero__secondary-title">Also in the news</div>
             <ul class="home-hero__secondary-list">${secondaryPosts
               .map(p => {
-                const url = `/article/${encodeURIComponent(p.slug)}`;
+                const url = articleUrl(p.slug);
                 return `<li class="home-hero__secondary-item">
-                  <a href="${url}" class="home-hero__secondary-link">
+                  <a href="${esc(url)}" class="home-hero__secondary-link">
                     <span class="home-hero__secondary-thumb">${imgOrPlaceholder(p.heroImage, 160, 160, p.title)}</span>
                     <span class="home-hero__secondary-text">${esc(p.title)}</span>
                   </a>
@@ -475,9 +491,9 @@
     }
     trendingList.innerHTML = trendingPosts
       .map(p => {
-        const url = `/article/${encodeURIComponent(p.slug)}`;
+        const url = articleUrl(p.slug);
         return `
-      <a href="${url}" class="home-trending__item">
+      <a href="${esc(url)}" class="home-trending__item">
         <div class="home-trending__thumb">${imgOrPlaceholder(p.heroImage, 200, 200, p.title)}</div>
         <div class="home-trending__headline">${esc(p.title)}</div>
       </a>`;
@@ -815,7 +831,7 @@
   }
 
   async function initArticlePage() {
-    const slug = window.location.pathname.split('/').filter(Boolean).pop();
+    const slug = getArticleSlugFromLocation();
     if (!slug) {
       document.getElementById('article-main').innerHTML = '<div class="error-state"><h1>Article not found</h1><a href="index.html" class="btn btn--primary">Go Home</a></div>';
       return;
