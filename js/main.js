@@ -805,6 +805,27 @@
       }
     }
 
+    // Featured video (HTML5, after hero, before header/body — no autoplay)
+    const videoWrap = document.getElementById('article-featured-video-wrap');
+    if (videoWrap) {
+      const fv = post.featuredVideo;
+      const fileUrl = fv && fv.asset && fv.asset.url ? String(fv.asset.url).trim() : '';
+      const mimeType = (fv && fv.asset && fv.asset.mimeType && String(fv.asset.mimeType).trim()) || 'video/mp4';
+      if (fileUrl) {
+        videoWrap.hidden = false;
+        videoWrap.innerHTML = `
+          <div class="article-featured-video">
+            <video class="article-featured-video__el" controls playsinline preload="metadata" width="1280" height="720">
+              <source src="${esc(fileUrl)}" type="${esc(mimeType)}">
+              Your browser does not support embedded video.
+            </video>
+          </div>`;
+      } else {
+        videoWrap.hidden = true;
+        videoWrap.innerHTML = '';
+      }
+    }
+
     // Meta info
     const metaEl = document.getElementById('article-meta');
     if (metaEl) {

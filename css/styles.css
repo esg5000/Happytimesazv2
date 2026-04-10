@@ -1202,6 +1202,35 @@ p:last-child { margin-bottom: 0; }
   background: linear-gradient(to top, rgba(26,20,18,0.8) 0%, rgba(26,20,18,0.1) 100%);
 }
 
+/* Featured video (Sanity file asset) — full width, between hero and header */
+.article-featured-video-wrap {
+  width: 100%;
+  background: var(--ink);
+}
+
+.article-featured-video-wrap[hidden] {
+  display: none !important;
+}
+
+.article-featured-video {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding: 0 calc(var(--content-pad) + var(--safe-left)) 0 calc(var(--content-pad) + var(--safe-right));
+  box-sizing: border-box;
+}
+
+.article-featured-video__el {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: min(70vh, 720px);
+  margin: 0 auto;
+  background: #000;
+  border-radius: 0;
+}
+
 .article-header {
   max-width: 820px;
   margin-inline: auto;
