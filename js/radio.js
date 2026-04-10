@@ -137,7 +137,7 @@
     if (wasPlaying) play();
   }
 
-  function onAudioError(e) {
+  function onAudioError() {
     console.warn('[Radio] audio error');
     isPlaying = false;
     updatePlayButton();

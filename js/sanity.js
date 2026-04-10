@@ -32,11 +32,6 @@ window.sanityImage = function(image, w = 800, h = 600, mode = 'crop') {
   return `${SANITY_CDN}/${id}-${dims}.${ext}?w=${w}&h=${h}&fit=${mode}&auto=format&q=80`;
 };
 
-/** Low-res blur placeholder */
-window.sanityImageBlur = function(image) {
-  return window.sanityImage(image, 40, 30, 'crop');
-};
-
 /** Execute a GROQ query against the Sanity API */
 window.sanityFetch = async function(query, params = {}) {
   try {
@@ -65,13 +60,6 @@ window.formatDateShort = function(dt) {
   if (!dt) return '';
   const d = new Date(dt);
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-};
-
-window.formatDateTime = function(dt) {
-  if (!dt) return '';
-  const d = new Date(dt);
-  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
-    + ' · ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 };
 
 // ─── GROQ Queries ─────────────────────────────────────────────────────────────
@@ -211,37 +199,6 @@ window.getActiveDispensaries = () => sanityFetch(`
   }
 `);
 
-window.getFoodListings = () => sanityFetch(`
-  *[_type == "listing" && listingType == "food"] | order(featured desc, name asc){
-    name,
-    "slug": slug.current,
-    featured,
-    city,
-    address,
-    phone,
-    website,
-    "heroImage": heroImage{ asset{ _ref }, alt },
-    description,
-    hours,
-    amenities
-  }
-`);
-
-window.getNightlifeListings = () => sanityFetch(`
-  *[_type == "listing" && listingType == "nightlife"] | order(featured desc, name asc){
-    name,
-    "slug": slug.current,
-    featured,
-    city,
-    address,
-    phone,
-    website,
-    "heroImage": heroImage{ asset{ _ref }, alt },
-    description,
-    hours
-  }
-`);
-
 window.getListingBySlug = (slug) => sanityFetch(`
   *[_type == "listing" && slug.current == $slug][0]{
     name,
@@ -334,25 +291,6 @@ window.getAdByPlacement = (placement) => sanityFetch(`
     (!defined(startDate) || dateTime(startDate) <= now()) &&
     (!defined(endDate)   || dateTime(endDate)   >= now())
   ] | order(priority desc) [0] {
-    advertiser,
-    adType,
-    "image": image{ asset{ _ref }, alt },
-    html,
-    headline,
-    cta,
-    url
-  }
-`, { placement });
-
-/** Fetch multiple active ads for a placement (for grid tiles) */
-window.getAdsByPlacement = (placement, limit = 3) => sanityFetch(`
-  *[
-    _type == "ad" &&
-    active == true &&
-    placement == $placement &&
-    (!defined(startDate) || dateTime(startDate) <= now()) &&
-    (!defined(endDate)   || dateTime(endDate)   >= now())
-  ] | order(priority desc) [0...${limit}] {
     advertiser,
     adType,
     "image": image{ asset{ _ref }, alt },
