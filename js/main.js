@@ -1373,6 +1373,20 @@
     gridEl.innerHTML = posts.map(p => renderArticleCard(p)).join('');
   }
 
+  // ─── STATIC PAGES (about / contact / policies) ─────────────────────────────
+
+  async function initStaticPage() {
+    const form = document.getElementById('contact-form');
+    const msg = document.getElementById('contact-form-msg');
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (msg) msg.textContent = 'Thanks — we received your message.';
+      form.reset();
+    });
+  }
+
   // ─── Router ───────────────────────────────────────────────────────────────────
 
   function route() {
@@ -1405,6 +1419,7 @@
       listing:      initListingPage,
       category:     initCategoryPage,
       news:         initNewsPage,
+      static:       initStaticPage,
     };
 
     const fn = pageInits[page];

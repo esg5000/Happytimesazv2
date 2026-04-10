@@ -1846,7 +1846,7 @@ button.event-page-card__toggle {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
   gap: var(--space-10);
   margin-bottom: var(--space-12);
 }
@@ -1907,6 +1907,19 @@ button.event-page-card__toggle {
 .footer-legal { display: flex; gap: var(--space-5); flex-wrap: wrap; }
 .footer-legal a { color: rgba(255,255,255,0.4); }
 .footer-legal a:hover { color: rgba(255,255,255,0.8); }
+
+.footer-affiliate {
+  max-width: 70ch;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.4);
+}
+
+.footer-affiliate a {
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+}
+
+.footer-affiliate a:hover { color: rgba(255,255,255,0.85); }
 
 /* === RADIO PLAYER === */
 #radio-player {
