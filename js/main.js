@@ -701,6 +701,30 @@
   // ─── ARTICLE PAGE ─────────────────────────────────────────────────────────────
 
   const ARTICLE_GALLERY_AFTER_PARAS = 2;
+  const ARTICLE_VIDEO_TEXT_FRACTION = 0.6;
+
+  function portableBlockTextLength(block) {
+    if (!block || block._type !== 'block' || !Array.isArray(block.children)) return 0;
+    return block.children.reduce((n, ch) => n + (ch && ch.text ? String(ch.text).length : 0), 0);
+  }
+
+  function sumPortableBodyTextLength(blocks) {
+    if (!blocks || !Array.isArray(blocks)) return 0;
+    return blocks.reduce((sum, b) => sum + portableBlockTextLength(b), 0);
+  }
+
+  function renderFeaturedVideoHtml(post) {
+    const fv = post && post.featuredVideo;
+    const fileUrl = fv && fv.asset && fv.asset.url ? String(fv.asset.url).trim() : '';
+    const mimeType = (fv && fv.asset && fv.asset.mimeType && String(fv.asset.mimeType).trim()) || 'video/mp4';
+    if (!fileUrl) return '';
+    return `<div class="article-featured-video article-featured-video--in-body">
+            <video class="article-featured-video__el" controls playsinline preload="metadata" width="1280" height="720">
+              <source src="${esc(fileUrl)}" type="${esc(mimeType)}">
+              Your browser does not support embedded video.
+            </video>
+          </div>`;
+  }
 
   function renderArticleAdditionalImages(images) {
     if (!images || !Array.isArray(images) || images.length === 0) return '';
@@ -727,19 +751,44 @@
 
   /**
    * Renders portable-text body; after ARTICLE_GALLERY_AFTER_PARAS normal paragraphs,
-   * inserts galleryHtml (additional images). If fewer paragraphs, appends gallery at end.
+   * inserts galleryHtml. Inserts videoHtml after ~ARTICLE_VIDEO_TEXT_FRACTION of text
+   * (by character count), only between top-level blocks (not inside lists / mid-paragraph).
    */
-  function buildArticleBodyHtmlWithGallery(blocks, galleryHtml) {
-    if (!blocks || !Array.isArray(blocks)) return galleryHtml || '';
+  function buildArticleBodyHtmlWithGallery(blocks, galleryHtml, videoHtml) {
+    const tailGallery = galleryHtml || '';
+    const tailVideo = videoHtml || '';
+    if (!blocks || !Array.isArray(blocks)) {
+      return tailGallery + tailVideo;
+    }
+
+    const totalText = sumPortableBodyTextLength(blocks);
+    const videoThreshold =
+      totalText > 0 ? Math.max(1, Math.ceil(totalText * ARTICLE_VIDEO_TEXT_FRACTION)) : Infinity;
+
     let html = '';
     let listType = null;
     let paraCount = 0;
     let galleryInserted = false;
+    let videoInserted = false;
+    let cumText = 0;
 
     function closeListIfNeeded() {
       if (listType) {
         html += listType === 'bullet' ? '</ul>' : '</ol>';
         listType = null;
+      }
+    }
+
+    function tryInsertVideoAfterBlock(block) {
+      if (!tailVideo || videoInserted || listType !== null) return;
+      const t = portableBlockTextLength(block);
+      cumText += t;
+      if (cumText < videoThreshold) return;
+      const okTopLevel =
+        (block._type === 'block' && !block.listItem) || block._type === 'image';
+      if (okTopLevel) {
+        html += tailVideo;
+        videoInserted = true;
       }
     }
 
@@ -757,7 +806,7 @@
       html += window.renderPortableText([block]);
 
       if (
-        galleryHtml &&
+        tailGallery &&
         !galleryInserted &&
         block &&
         block._type === 'block' &&
@@ -766,14 +815,17 @@
       ) {
         paraCount += 1;
         if (paraCount >= ARTICLE_GALLERY_AFTER_PARAS) {
-          html += galleryHtml;
+          html += tailGallery;
           galleryInserted = true;
         }
       }
+
+      tryInsertVideoAfterBlock(block);
     });
 
     closeListIfNeeded();
-    if (galleryHtml && !galleryInserted) html += galleryHtml;
+    if (tailGallery && !galleryInserted) html += tailGallery;
+    if (tailVideo && !videoInserted) html += tailVideo;
     return html;
   }
 
@@ -805,27 +857,6 @@
       }
     }
 
-    // Featured video (HTML5, after hero, before header/body — no autoplay)
-    const videoWrap = document.getElementById('article-featured-video-wrap');
-    if (videoWrap) {
-      const fv = post.featuredVideo;
-      const fileUrl = fv && fv.asset && fv.asset.url ? String(fv.asset.url).trim() : '';
-      const mimeType = (fv && fv.asset && fv.asset.mimeType && String(fv.asset.mimeType).trim()) || 'video/mp4';
-      if (fileUrl) {
-        videoWrap.hidden = false;
-        videoWrap.innerHTML = `
-          <div class="article-featured-video">
-            <video class="article-featured-video__el" controls playsinline preload="metadata" width="1280" height="720">
-              <source src="${esc(fileUrl)}" type="${esc(mimeType)}">
-              Your browser does not support embedded video.
-            </video>
-          </div>`;
-      } else {
-        videoWrap.hidden = true;
-        videoWrap.innerHTML = '';
-      }
-    }
-
     // Meta info
     const metaEl = document.getElementById('article-meta');
     if (metaEl) {
@@ -848,15 +879,18 @@
       excEl.style.display = 'block';
     }
 
-    // Body (+ optional additional images after first paragraphs)
+    // Body (+ gallery after lead paras; featured video ~60% through text, between blocks)
     const bodyEl = document.getElementById('article-body');
     if (bodyEl) {
       const galleryHtml = renderArticleAdditionalImages(post.additionalImages);
+      const videoHtml = renderFeaturedVideoHtml(post);
       if (post.body && Array.isArray(post.body)) {
-        bodyEl.innerHTML = buildArticleBodyHtmlWithGallery(post.body, galleryHtml);
+        bodyEl.innerHTML = buildArticleBodyHtmlWithGallery(post.body, galleryHtml, videoHtml);
       } else {
         bodyEl.innerHTML =
-          (galleryHtml || '') + '<p class="empty-msg">Article content coming soon.</p>';
+          (videoHtml || '') +
+          (galleryHtml || '') +
+          '<p class="empty-msg">Article content coming soon.</p>';
       }
     }
 

@@ -1202,25 +1202,16 @@ p:last-child { margin-bottom: 0; }
   background: linear-gradient(to top, rgba(26,20,18,0.8) 0%, rgba(26,20,18,0.1) 100%);
 }
 
-/* Featured video (Sanity file asset) — full width, between hero and header */
-.article-featured-video-wrap {
+/* Featured video (Sanity file) — embedded in article body ~60% through text */
+.article-body .article-featured-video--in-body {
   width: 100%;
+  margin-block: var(--space-10);
   background: var(--ink);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
 }
 
-.article-featured-video-wrap[hidden] {
-  display: none !important;
-}
-
-.article-featured-video {
-  width: 100%;
-  max-width: var(--max-width);
-  margin-inline: auto;
-  padding: 0 calc(var(--content-pad) + var(--safe-left)) 0 calc(var(--content-pad) + var(--safe-right));
-  box-sizing: border-box;
-}
-
-.article-featured-video__el {
+.article-body .article-featured-video--in-body .article-featured-video__el {
   display: block;
   width: 100%;
   max-width: 100%;
