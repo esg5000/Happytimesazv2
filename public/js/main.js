@@ -475,7 +475,7 @@
       ? `<img src="${esc(imgUrl)}" alt="${esc(featuredTitle)}" width="1200" height="750" loading="eager">`
       : `<img src="assets/heroes/homepage.png" alt="" width="1200" height="750" loading="eager">`;
 
-    const trendingPosts = (posts || []).slice(4, 9);
+    const trendingPosts = (posts || []).slice(4, 7);
     if (trendingPosts.length === 0) {
       trendingList.innerHTML =
         '<p class="empty-msg" style="margin:0;font-size:.875rem">More stories coming soon.</p>';
