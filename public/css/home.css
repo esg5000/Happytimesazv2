@@ -18,7 +18,7 @@ body.page-home {
 
 /* ── Top stack (fixed) ───────────────────────────────────── */
 body.page-home #site-header.home-header {
-  background: #ffffff;
+  background: #f7f7f7;
   border-bottom: none;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
   backdrop-filter: none;
@@ -30,14 +30,20 @@ body.page-home #site-header.home-header {
 }
 
 .home-masthead {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 40px calc(var(--content-pad) + var(--safe-left)) 40px calc(var(--content-pad) + var(--safe-right));
-  border-bottom: 3px solid #f3b237;
+  width: 100%;
+  margin: 0;
+  padding-block: 40px;
+  padding-inline: 0;
+  background: linear-gradient(to right, #fe8526, #f3b237);
+  border-bottom: 3px solid rgba(27, 29, 29, 0.12);
 }
 
 /* Row 1: date/weather · wordmark · GTA Radio */
 .home-masthead__primary {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-left: calc(var(--content-pad) + var(--safe-left));
+  padding-right: calc(var(--content-pad) + var(--safe-right));
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
@@ -48,7 +54,7 @@ body.page-home #site-header.home-header {
 .home-masthead__left {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--sunset-ink);
+  color: #1b1d1d;
   line-height: 1.35;
   min-width: 0;
   justify-self: start;
@@ -61,7 +67,7 @@ body.page-home #site-header.home-header {
 
 .home-masthead__weather {
   display: block;
-  color: #ffffff;
+  color: #1b1d1d;
   margin-top: 0.125rem;
 }
 
@@ -202,32 +208,32 @@ body.page-home #site-header.home-header #mobile-nav-toggle:hover {
 }
 
 body.page-home .home-masthead .radio-header-mini {
-  background: rgba(243, 178, 55, 0.06);
-  border: 2px solid #f3b237;
-  color: #f3b237;
+  background: #1b1d1d;
+  border: 2px solid #1b1d1d;
+  color: #ffffff;
 }
 
 body.page-home .home-masthead .radio-header-mini__station {
-  color: #f3b237;
+  color: #ffffff;
 }
 
 body.page-home .home-masthead .radio-header-mini__link {
-  color: #f3b237;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 body.page-home .home-masthead .radio-header-mini__link:hover {
-  color: var(--sunset-deep);
+  color: #f3b237;
 }
 
 body.page-home .home-masthead .radio-header-mini__play {
-  background: #f3b237;
+  background: #ffffff;
   color: #1b1d1d;
 }
 
 body.page-home .home-masthead .radio-header-mini__play.playing {
-  background: #1b1d1d;
-  color: #f3b237;
-  border: 2px solid #f3b237;
+  background: #fe8526;
+  color: #ffffff;
+  border: 2px solid #ffffff;
 }
 
 .radio-header-mini__play {
