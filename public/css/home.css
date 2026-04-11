@@ -430,53 +430,14 @@ body.page-home #site-header.home-header {
   margin-bottom: var(--space-6);
 }
 
-.newsletter-form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  justify-content: center;
+.newsletter-cta__embed {
+  width: 100%;
+  margin-inline: auto;
 }
 
-.newsletter-form input[type="email"] {
-  flex: 1 1 220px;
-  min-width: 0;
-  padding: var(--space-3) var(--space-4);
-  border: 2px solid rgba(243, 178, 55, 0.45);
-  border-radius: var(--radius-full);
-  font-size: 1rem;
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
-  outline: none;
-}
-
-.newsletter-form input::placeholder {
-  color: rgba(239, 239, 239, 0.55);
-}
-
-.newsletter-form input:focus {
-  border-color: #f3b237;
-  box-shadow: 0 0 0 3px rgba(243, 178, 55, 0.2);
-}
-
-.newsletter-form .btn {
-  padding-inline: var(--space-8);
-  background: #fe8526;
-  color: #fff;
-  font-weight: 800;
-  border-radius: var(--radius-full);
-}
-
-.newsletter-form .btn:hover {
-  background: #e97218;
-  color: #fff;
-}
-
-.newsletter-form-msg {
-  margin-top: var(--space-4);
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #f3b237;
-  min-height: 1.25em;
+.newsletter-cta__embed iframe {
+  display: block;
+  max-width: 100%;
 }
 
 /* Editorial section on home */
