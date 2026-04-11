@@ -11,7 +11,7 @@ body.page-home {
   --sunset-cream: #efefef;
   --sunset-muted: rgba(27, 29, 29, 0.65);
   --home-stack-h: clamp(168px, 26vw, 196px);
-  --header-h: 168px;
+  --header-h: 300px;
   background: #efefef;
   padding-top: calc(var(--header-h) + var(--safe-top));
 }
@@ -19,7 +19,7 @@ body.page-home {
 /* ── Top stack (fixed) ───────────────────────────────────── */
 body.page-home #site-header.home-header {
   background: #1b1d1d;
-  border-bottom: 1px solid #f3b237;
+  border-bottom: none;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -32,7 +32,8 @@ body.page-home #site-header.home-header {
 .home-masthead {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: var(--space-2) calc(var(--content-pad) + var(--safe-left)) 0 calc(var(--content-pad) + var(--safe-right));
+  padding: 40px calc(var(--content-pad) + var(--safe-left)) 40px calc(var(--content-pad) + var(--safe-right));
+  border-bottom: 3px solid #f3b237;
 }
 
 /* Row 1: date/weather · wordmark · GTA Radio */
@@ -40,14 +41,14 @@ body.page-home #site-header.home-header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  gap: var(--space-3);
-  min-height: 3.25rem;
+  gap: var(--space-4);
+  min-height: 4.5rem;
 }
 
 .home-masthead__left {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.88);
+  color: #ffffff;
   line-height: 1.35;
   min-width: 0;
   justify-self: start;
@@ -60,7 +61,7 @@ body.page-home #site-header.home-header {
 
 .home-masthead__weather {
   display: block;
-  color: var(--sunset-deep);
+  color: #ffffff;
   margin-top: 0.125rem;
 }
 
@@ -82,12 +83,18 @@ body.page-home #site-header.home-header {
 .home-wordmark__img {
   height: auto;
   width: auto;
-  max-height: clamp(36px, 5.5vw, 52px);
-  max-width: min(400px, 38vw);
+  max-width: min(320px, 92vw);
+  max-height: clamp(56px, 11vw, 112px);
   object-fit: contain;
   display: block;
   /* Renders typical dark wordmark as light on #1b1d1d; use a light PNG and remove this if you need full color */
   filter: brightness(0) invert(1) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+}
+
+@media (min-width: 901px) {
+  body.page-home .home-wordmark__img {
+    max-width: 320px;
+  }
 }
 
 /* Right cluster: GTA Radio + socials + search (single row with logo) */
@@ -160,9 +167,9 @@ body.page-home #site-header.home-header #mobile-nav-toggle:hover {
   width: 34px;
   height: 34px;
   border-radius: var(--radius-full);
-  color: var(--sunset-ink);
-  background: rgba(243, 178, 55, 0.28);
-  transition: background var(--transition), transform var(--transition);
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.12);
+  transition: background var(--transition), transform var(--transition), color var(--transition);
 }
 
 .home-socials a:hover {
@@ -185,7 +192,7 @@ body.page-home #site-header.home-header #mobile-nav-toggle:hover {
   background: rgba(194, 65, 12, 0.12);
 }
 
-/* Header mini radio */
+/* Header mini radio (default; homepage masthead overrides below) */
 .radio-header-mini {
   display: flex;
   align-items: center;
@@ -197,6 +204,35 @@ body.page-home #site-header.home-header #mobile-nav-toggle:hover {
   font-size: 0.75rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.92);
+}
+
+body.page-home .home-masthead .radio-header-mini {
+  background: rgba(243, 178, 55, 0.06);
+  border: 2px solid #f3b237;
+  color: #f3b237;
+}
+
+body.page-home .home-masthead .radio-header-mini__station {
+  color: #f3b237;
+}
+
+body.page-home .home-masthead .radio-header-mini__link {
+  color: #f3b237;
+}
+
+body.page-home .home-masthead .radio-header-mini__link:hover {
+  color: #fff;
+}
+
+body.page-home .home-masthead .radio-header-mini__play {
+  background: #f3b237;
+  color: #1b1d1d;
+}
+
+body.page-home .home-masthead .radio-header-mini__play.playing {
+  background: #1b1d1d;
+  color: #f3b237;
+  border: 2px solid #f3b237;
 }
 
 .radio-header-mini__play {
@@ -530,12 +566,16 @@ body.page-home .section-title {
 
 @media (max-width: 900px) {
   body.page-home {
-    --header-h: 256px;
+    --header-h: 292px;
+  }
+
+  .home-masthead {
+    padding-block: 36px;
   }
 
   .home-wordmark__img {
-    max-width: min(320px, 50vw);
-    max-height: 44px;
+    max-width: min(320px, 88vw);
+    max-height: clamp(48px, 12vw, 88px);
   }
 
   .radio-header-mini {
@@ -573,7 +613,11 @@ body.page-home .section-title {
 @media (max-width: 768px) {
   /* Bottom radio player covers listen controls; hide header mini only on small screens */
   body.page-home {
-    --header-h: 200px;
+    --header-h: 340px;
+  }
+
+  .home-masthead {
+    padding-block: 32px;
   }
 
   .home-masthead__radio {
