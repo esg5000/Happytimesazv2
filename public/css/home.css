@@ -86,6 +86,8 @@ body.page-home #site-header.home-header {
   max-width: min(420px, 92vw);
   object-fit: contain;
   display: block;
+  /* TextV2 artwork is dark; invert so it reads as light on #1b1d1d */
+  filter: brightness(0) invert(1) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
 }
 
 /* Right cluster: GTA Radio only (socials + search live in category nav) */
