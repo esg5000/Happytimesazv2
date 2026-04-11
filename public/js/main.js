@@ -417,6 +417,18 @@
     track.innerHTML = block + sep + block;
   }
 
+  /** Headline ticker on inner pages (homepage fills this inside initHomepage). */
+  async function initHeadlineTickerGlobal() {
+    const track = document.getElementById('headline-ticker-track');
+    if (!track || document.body.dataset.page === 'home') return;
+    try {
+      const posts = await window.getLatestPosts(28);
+      renderHeadlineTicker(posts);
+    } catch (e) {
+      renderHeadlineTicker(null);
+    }
+  }
+
   function renderHomeHero(settings, posts) {
     const leadWrap = document.getElementById('home-hero-lead');
     const featuredLink = document.getElementById('home-hero-featured-link');
@@ -449,29 +461,9 @@
       featuredImage = posts[0].heroImage;
     }
 
-    const secondaryPosts = [1, 2, 3].map(i => posts && posts[i]).filter(Boolean);
-    const secondaryBlock =
-      secondaryPosts.length > 0
-        ? `<div class="home-hero__secondary">
-            <div class="home-hero__secondary-title">Also in the news</div>
-            <ul class="home-hero__secondary-list">${secondaryPosts
-              .map(p => {
-                const url = articleUrl(p.slug);
-                return `<li class="home-hero__secondary-item">
-                  <a href="${esc(url)}" class="home-hero__secondary-link">
-                    <span class="home-hero__secondary-thumb">${imgOrPlaceholder(p.heroImage, 160, 160, p.title)}</span>
-                    <span class="home-hero__secondary-text">${esc(p.title)}</span>
-                  </a>
-                </li>`;
-              })
-              .join('')}</ul>
-          </div>`
-        : '';
-
     leadWrap.innerHTML = `
       <span class="home-hero__lead-tag">${esc(featuredCat)}</span>
       <h1 class="home-hero__headline"><a href="${esc(featuredUrl)}">${esc(featuredTitle)}</a></h1>
-      ${secondaryBlock}
     `;
 
     featuredLink.href = featuredUrl;
@@ -1427,6 +1419,7 @@
     initMobileNav();
     initStickyHeader();
     initSearch();
+    void initHeadlineTickerGlobal();
 
     // Run page init then wire up any ad slots that were in the static HTML.
     // Dynamic ad slots (injected by render functions) are picked up by initAds

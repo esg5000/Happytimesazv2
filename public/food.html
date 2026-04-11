@@ -17,7 +17,7 @@
     gtag('config', 'G-M86JBB5YTP');
   </script>
 </head>
-<body data-page="category" data-category="food">
+<body class="has-headline-ticker" data-page="category" data-category="food">
 
   <header id="site-header">
     <div class="header-inner">
@@ -40,6 +40,15 @@
     </div>
   </header>
 
+  <div class="headline-ticker headline-ticker--fixed" id="headline-ticker" aria-label="Latest headlines">
+    <div class="headline-ticker__viewport">
+      <div class="headline-ticker__label">Latest</div>
+      <div class="headline-ticker__scroll-wrap">
+        <div class="headline-ticker__track" id="headline-ticker-track"></div>
+      </div>
+    </div>
+  </div>
+
   <div id="mobile-nav-overlay"></div>
   <nav id="mobile-nav-drawer" aria-label="Mobile navigation">
     <button id="mobile-nav-close" aria-label="Close menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
@@ -54,11 +63,11 @@
     <a href="gta-radio.html" class="mobile-nav-link mobile-nav-link--radio">GTA Radio</a>
   </nav>
 
-  <section style="background:linear-gradient(135deg,var(--terracotta-deep) 0%,var(--terracotta) 100%);background-image:linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),url('assets/heroes/food.png');background-size:cover;background-position:center;color:#fff;padding:4rem 1.5rem;text-align:center">
-    <div style="max-width:600px;margin:0 auto">
-      <div style="font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:.75rem">Arizona</div>
-      <h1 style="font-family:'Fraunces',Georgia,serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;color:#fff;margin-bottom:.75rem">Food &amp; Dining</h1>
-      <p style="color:rgba(255,255,255,.8);font-size:1.0625rem">Restaurants, pop-ups, chef profiles, and the best bites across the Valley.</p>
+  <section class="category-page-hero">
+    <div class="container">
+      <p class="category-page-hero__label">Arizona</p>
+      <h1>Food &amp; Dining</h1>
+      <p class="category-page-hero__sub">Restaurants, pop-ups, chef profiles, and the best bites across the Valley.</p>
     </div>
   </section>
 

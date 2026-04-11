@@ -17,7 +17,7 @@
     gtag('config', 'G-M86JBB5YTP');
   </script>
 </head>
-<body data-page="dispensaries">
+<body class="has-headline-ticker" data-page="dispensaries">
 
   <header id="site-header">
     <div class="header-inner">
@@ -40,6 +40,15 @@
     </div>
   </header>
 
+  <div class="headline-ticker headline-ticker--fixed" id="headline-ticker" aria-label="Latest headlines">
+    <div class="headline-ticker__viewport">
+      <div class="headline-ticker__label">Latest</div>
+      <div class="headline-ticker__scroll-wrap">
+        <div class="headline-ticker__track" id="headline-ticker-track"></div>
+      </div>
+    </div>
+  </div>
+
   <div id="mobile-nav-overlay"></div>
   <nav id="mobile-nav-drawer" aria-label="Mobile navigation">
     <button id="mobile-nav-close" aria-label="Close menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
@@ -58,12 +67,11 @@
   </nav>
 
   <!-- PAGE HERO -->
-  <section style="background:linear-gradient(135deg,#0f2a14 0%,#2d7a3a 100%);background-image:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),url('assets/heroes/cannabis.png');background-size:cover;background-position:center;color:#fff;padding:4rem 1.5rem;text-align:center;position:relative;overflow:hidden">
-    <div style="position:absolute;top:-30%;right:-5%;width:400px;height:400px;background:radial-gradient(circle,rgba(212,160,60,.12) 0%,transparent 60%);pointer-events:none"></div>
-    <div style="max-width:600px;margin:0 auto;position:relative">
-      <div style="font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#f0c870;margin-bottom:.75rem">Arizona Cannabis</div>
-      <h1 style="font-family:'Fraunces',Georgia,serif;font-size:clamp(2rem,5vw,3rem);font-weight:900;color:#fff;margin-bottom:.75rem;line-height:1.15">Dispensary Directory</h1>
-      <p style="color:rgba(255,255,255,.8);font-size:1.0625rem;max-width:480px;margin:0 auto">Find licensed cannabis dispensaries across the Valley. Filter by city, check hours, and discover current deals.</p>
+  <section class="category-page-hero">
+    <div class="container">
+      <p class="category-page-hero__label">Arizona Cannabis</p>
+      <h1>Dispensary Directory</h1>
+      <p class="category-page-hero__sub">Find licensed cannabis dispensaries across the Valley. Filter by city, check hours, and discover current deals.</p>
     </div>
   </section>
 

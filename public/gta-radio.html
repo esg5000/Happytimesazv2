@@ -20,7 +20,7 @@
     body { background: #0e0b09; }
 
     .radio-page {
-      min-height: calc(100vh - var(--header-h) - var(--radio-h));
+      min-height: calc(100vh - var(--header-h) - 2.25rem - var(--radio-h));
       background: linear-gradient(160deg, #0e0b09 0%, #1a1210 40%, #2a1a0e 100%);
       color: #fff;
       padding-block: 4rem;
@@ -259,29 +259,38 @@
     }
   </style>
 </head>
-<body data-page="gta-radio">
+<body class="has-headline-ticker" data-page="gta-radio">
 
   <header id="site-header">
-    <div class="header-inner" style="border-bottom-color:rgba(255,255,255,.06)">
+    <div class="header-inner">
       <a href="index.html" class="site-logo"><img src="assets/logos/logo-white.png" alt="HappyTimes AZ" height="48"></a>
       <nav class="site-nav" aria-label="Main navigation">
-        <a href="food.html" class="nav-link" style="color:rgba(255,255,255,.6)">Food</a>
-        <a href="news.html" class="nav-link" style="color:rgba(255,255,255,.6)">News</a>
-        <a href="cannabis.html" class="nav-link" style="color:rgba(255,255,255,.6)">Cannabis</a>
-        <a href="nightlife.html" class="nav-link" style="color:rgba(255,255,255,.6)">Nightlife</a>
-        <a href="health-wellness.html" class="nav-link" style="color:rgba(255,255,255,.6)">Health &amp; Wellness</a>
-        <a href="events.html" class="nav-link" style="color:rgba(255,255,255,.6)">Events</a>
-        <a href="classes.html" class="nav-link" style="color:rgba(255,255,255,.6)">Classes</a>
+        <a href="food.html" class="nav-link">Food</a>
+        <a href="news.html" class="nav-link">News</a>
+        <a href="cannabis.html" class="nav-link">Cannabis</a>
+        <a href="nightlife.html" class="nav-link">Nightlife</a>
+        <a href="health-wellness.html" class="nav-link">Health &amp; Wellness</a>
+        <a href="events.html" class="nav-link">Events</a>
+        <a href="classes.html" class="nav-link">Classes</a>
         <a href="gta-radio.html" class="nav-link nav-link--radio active">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
           GTA Radio
         </a>
       </nav>
       <div class="header-actions">
-        <button id="mobile-nav-toggle" aria-label="Open menu" style="color:#fff"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <button id="mobile-nav-toggle" aria-label="Open menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       </div>
     </div>
   </header>
+
+  <div class="headline-ticker headline-ticker--fixed" id="headline-ticker" aria-label="Latest headlines">
+    <div class="headline-ticker__viewport">
+      <div class="headline-ticker__label">Latest</div>
+      <div class="headline-ticker__scroll-wrap">
+        <div class="headline-ticker__track" id="headline-ticker-track"></div>
+      </div>
+    </div>
+  </div>
 
   <div id="mobile-nav-overlay"></div>
   <nav id="mobile-nav-drawer" aria-label="Mobile navigation">

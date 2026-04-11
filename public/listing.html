@@ -17,7 +17,7 @@
     gtag('config', 'G-M86JBB5YTP');
   </script>
 </head>
-<body data-page="listing" class="listing-page">
+<body class="has-headline-ticker listing-page" data-page="listing">
 
   <header id="site-header">
     <div class="header-inner">
@@ -39,6 +39,15 @@
       </div>
     </div>
   </header>
+
+  <div class="headline-ticker headline-ticker--fixed" id="headline-ticker" aria-label="Latest headlines">
+    <div class="headline-ticker__viewport">
+      <div class="headline-ticker__label">Latest</div>
+      <div class="headline-ticker__scroll-wrap">
+        <div class="headline-ticker__track" id="headline-ticker-track"></div>
+      </div>
+    </div>
+  </div>
 
   <div id="mobile-nav-overlay"></div>
   <nav id="mobile-nav-drawer" aria-label="Mobile navigation">
