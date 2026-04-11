@@ -2392,6 +2392,17 @@ button.event-page-card__toggle {
   justify-content: center;
 }
 
+/* === ABOUT — discreet partner line === */
+.about-awin-note {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ink-light);
+  opacity: 0.72;
+  margin: var(--space-10) 0 0;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
 /* === PAGE HERO SECTIONS === */
 .page-hero {
   /* legacy — prefer .category-page-hero */
