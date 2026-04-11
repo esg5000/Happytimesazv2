@@ -2006,21 +2006,31 @@ button.event-page-card__toggle {
 .footer-brand .site-logo__text { color: var(--white); }
 .footer-brand p { font-size: 0.9rem; line-height: 1.7; margin-bottom: var(--space-5); }
 
-.footer-socials { display: flex; gap: var(--space-3); }
+.footer-socials {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
 
 .footer-social {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-full);
-  background: rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.7);
+  background: transparent;
+  color: #f3b237;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition);
+  transition: color var(--transition), background var(--transition), transform var(--transition);
 }
 
-.footer-social:hover { background: var(--brand-yellow); color: var(--brand-black); }
+.footer-social:hover {
+  color: #fff;
+  background: rgba(243, 178, 55, 0.22);
+  transform: translateY(-1px);
+}
 
 .footer-col h4 {
   font-family: var(--font-sans);
