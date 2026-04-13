@@ -61,7 +61,9 @@
   /* Layout */
   --max-width:   1280px;
   --content-pad: 1.5rem;
-  --header-h:    168px; /* masthead + nav; homepage overrides in home.css */
+  /* Brand masthead + dark nav only (no headline ticker) */
+  --brand-header-stack-h: 168px;
+  --header-h:    var(--brand-header-stack-h);
   --radio-h:     72px;
 
   /* Radius */
@@ -110,6 +112,11 @@ body {
   padding-top: calc(var(--header-h) + var(--safe-top));
   padding-bottom: calc(var(--radio-h) + var(--safe-bottom));
   overflow-x: hidden;
+}
+
+/* Homepage: same masthead + nav as category pages; ticker sits inside header (see index.html) */
+body.page-home {
+  --header-h: calc(var(--brand-header-stack-h) + 2.25rem);
 }
 
 /* GTA Radio page — old single-row header height */
@@ -2769,11 +2776,12 @@ button.event-page-card__toggle {
 @media (max-width: 640px) {
   :root {
     --content-pad: 1rem;
-    --header-h: 152px;
+    --brand-header-stack-h: 152px;
+    --header-h: var(--brand-header-stack-h);
   }
 
   body.page-home {
-    --header-h: 198px;
+    --header-h: calc(var(--brand-header-stack-h) + 2.25rem);
   }
 
   body.header-layout-legacy {

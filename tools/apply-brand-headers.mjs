@@ -5,6 +5,17 @@ import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const publicDir = path.join(__dirname, "..", "public");
 
+/** Category hubs: masthead + nav only (no headline ticker bar). */
+const CATEGORY_NO_TICKER = new Set([
+  "food.html",
+  "cannabis.html",
+  "nightlife.html",
+  "health-wellness.html",
+  "events.html",
+  "news.html",
+  "dispensaries.html",
+]);
+
 const FILES = [
   "index.html",
   "food.html",
@@ -132,6 +143,10 @@ ${buildNav(file)}
         </div>
       </div>
     </div>
+  </header>`;
+  }
+  if (CATEGORY_NO_TICKER.has(file)) {
+    return `${inner}
   </header>`;
   }
   return `${inner}
