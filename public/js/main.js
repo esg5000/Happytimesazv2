@@ -369,32 +369,53 @@
 
   const HOME_HERO_TAKE = 9;
 
+  let lastMobileTempF = null;
+
+  function updateMobileNavDateline() {
+    document.querySelectorAll('.js-mobile-nav-dateline').forEach(node => {
+      const d = new Date();
+      const datePart = d.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric'
+      });
+      const tempPart =
+        lastMobileTempF != null ? `${Math.round(lastMobileTempF)}°F` : '…';
+      node.textContent = `${datePart} · ${tempPart}`;
+    });
+  }
+
   function renderHomeMastheadDate() {
     const el = document.getElementById('home-masthead-date');
-    if (!el) return;
-    const d = new Date();
-    el.textContent = d.toLocaleDateString('en-US', {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric'
-    });
+    if (el) {
+      const d = new Date();
+      el.textContent = d.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    }
+    updateMobileNavDateline();
   }
 
   async function fetchPhoenixWeather() {
     const el = document.getElementById('home-weather');
-    if (!el) return;
     try {
       const res = await fetch(
         'https://api.open-meteo.com/v1/forecast?latitude=33.4484&longitude=-112.0740&current=temperature_2m&temperature_unit=fahrenheit&timezone=America%2FPhoenix'
       );
       const data = await res.json();
       const t = data?.current?.temperature_2m;
-      el.textContent = t != null ? `Phoenix ${Math.round(t)}°F` : 'Phoenix';
+      if (t != null) lastMobileTempF = t;
+      if (el) {
+        el.textContent = t != null ? `Phoenix ${Math.round(t)}°F` : 'Phoenix';
+      }
     } catch (e) {
-      el.textContent = 'Phoenix';
+      if (el) el.textContent = 'Phoenix';
     }
-    el.classList.remove('is-loading');
+    if (el) el.classList.remove('is-loading');
+    updateMobileNavDateline();
   }
 
   function renderHeadlineTicker(posts) {

@@ -19,7 +19,7 @@
 </head>
 <body class="has-headline-ticker article-page" data-page="article">
 
-    <header id="site-header" class="site-header--brand">
+          <header id="site-header" class="site-header--brand">
     <div class="site-masthead">
       <div class="site-masthead__inner">
         <div class="site-masthead__meta">
@@ -36,6 +36,9 @@
     </div>
     <div class="site-nav-bar">
       <div class="site-nav-bar__inner">
+        <div class="site-nav-bar__dateline" aria-live="polite">
+          <span class="js-mobile-nav-dateline"></span>
+        </div>
         <nav class="site-nav" aria-label="Main navigation">
         <a href="/food.html" class="nav-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>Food</a>
         <a href="/news.html" class="nav-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6z"/></svg>News</a>
@@ -52,6 +55,17 @@
         </div>
       </div>
     </div>
+    <nav class="site-header__mobile-cat-tabs" aria-label="Sections">
+      <div class="site-header__mobile-cat-tabs-track">
+        <a href="/food.html" class="site-header__mobile-cat-tab">Food</a>
+        <a href="/news.html" class="site-header__mobile-cat-tab">News</a>
+        <a href="/cannabis.html" class="site-header__mobile-cat-tab">Cannabis</a>
+        <a href="/nightlife.html" class="site-header__mobile-cat-tab">Nightlife</a>
+        <a href="/health-wellness.html" class="site-header__mobile-cat-tab">Health &amp; Wellness</a>
+        <a href="/events.html" class="site-header__mobile-cat-tab">Events</a>
+        <a href="/classes.html" class="site-header__mobile-cat-tab">Classes</a>
+      </div>
+    </nav>
   </header>
 
   <div class="headline-ticker headline-ticker--fixed" id="headline-ticker" aria-label="Latest headlines">
@@ -62,7 +76,6 @@
       </div>
     </div>
   </div>
-
   <div id="mobile-nav-overlay"></div>
   <nav id="mobile-nav-drawer" aria-label="Mobile navigation">
     <button id="mobile-nav-close" aria-label="Close menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>

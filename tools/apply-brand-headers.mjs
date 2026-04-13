@@ -86,6 +86,24 @@ function buildNav(file) {
   return links.join("\n");
 }
 
+function mobileCatTabsNav(file) {
+  const pre = p(file);
+  const a = (href, label) =>
+    `        <a href="${pre}${href}" class="site-header__mobile-cat-tab">${label}</a>`;
+  return `
+    <nav class="site-header__mobile-cat-tabs" aria-label="Sections">
+      <div class="site-header__mobile-cat-tabs-track">
+${a("food.html", "Food")}
+${a("news.html", "News")}
+${a("cannabis.html", "Cannabis")}
+${a("nightlife.html", "Nightlife")}
+${a("health-wellness.html", "Health &amp; Wellness")}
+${a("events.html", "Events")}
+${a("classes.html", "Classes")}
+      </div>
+    </nav>`;
+}
+
 function tickerBlock(file, fixed) {
   const pre = p(file);
   const fx = fixed ? " headline-ticker--fixed" : "";
@@ -122,6 +140,9 @@ function headerBlock(file) {
     </div>
     <div class="site-nav-bar">
       <div class="site-nav-bar__inner">
+        <div class="site-nav-bar__dateline" aria-live="polite">
+          <span class="js-mobile-nav-dateline"></span>
+        </div>
         <nav class="site-nav" aria-label="Main navigation">
 ${buildNav(file)}
         </nav>
@@ -131,7 +152,7 @@ ${buildNav(file)}
           <button type="button" id="mobile-nav-toggle" aria-label="Open menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
         </div>
       </div>
-    </div>`;
+    </div>${mobileCatTabsNav(file)}`;
 
   if (file === "index.html") {
     return `${inner}
@@ -149,10 +170,23 @@ ${buildNav(file)}
     return `${inner}
   </header>`;
   }
+  /* Ticker is injected after </header> in replaceHeader (after stripping legacy copy). */
   return `${inner}
-  </header>
+  </header>`;
+}
 
-${tickerBlock(file, true)}`;
+/** Remove fixed headline ticker blocks (exact layout from tickerBlock). */
+function stripOuterHeadlineTicker(html) {
+  const fullTicker =
+    /\n\s*<div class="headline-ticker headline-ticker--fixed"[^>]*>\s*\n\s*<div class="headline-ticker__viewport">\s*\n\s*<div class="headline-ticker__label">Latest<\/div>\s*\n\s*<div class="headline-ticker__scroll-wrap">\s*\n\s*<div class="headline-ticker__track"[^>]*><\/div>\s*\n\s*<\/div>\s*\n\s*<\/div>\s*\n\s*<\/div>\s*\n/g;
+  let s = html;
+  /* Orphan inner ticker nodes only when they appear immediately after </header> */
+  s = s.replace(
+    /(<\/header>\s*)\n+\s*<div class="headline-ticker__scroll-wrap">\s*\n\s*<div class="headline-ticker__track"[^>]*><\/div>\s*\n\s*<\/div>\s*\n\s*<\/div>\s*\n\s*<\/div>\s*\n/g,
+    "$1\n\n"
+  );
+  s = s.replace(fullTicker, "\n");
+  return s;
 }
 
 function replaceHeader(html, file) {
@@ -160,10 +194,10 @@ function replaceHeader(html, file) {
   if (!re.test(html)) throw new Error("No header in " + file);
   let next = html.replace(re, headerBlock(file));
 
-  if (file !== "index.html") {
-    const tRe = /\n\s*<div class="headline-ticker[^>]*>[\s\S]*?<\/div>\s*\n/;
-    if (tRe.test(next)) {
-      next = next.replace(tRe, "\n");
+  if (file !== "index.html" && !CATEGORY_NO_TICKER.has(file)) {
+    next = stripOuterHeadlineTicker(next);
+    if (!next.includes('id="headline-ticker"')) {
+      next = next.replace(/<\/header>\s*\n/, `</header>\n\n${tickerBlock(file, true)}\n`);
     }
   }
   return next;
