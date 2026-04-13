@@ -301,6 +301,25 @@
     return s;
   }
 
+  /** Top 25 card media: external `thumbnail` URL or dark monogram placeholder. */
+  function restaurantCardThumbnailHTML(r) {
+    const name = r.name || 'Restaurant';
+    const thumb = String(r.thumbnail || '').trim();
+    if (thumb && /^https?:\/\//i.test(thumb)) {
+      return `<img src="${esc(thumb)}" alt="${esc(name)}" loading="lazy">`;
+    }
+    let letter = '';
+    for (let i = 0; i < name.length; i++) {
+      const ch = name.charAt(i);
+      if (/[a-zA-Z]/.test(ch)) {
+        letter = ch.toUpperCase();
+        break;
+      }
+    }
+    if (!letter) letter = '?';
+    return `<div class="food-spot-card__monogram" role="img" aria-label="${esc(name)}">${esc(letter)}</div>`;
+  }
+
   function renderRestaurantStarRow(starRating, rating) {
     let n = Number(starRating);
     if (!Number.isFinite(n)) n = Number(rating);
@@ -330,7 +349,7 @@
     return `
       <article class="${cardClass}">
         <div class="food-spot-card__media">
-          ${imgOrPlaceholder(r.heroImage, 520, 325, name)}
+          ${restaurantCardThumbnailHTML(r)}
           ${badge}
         </div>
         <div class="food-spot-card__body">

@@ -207,14 +207,14 @@ window.getRestaurantsByCity = (city, limit = 25) => {
       name,
       "slug": slug.current,
       website,
+      thumbnail,
       city,
       cuisine,
       cuisineType,
       starRating,
       rating,
       priceLevel,
-      "isFeatured": coalesce(isFeatured, featured),
-      "heroImage": heroImage{ asset{ _ref }, alt }
+      "isFeatured": coalesce(isFeatured, featured)
     }
   `, { city: String(city || '').trim() });
 };
