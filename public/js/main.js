@@ -507,8 +507,6 @@
   async function initHomepage() {
     setMeta('HappyTimes AZ – Arizona Lifestyle Magazine', 'Your guide to Arizona food, cannabis, nightlife, events and more.');
 
-    renderHomeMastheadDate();
-    fetchPhoenixWeather();
     initNewsletterForm();
 
     // Fire all fetches in parallel
@@ -1419,6 +1417,8 @@
     initMobileNav();
     initStickyHeader();
     initSearch();
+    renderHomeMastheadDate();
+    void fetchPhoenixWeather();
     void initHeadlineTickerGlobal();
 
     // Run page init then wire up any ad slots that were in the static HTML.
