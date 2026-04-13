@@ -89,8 +89,28 @@
   </section>
 
   <div class="ad-slot ad-slot--leaderboard" data-placement="food_in_content_top" data-size="leaderboard" style="padding-inline:1.5rem"></div>
-  <main class="category-page-main" style="background:var(--cream)">
+  <main class="category-page-main food-page-main" style="background:var(--cream)">
     <div class="container" id="food-content">
+      <section class="food-page-featured" id="food-featured-wrap" hidden>
+        <div id="food-featured" class="food-page-featured__inner"></div>
+      </section>
+
+      <section class="food-top25" aria-labelledby="food-top25-heading">
+        <h2 id="food-top25-heading" class="food-top25__title">Top 25 in Your City</h2>
+        <div class="food-top25__tabs" role="tablist" aria-label="City">
+          <button type="button" class="food-top25__tab" role="tab" data-city="Phoenix" id="food-tab-phoenix" aria-selected="false">Phoenix</button>
+          <button type="button" class="food-top25__tab" role="tab" data-city="Scottsdale" id="food-tab-scottsdale" aria-selected="false">Scottsdale</button>
+          <button type="button" class="food-top25__tab" role="tab" data-city="Tempe" id="food-tab-tempe" aria-selected="false">Tempe</button>
+          <button type="button" class="food-top25__tab" role="tab" data-city="Mesa" id="food-tab-mesa" aria-selected="false">Mesa</button>
+          <button type="button" class="food-top25__tab" role="tab" data-city="Glendale" id="food-tab-glendale" aria-selected="false">Glendale</button>
+          <button type="button" class="food-top25__tab" role="tab" data-city="Chandler" id="food-tab-chandler" aria-selected="false">Chandler</button>
+          <button type="button" class="food-top25__tab" role="tab" data-city="Surprise" id="food-tab-surprise" aria-selected="false">Surprise</button>
+        </div>
+        <div class="food-top25__scroll-wrap">
+          <div id="food-top25-row" class="food-top25__row"></div>
+        </div>
+      </section>
+
       <div id="category-grid" class="editorial-grid">
         <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line w-20" style="margin-top:1rem"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-60"></div></div>
         <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line w-20" style="margin-top:1rem"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-60"></div></div>

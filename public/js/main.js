@@ -124,6 +124,10 @@
     return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   function getParam(name) {
     return new URLSearchParams(window.location.search).get(name);
   }
@@ -213,6 +217,209 @@
         </div>
       </article>
     `;
+  }
+
+  // ─── Food page — Top 25 restaurant row ───────────────────────────────────────
+
+  const FOOD_TOP25_CITIES = ['Phoenix', 'Scottsdale', 'Tempe', 'Mesa', 'Glendale', 'Chandler', 'Surprise'];
+  const FOOD_GEO_RACE_TIMEOUT = '__food_geo_race_timeout__';
+
+  function matchFoodCityFromString(raw) {
+    if (!raw || typeof raw !== 'string') return null;
+    const t = raw.trim().toLowerCase();
+    for (const c of FOOD_TOP25_CITIES) {
+      if (t === c.toLowerCase()) return c;
+    }
+    for (const c of FOOD_TOP25_CITIES) {
+      if (t.includes(c.toLowerCase())) return c;
+    }
+    return null;
+  }
+
+  function fetchCityFromGeolocation() {
+    return new Promise(resolve => {
+      if (!navigator.geolocation) {
+        resolve(null);
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        async pos => {
+          try {
+            const { latitude, longitude } = pos.coords;
+            const geoUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${encodeURIComponent(latitude)}&longitude=${encodeURIComponent(longitude)}&localityLanguage=en`;
+            const res = await fetch(geoUrl);
+            if (!res.ok) throw new Error('reverse geocode');
+            const data = await res.json();
+            const cityRaw = data.city || data.locality || (data.localityInfo && data.localityInfo.localityName) || '';
+            resolve(matchFoodCityFromString(String(cityRaw || '')));
+          } catch (e) {
+            resolve(null);
+          }
+        },
+        () => resolve(null),
+        { enableHighAccuracy: false, maximumAge: 300000, timeout: 10000 }
+      );
+    });
+  }
+
+  async function resolveInitialFoodTabCity() {
+    const geo = fetchCityFromGeolocation();
+    const winner = await Promise.race([
+      geo,
+      sleep(3500).then(() => FOOD_GEO_RACE_TIMEOUT)
+    ]);
+    if (winner !== FOOD_GEO_RACE_TIMEOUT && winner && FOOD_TOP25_CITIES.includes(winner)) {
+      return winner;
+    }
+    const geoCity = await geo.catch(() => null);
+    if (geoCity && FOOD_TOP25_CITIES.includes(geoCity)) return geoCity;
+    return 'Phoenix';
+  }
+
+  function normalizeRestaurantWebsiteHref(raw) {
+    const u = String(raw || '').trim();
+    if (!u) return '';
+    if (/^https?:\/\//i.test(u)) return u;
+    if (/^\/\//.test(u)) return `https:${u}`;
+    if (/^www\./i.test(u)) return `https://${u}`;
+    return `https://${u}`;
+  }
+
+  function restaurantSpotlightViewHref(r) {
+    const web = normalizeRestaurantWebsiteHref(r.website);
+    if (web) return web;
+    if (r.slug) return `listing?slug=${encodeURIComponent(r.slug)}`;
+    return '#';
+  }
+
+  function formatRestaurantPriceLevel(pl) {
+    if (pl == null || pl === '') return '';
+    const s = String(pl).trim();
+    if (/^\$+$/.test(s)) return s;
+    const n = Number(s);
+    if (Number.isFinite(n) && n >= 1 && n <= 4) return '$'.repeat(Math.round(n));
+    return s;
+  }
+
+  function renderRestaurantStarRow(starRating, rating) {
+    let n = Number(starRating);
+    if (!Number.isFinite(n)) n = Number(rating);
+    if (!Number.isFinite(n)) n = 0;
+    n = Math.max(0, Math.min(5, Math.round(n)));
+    if (n <= 0) {
+      return '<span class="food-spot-card__stars food-spot-card__stars--none">No rating yet</span>';
+    }
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+      stars += `<span class="food-spot-card__star${i <= n ? ' is-on' : ''}" aria-hidden="true">★</span>`;
+    }
+    return `<span class="food-spot-card__stars" role="img" aria-label="${esc(n + ' out of 5 stars')}">${stars}</span>`;
+  }
+
+  function renderRestaurantSpotlightCard(r) {
+    if (!r) return '';
+    const feat = !!r.isFeatured;
+    const href = restaurantSpotlightViewHref(r);
+    const isHttp = /^https?:\/\//i.test(href);
+    const cuisine = String(r.cuisine || r.cuisineType || '').trim();
+    const priceDisp = formatRestaurantPriceLevel(r.priceLevel);
+    const name = r.name || 'Restaurant';
+    const cardClass = `food-spot-card${feat ? ' food-spot-card--featured' : ''}`;
+    const badge = feat ? '<span class="food-spot-card__badge">Featured</span>' : '';
+    const priceHtml = priceDisp ? `<span class="food-spot-card__price">${esc(priceDisp)}</span>` : '';
+    return `
+      <article class="${cardClass}">
+        <div class="food-spot-card__media">
+          ${imgOrPlaceholder(r.heroImage, 520, 325, name)}
+          ${badge}
+        </div>
+        <div class="food-spot-card__body">
+          <h3 class="food-spot-card__name">${esc(name)}</h3>
+          ${cuisine ? `<p class="food-spot-card__cuisine">${esc(cuisine)}</p>` : ''}
+          <div class="food-spot-card__meta">
+            ${renderRestaurantStarRow(r.starRating, r.rating)}
+            ${priceHtml}
+          </div>
+          <a href="${esc(href)}" class="btn btn--sm btn--outline food-spot-card__cta"${isHttp ? ' target="_blank" rel="noopener"' : ''}>View</a>
+        </div>
+      </article>
+    `;
+  }
+
+  async function initFoodTop25Section() {
+    const tabsRoot = document.querySelector('.food-top25__tabs');
+    const row = document.getElementById('food-top25-row');
+    if (!tabsRoot || !row) return;
+
+    row.innerHTML = '<p class="food-top25__loading">Finding restaurants near you…</p>';
+
+    const setActiveTab = city => {
+      FOOD_TOP25_CITIES.forEach(c => {
+        const btn = tabsRoot.querySelector(`[data-city="${c}"]`);
+        if (!btn) return;
+        const on = c === city;
+        btn.classList.toggle('is-active', on);
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    };
+
+    const loadCity = async city => {
+      setActiveTab(city);
+      row.innerHTML = '<p class="food-top25__loading">Loading…</p>';
+      const data = await (window.getRestaurantsByCity ? window.getRestaurantsByCity(city, 25) : Promise.resolve(null));
+      const list = Array.isArray(data) ? data.filter(Boolean) : [];
+      if (!list.length) {
+        row.innerHTML = `<p class="food-top25__empty">No restaurants listed for ${esc(city)} yet.</p>`;
+        return;
+      }
+      row.innerHTML = list.map(renderRestaurantSpotlightCard).join('');
+    };
+
+    tabsRoot.addEventListener('click', e => {
+      const btn = e.target.closest('.food-top25__tab[data-city]');
+      if (!btn) return;
+      const c = btn.getAttribute('data-city');
+      if (c) void loadCity(c);
+    });
+
+    const initial = await resolveInitialFoodTabCity();
+    await loadCity(initial);
+  }
+
+  async function initFoodPage() {
+    setMeta('Food & Dining – HappyTimes AZ', "Arizona's best restaurants, food pop-ups, chef profiles, and dining guides.");
+    const gridEl = document.getElementById('category-grid');
+    const featuredWrap = document.getElementById('food-featured-wrap');
+    const featuredEl = document.getElementById('food-featured');
+
+    if (gridEl) showSkeleton(gridEl, 9, 'card');
+
+    let foodPosts = await window.getPostsByCategory('food', 13).catch(() => []);
+    if (!Array.isArray(foodPosts)) foodPosts = [];
+
+    if (featuredEl && featuredWrap) {
+      if (foodPosts.length > 0) {
+        featuredEl.innerHTML = renderArticleCard(foodPosts[0], 'large');
+        featuredWrap.hidden = false;
+      } else {
+        featuredEl.innerHTML = '';
+        featuredWrap.hidden = true;
+      }
+    }
+
+    const gridPosts = foodPosts.length > 1 ? foodPosts.slice(1) : [];
+    if (gridEl) {
+      if (!gridPosts.length) {
+        const msg = foodPosts.length === 0
+          ? 'No articles found yet.'
+          : 'More food stories coming soon.';
+        gridEl.innerHTML = `<p class="empty-msg" style="grid-column:1/-1">${esc(msg)}</p>`;
+      } else {
+        gridEl.innerHTML = gridPosts.map(p => renderArticleCard(p)).join('');
+      }
+    }
+
+    await initFoodTop25Section();
   }
 
   // ─── Event Card ──────────────────────────────────────────────────────────────
@@ -1437,6 +1644,12 @@
     const cat   = document.body.dataset.category || '';
     const gridEl = document.getElementById('category-grid');
     if (!gridEl) return;
+
+    if (cat === 'food') {
+      await initFoodPage();
+      return;
+    }
+
     showSkeleton(gridEl, 9, 'card');
 
     let posts = await window.getPostsByCategory(cat, 12);

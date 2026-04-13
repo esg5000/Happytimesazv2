@@ -199,6 +199,31 @@ window.getActiveDispensaries = () => sanityFetch(`
   }
 `);
 
+/** Restaurant listings by city (listing documents with listingType restaurant). */
+window.getRestaurantsByCity = (city, limit = 25) => {
+  const n = Math.min(Math.max(1, limit), 50);
+  return sanityFetch(`
+    *[
+      _type == "listing" &&
+      lower(listingType) == "restaurant" &&
+      defined(city) &&
+      lower(city) == lower($cityNorm)
+    ] | order(coalesce(isFeatured, featured) desc, name asc) [0...${n}]{
+      name,
+      "slug": slug.current,
+      website,
+      city,
+      cuisine,
+      cuisineType,
+      starRating,
+      rating,
+      priceLevel,
+      "isFeatured": coalesce(isFeatured, featured),
+      "heroImage": heroImage{ asset{ _ref }, alt }
+    }
+  `, { cityNorm: String(city || '').trim() });
+};
+
 window.getListingBySlug = (slug) => sanityFetch(`
   *[_type == "listing" && slug.current == $slug][0]{
     name,

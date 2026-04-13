@@ -2073,6 +2073,221 @@ body[data-page="events"] .event-page-card {
 /* === EVENTS PAGE === */
 .events-page { background: var(--cream); }
 
+/* === FOOD PAGE — featured + Top 25 row === */
+.food-page-main #food-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.food-page-featured {
+  padding-top: var(--space-2);
+}
+
+.food-page-featured__inner .article-card--large {
+  max-width: 100%;
+}
+
+.food-top25 {
+  padding-bottom: var(--space-2);
+}
+
+.food-top25__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.8vw, 1.85rem);
+  font-weight: 800;
+  color: var(--brand-yellow);
+  margin: 0 0 var(--space-4);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.food-top25__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.food-top25__tab {
+  padding: 0.4rem 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--sand-dark);
+  background: var(--white);
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition), color var(--transition);
+}
+
+.food-top25__tab:hover {
+  border-color: var(--brand-orange);
+  color: var(--brand-orange);
+}
+
+.food-top25__tab.is-active {
+  background: var(--brand-orange);
+  border-color: var(--brand-orange);
+  color: var(--white);
+}
+
+.food-top25__scroll-wrap {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  margin-inline: calc(-1 * var(--content-pad));
+  padding-inline: var(--content-pad);
+  padding-bottom: var(--space-2);
+}
+
+.food-top25__row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: var(--space-4);
+  width: max-content;
+  min-height: 8rem;
+  align-items: stretch;
+}
+
+.food-top25__loading,
+.food-top25__empty {
+  font-size: 0.875rem;
+  color: var(--ink-light);
+  font-style: italic;
+  padding: var(--space-4) 0;
+  width: 100%;
+  min-width: min(100%, 20rem);
+}
+
+.food-spot-card {
+  flex: 0 0 auto;
+  width: min(260px, calc(100vw - 3rem));
+  scroll-snap-align: start;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--sand);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.food-spot-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.food-spot-card--featured {
+  border-color: rgba(243, 178, 55, 0.45);
+  box-shadow: var(--shadow-sm), 0 0 0 1px rgba(243, 178, 55, 0.2);
+}
+
+.food-spot-card__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--sand);
+}
+
+.food-spot-card__media img,
+.food-spot-card__media .img-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.food-spot-card__badge {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  padding: 0.2em 0.55em;
+  font-size: 0.625rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.food-spot-card__body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+  min-height: 0;
+}
+
+.food-spot-card__name {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.food-spot-card__cuisine {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ink-light);
+  line-height: 1.35;
+}
+
+.food-spot-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.8125rem;
+}
+
+.food-spot-card__stars {
+  display: inline-flex;
+  gap: 1px;
+  color: var(--sand-dark);
+}
+
+.food-spot-card__star.is-on {
+  color: var(--gold);
+}
+
+.food-spot-card__stars--none {
+  color: var(--ink-light);
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.food-spot-card__price {
+  font-weight: 700;
+  color: var(--ink-muted);
+  letter-spacing: 0.02em;
+}
+
+.food-spot-card__cta {
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+@media (max-width: 640px) {
+  .food-top25__tabs {
+    gap: var(--space-1);
+  }
+
+  .food-top25__tab {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.75rem;
+  }
+}
+
 /* Category / section pages — minimal cream title strip (aligns with .container) */
 .category-page-hero {
   background: var(--cream);
