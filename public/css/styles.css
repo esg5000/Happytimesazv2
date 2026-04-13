@@ -2088,6 +2088,17 @@ body[data-page="events"] .event-page-card {
   max-width: 100%;
 }
 
+/* Shorter hero so the featured story does not fill the viewport */
+.food-page-featured__inner .article-card--large .article-card__image {
+  max-height: 250px;
+}
+
+@media (min-width: 641px) {
+  .food-page-featured__inner .article-card--large .article-card__image {
+    max-height: 400px;
+  }
+}
+
 .food-top25 {
   padding-bottom: var(--space-2);
 }
