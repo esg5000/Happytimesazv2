@@ -708,10 +708,10 @@
     track.innerHTML = block + sep + block;
   }
 
-  /** Headline ticker on inner pages (homepage fills this inside initHomepage). */
+  /** Headline ticker on inner pages (homepage fills this inside initHomepage). Article pages omit the ticker. */
   async function initHeadlineTickerGlobal() {
     const track = document.getElementById('headline-ticker-track');
-    if (!track || document.body.dataset.page === 'home') return;
+    if (!track || document.body.dataset.page === 'home' || document.body.dataset.page === 'article') return;
     try {
       const posts = await window.getLatestPosts(28);
       renderHeadlineTicker(posts);
