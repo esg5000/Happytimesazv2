@@ -199,16 +199,11 @@ window.getActiveDispensaries = () => sanityFetch(`
   }
 `);
 
-/** Restaurant listings by city (listing documents with listingType restaurant). */
+/** Top 25 restaurants by tab city (`searchCity` must match selected tab label, e.g. Phoenix). */
 window.getRestaurantsByCity = (city, limit = 25) => {
   const n = Math.min(Math.max(1, limit), 50);
   return sanityFetch(`
-    *[
-      _type == "listing" &&
-      lower(listingType) == "restaurant" &&
-      defined(city) &&
-      lower(city) == lower($cityNorm)
-    ] | order(coalesce(isFeatured, featured) desc, name asc) [0...${n}]{
+    *[_type == "restaurant" && searchCity == $city] | order(coalesce(isFeatured, featured) desc, name asc) [0...${n}]{
       name,
       "slug": slug.current,
       website,
@@ -221,7 +216,7 @@ window.getRestaurantsByCity = (city, limit = 25) => {
       "isFeatured": coalesce(isFeatured, featured),
       "heroImage": heroImage{ asset{ _ref }, alt }
     }
-  `, { cityNorm: String(city || '').trim() });
+  `, { city: String(city || '').trim() });
 };
 
 window.getListingBySlug = (slug) => sanityFetch(`
