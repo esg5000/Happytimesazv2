@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>GTA Radio – HappyTimes AZ</title>
   <meta name="description" content="GTA Radio — Arizona's streaming radio stations. Chill desert vibes, hip-hop, electronic, and more.">
-  <meta name="theme-color" content="#1a1412">
+  <meta name="theme-color" content="#e85d2a">
   <link rel="stylesheet" href="css/styles.css">
 
   <!-- Google tag (gtag.js) -->
@@ -17,20 +17,18 @@
     gtag('config', 'G-M86JBB5YTP');
   </script>
   <style>
-    body { background: #0e0b09; }
-
     .radio-page {
-      min-height: calc(100vh - var(--header-h) - 2.25rem - var(--radio-h));
-      background: linear-gradient(160deg, #0e0b09 0%, #1a1210 40%, #2a1a0e 100%);
-      color: #fff;
-      padding-block: 4rem;
+      min-height: calc(100vh - var(--header-h) - var(--brand-mobile-cat-tabs-h) - var(--radio-h) - var(--safe-top) - var(--safe-bottom));
+      background: var(--cream);
+      color: var(--ink);
+      padding-block: var(--space-12);
     }
 
     .radio-page-title {
-      font-family: 'Fraunces', Georgia, serif;
+      font-family: var(--font-display);
       font-size: clamp(2.5rem, 6vw, 4rem);
       font-weight: 900;
-      color: #fff;
+      color: var(--ink);
       margin-bottom: .5rem;
       line-height: 1.1;
     }
@@ -39,20 +37,21 @@
 
     .radio-page-sub {
       font-size: 1.0625rem;
-      color: rgba(255,255,255,.55);
+      color: var(--ink-light);
       margin-bottom: 3rem;
+      max-width: 42rem;
     }
 
     .radio-big-player {
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.1);
+      background: #1a1a1a;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 1.5rem;
       padding: 2.5rem;
       margin-bottom: 3rem;
       display: flex;
       align-items: center;
       gap: 2rem;
-      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow-md);
     }
 
     .radio-big-cover {
@@ -60,11 +59,11 @@
       height: 120px;
       border-radius: 1rem;
       overflow: hidden;
-      background: rgba(255,255,255,.08);
+      background: rgba(255, 255, 255, 0.06);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: rgba(255,255,255,.3);
+      color: rgba(255, 255, 255, 0.35);
       flex-shrink: 0;
     }
 
@@ -82,7 +81,7 @@
     }
 
     .radio-big-name {
-      font-family: 'Fraunces', Georgia, serif;
+      font-family: var(--font-display);
       font-size: clamp(1.5rem, 3vw, 2rem);
       font-weight: 900;
       color: #fff;
@@ -94,7 +93,7 @@
 
     .radio-big-genre {
       font-size: .9375rem;
-      color: rgba(255,255,255,.5);
+      color: rgba(255, 255, 255, 0.55);
       margin-bottom: 1.5rem;
     }
 
@@ -108,7 +107,7 @@
       width: 60px;
       height: 60px;
       border-radius: 50%;
-      background: var(--terracotta);
+      background: var(--brand-orange);
       color: #fff;
       display: flex;
       align-items: center;
@@ -119,14 +118,14 @@
       flex-shrink: 0;
     }
 
-    .radio-big-play:hover { background: var(--terracotta-deep); transform: scale(1.05); }
-    .radio-big-play.playing { background: var(--gold); }
+    .radio-big-play:hover { background: var(--brand-orange-dark); transform: scale(1.05); }
+    .radio-big-play.playing { background: var(--gold); color: var(--ink); }
 
     .radio-big-vol {
       display: flex;
       align-items: center;
       gap: .5rem;
-      color: rgba(255,255,255,.4);
+      color: rgba(255, 255, 255, 0.45);
     }
 
     .radio-big-vol input[type=range] {
@@ -134,7 +133,7 @@
       -webkit-appearance: none;
       appearance: none;
       height: 4px;
-      background: rgba(255,255,255,.2);
+      background: rgba(255, 255, 255, 0.2);
       border-radius: 999px;
       outline: none;
       cursor: pointer;
@@ -149,7 +148,14 @@
       cursor: pointer;
     }
 
-    /* Station grid */
+    .radio-stations-heading {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 1.25rem;
+    }
+
     .station-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -157,8 +163,8 @@
     }
 
     .station-tile {
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
+      background: #1f1f1f;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 1rem;
       padding: 1.25rem;
       cursor: pointer;
@@ -167,17 +173,19 @@
       align-items: center;
       gap: 1rem;
       text-align: left;
+      color: inherit;
+      font: inherit;
     }
 
     .station-tile:hover {
-      background: rgba(255,255,255,.08);
-      border-color: rgba(255,255,255,.18);
+      background: #2a2a2a;
+      border-color: rgba(255, 255, 255, 0.16);
       transform: translateY(-2px);
     }
 
     .station-tile.active {
-      background: rgba(212,160,60,.12);
-      border-color: rgba(212,160,60,.35);
+      background: rgba(243, 178, 55, 0.14);
+      border-color: rgba(243, 178, 55, 0.45);
     }
 
     .station-tile-cover {
@@ -185,11 +193,11 @@
       height: 52px;
       border-radius: .625rem;
       overflow: hidden;
-      background: rgba(255,255,255,.08);
+      background: rgba(255, 255, 255, 0.08);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: rgba(255,255,255,.3);
+      color: rgba(255, 255, 255, 0.35);
       flex-shrink: 0;
     }
 
@@ -200,7 +208,7 @@
     .station-tile-name {
       font-weight: 700;
       font-size: .9375rem;
-      color: #fff;
+      color: #f2f2f2;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -208,7 +216,7 @@
 
     .station-tile-genre {
       font-size: .8125rem;
-      color: rgba(255,255,255,.45);
+      color: rgba(255, 255, 255, 0.5);
       margin-top: 2px;
     }
 
@@ -216,19 +224,18 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: rgba(255,255,255,.15);
+      background: rgba(255, 255, 255, 0.2);
       flex-shrink: 0;
     }
 
     .station-tile.active .station-tile-indicator { background: var(--gold); }
-    .station-tile.playing .station-tile-indicator { background: var(--green); animation: pulse 1.5s ease-in-out infinite; }
+    .station-tile.playing .station-tile-indicator { background: var(--green); animation: gta-pulse 1.5s ease-in-out infinite; }
 
-    @keyframes pulse {
+    @keyframes gta-pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: .5; transform: scale(1.4); }
     }
 
-    /* Loading spinner for big player */
     .radio-big-loading {
       display: none;
       width: 60px;
@@ -240,13 +247,33 @@
     .radio-big-spinner {
       width: 28px;
       height: 28px;
-      border: 3px solid rgba(255,255,255,.15);
+      border: 3px solid rgba(255, 255, 255, 0.15);
       border-top-color: var(--gold);
       border-radius: 50%;
-      animation: spin .8s linear infinite;
+      animation: gta-spin .8s linear infinite;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes gta-spin { to { transform: rotate(360deg); } }
+
+    .radio-page .station-skeleton {
+      background: var(--cream-dark);
+      border: 1px solid var(--sand);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .radio-page .station-skeleton__thumb {
+      width: 52px;
+      height: 52px;
+      border-radius: .625rem;
+      background: var(--sand);
+      flex-shrink: 0;
+    }
+
+    .radio-page .station-skeleton__lines { flex: 1; }
 
     @media (max-width: 640px) {
       .radio-big-player { flex-direction: column; text-align: center; }
@@ -259,38 +286,56 @@
     }
   </style>
 </head>
-<body class="has-headline-ticker header-layout-legacy" data-page="gta-radio">
+<body data-page="gta-radio">
 
-  <header id="site-header">
-    <div class="header-inner">
-      <a href="index.html" class="site-logo"><img src="assets/logos/logo-white.png" alt="HappyTimes AZ" height="48"></a>
-      <nav class="site-nav" aria-label="Main navigation">
-        <a href="food.html" class="nav-link">Food</a>
-        <a href="news.html" class="nav-link">News</a>
-        <a href="cannabis.html" class="nav-link">Cannabis</a>
-        <a href="nightlife.html" class="nav-link">Nightlife</a>
-        <a href="health-wellness.html" class="nav-link">Health &amp; Wellness</a>
-        <a href="events.html" class="nav-link">Events</a>
-        <a href="classes.html" class="nav-link">Classes</a>
-        <a href="gta-radio.html" class="nav-link nav-link--radio active">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
-          GTA Radio
+  <header id="site-header" class="site-header--brand">
+    <div class="site-masthead">
+      <div class="site-masthead__inner">
+        <div class="site-masthead__meta">
+          <span class="site-masthead__date" id="home-masthead-date"></span>
+          <span class="site-masthead__weather is-loading" id="home-weather" aria-live="polite">Phoenix — …</span>
+        </div>
+        <a href="index.html" class="site-wordmark" aria-label="HappyTimes AZ home">
+          <img src="images/TextV2.png" alt="HappyTimes AZ" class="site-wordmark__img" width="1200" height="200" decoding="async">
         </a>
-      </nav>
-      <div class="header-actions">
-        <button id="mobile-nav-toggle" aria-label="Open menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <div class="site-masthead__radio">
+          <div id="radio-header-mini" class="radio-header-mini" aria-label="GTA Radio mini player"></div>
+        </div>
       </div>
     </div>
+    <div class="site-nav-bar">
+      <div class="site-nav-bar__inner">
+        <div class="site-nav-bar__dateline" aria-live="polite">
+          <span class="js-mobile-nav-dateline"></span>
+        </div>
+        <nav class="site-nav" aria-label="Main navigation">
+        <a href="food.html" class="nav-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>Food</a>
+        <a href="news.html" class="nav-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6z"/></svg>News</a>
+        <a href="cannabis.html" class="nav-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 1 10 10c0 2.8-1.2 5.4-3 7.2C17.5 20.8 12 22 12 22s-5.5-1.2-7-2.8C3.2 17.4 2 14.8 2 12A10 10 0 0 1 12 2z"/><path d="M12 22V12"/></svg>Cannabis</a>
+        <a href="nightlife.html" class="nav-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Nightlife</a>
+        <a href="health-wellness.html" class="nav-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a8 8 0 0 1 8 8H4a8 8 0 0 1 8-8z"/><path d="M9 10v4a3 3 0 0 0 6 0v-4"/></svg>Health &amp; Wellness</a>
+        <a href="events.html" class="nav-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Events</a>
+        <a href="classes.html" class="nav-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Classes</a>
+        </nav>
+        <div class="header-actions">
+          <div id="search-bar"><input type="text" id="search-input" placeholder="Search AZ…" aria-label="Search"></div>
+          <button type="button" id="search-toggle" aria-label="Toggle search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+          <button type="button" id="mobile-nav-toggle" aria-label="Open menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <nav class="site-header__mobile-cat-tabs" aria-label="Sections">
+      <div class="site-header__mobile-cat-tabs-track">
+        <a href="food.html" class="site-header__mobile-cat-tab">Food</a>
+        <a href="news.html" class="site-header__mobile-cat-tab">News</a>
+        <a href="cannabis.html" class="site-header__mobile-cat-tab">Cannabis</a>
+        <a href="nightlife.html" class="site-header__mobile-cat-tab">Nightlife</a>
+        <a href="health-wellness.html" class="site-header__mobile-cat-tab">Health &amp; Wellness</a>
+        <a href="events.html" class="site-header__mobile-cat-tab">Events</a>
+        <a href="classes.html" class="site-header__mobile-cat-tab">Classes</a>
+      </div>
+    </nav>
   </header>
-
-  <div class="headline-ticker headline-ticker--fixed" id="headline-ticker" aria-label="Latest headlines">
-    <div class="headline-ticker__viewport">
-      <div class="headline-ticker__label">Latest</div>
-      <div class="headline-ticker__scroll-wrap">
-        <div class="headline-ticker__track" id="headline-ticker-track"></div>
-      </div>
-    </div>
-  </div>
 
   <div id="mobile-nav-overlay"></div>
   <nav id="mobile-nav-drawer" aria-label="Mobile navigation">
@@ -304,18 +349,14 @@
     <a href="classes.html" class="mobile-nav-link">Classes</a>
     <div class="mobile-nav-divider"></div>
     <a href="gta-radio.html" class="mobile-nav-link mobile-nav-link--radio active">GTA Radio</a>
-    <div class="mobile-nav-divider"></div>
-    <a href="dispensaries.html" class="mobile-nav-link">Dispensary Directory</a>
   </nav>
 
   <main class="radio-page">
     <div class="container">
 
-      <div style="font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem">HappyTimes AZ</div>
       <h1 class="radio-page-title"><span>GTA</span> Radio</h1>
       <p class="radio-page-sub">Desert vibes, hip-hop, electronic and more — streaming live from Arizona.</p>
 
-      <!-- Big Player -->
       <div class="radio-big-player">
         <div class="radio-big-cover" id="big-cover">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
@@ -326,7 +367,7 @@
           <div class="radio-big-genre" id="big-genre">—</div>
           <div class="radio-big-controls">
             <div class="radio-big-loading" id="big-loading"><div class="radio-big-spinner"></div></div>
-            <button class="radio-big-play" id="big-play" aria-label="Play / Pause">
+            <button type="button" class="radio-big-play" id="big-play" aria-label="Play / Pause">
               <svg class="icon-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
               <svg class="icon-pause" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
             </button>
@@ -338,49 +379,27 @@
         </div>
       </div>
 
-      <!-- Station Grid -->
-      <h2 style="font-family:'Fraunces',Georgia,serif;font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:1.25rem">Stations</h2>
+      <h2 class="radio-stations-heading">Stations</h2>
       <div id="station-grid" class="station-grid">
-        <!-- Populated by JS -->
-        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:1rem;padding:1.25rem;display:flex;align-items:center;gap:1rem">
-          <div style="width:52px;height:52px;border-radius:.625rem;background:rgba(255,255,255,.06);flex-shrink:0"></div>
-          <div style="flex:1"><div class="skeleton-line w-80" style="margin:0 0 .5rem;background:rgba(255,255,255,.08)"></div><div class="skeleton-line w-50" style="margin:0;background:rgba(255,255,255,.06)"></div></div>
-        </div>
-        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:1rem;padding:1.25rem;display:flex;align-items:center;gap:1rem">
-          <div style="width:52px;height:52px;border-radius:.625rem;background:rgba(255,255,255,.06);flex-shrink:0"></div>
-          <div style="flex:1"><div class="skeleton-line w-80" style="margin:0 0 .5rem;background:rgba(255,255,255,.08)"></div><div class="skeleton-line w-50" style="margin:0;background:rgba(255,255,255,.06)"></div></div>
-        </div>
-        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:1rem;padding:1.25rem;display:flex;align-items:center;gap:1rem">
-          <div style="width:52px;height:52px;border-radius:.625rem;background:rgba(255,255,255,.06);flex-shrink:0"></div>
-          <div style="flex:1"><div class="skeleton-line w-80" style="margin:0 0 .5rem;background:rgba(255,255,255,.08)"></div><div class="skeleton-line w-50" style="margin:0;background:rgba(255,255,255,.06)"></div></div>
-        </div>
-        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:1rem;padding:1.25rem;display:flex;align-items:center;gap:1rem">
-          <div style="width:52px;height:52px;border-radius:.625rem;background:rgba(255,255,255,.06);flex-shrink:0"></div>
-          <div style="flex:1"><div class="skeleton-line w-80" style="margin:0 0 .5rem;background:rgba(255,255,255,.08)"></div><div class="skeleton-line w-50" style="margin:0;background:rgba(255,255,255,.06)"></div></div>
-        </div>
+        <div class="station-skeleton"><div class="station-skeleton__thumb"></div><div class="station-skeleton__lines"><div class="skeleton-line w-80" style="margin:0 0 .5rem"></div><div class="skeleton-line w-50" style="margin:0"></div></div></div>
+        <div class="station-skeleton"><div class="station-skeleton__thumb"></div><div class="station-skeleton__lines"><div class="skeleton-line w-80" style="margin:0 0 .5rem"></div><div class="skeleton-line w-50" style="margin:0"></div></div></div>
+        <div class="station-skeleton"><div class="station-skeleton__thumb"></div><div class="station-skeleton__lines"><div class="skeleton-line w-80" style="margin:0 0 .5rem"></div><div class="skeleton-line w-50" style="margin:0"></div></div></div>
+        <div class="station-skeleton"><div class="station-skeleton__thumb"></div><div class="station-skeleton__lines"><div class="skeleton-line w-80" style="margin:0 0 .5rem"></div><div class="skeleton-line w-50" style="margin:0"></div></div></div>
       </div>
 
     </div>
   </main>
 
-  <footer style="background:#0a0806;border-top:1px solid rgba(255,255,255,.06);padding:2rem 1.5rem;text-align:center;color:rgba(255,255,255,.3);font-size:.875rem;margin-bottom:var(--radio-h)">
-    <a href="index.html" style="text-decoration:none;display:inline-block;vertical-align:middle"><img src="assets/logos/logo-white.png" alt="HappyTimes AZ" height="32" style="opacity:.5"></a>
-    <span style="margin-inline:.75rem">·</span>
-    &copy; 2025 All rights reserved
-    <span style="margin-inline:.75rem">·</span>
-    <a href="advertise.html" style="color:var(--gold);text-decoration:none">Advertise</a>
-    <span style="margin-inline:.75rem">·</span>
-    <a href="about.html" style="color:rgba(255,255,255,.55);text-decoration:none">About</a>
-    <span style="margin-inline:.75rem">·</span>
-    <a href="contact.html" style="color:rgba(255,255,255,.55);text-decoration:none">Contact</a>
-    <span style="margin-inline:.75rem">·</span>
-    <a href="privacy-policy.html" style="color:rgba(255,255,255,.55);text-decoration:none">Privacy</a>
-    <span style="margin-inline:.75rem">·</span>
-    <a href="terms-of-service.html" style="color:rgba(255,255,255,.55);text-decoration:none">Terms</a>
-    <span style="margin-inline:.75rem">·</span>
-    <a href="disclosure.html" style="color:rgba(255,255,255,.55);text-decoration:none">Disclosure</a>
-    <div style="margin-top:.75rem;color:rgba(255,255,255,.35);max-width:70ch;margin-inline:auto;line-height:1.4">
-      Affiliate disclosure: some links may be affiliate links. See our <a href="disclosure.html" style="color:rgba(255,255,255,.55);text-decoration:none">Disclosure</a>.
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand"><a href="index.html" class="site-logo" style="margin-bottom:1rem;display:inline-flex"><img src="assets/logos/logo-white.png" alt="HappyTimes AZ" height="40"></a><p>Arizona's premier lifestyle magazine.</p><div class="footer-socials"><a href="#" class="footer-social" aria-label="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a><a href="#" class="footer-social" aria-label="TikTok"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/></svg></a><a href="#" class="footer-social" aria-label="X"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a><a href="#" class="footer-social" aria-label="YouTube"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M23 7s-.3-2-1.2-2.8c-1.1-1.2-2.4-1.2-3-1.3C15.8 2.8 12 2.8 12 2.8s-3.8 0-6.8.2c-.6.1-1.9.1-3 1.3C1.3 5 1 7 1 7S.7 9.3.7 11.5v2.1C.7 15.9 1 18 1 18s.3 2 1.2 2.8c1.1 1.2 2.6 1.1 3.3 1.2C7.6 22.1 12 22.1 12 22.1s3.8 0 6.8-.3c.6-.1 1.9-.1 3-1.3C22.7 19.6 23 17.6 23 17.6S23.3 15.3 23.3 13.1v-2.1C23.3 8.7 23 7 23 7zm-13.4 7.7V9.3l5.6 2.7-5.6 2.7z"/></svg></a></div></div>
+        <div class="footer-col"><h4>Explore</h4><div class="footer-links"><a href="food.html">Food &amp; Dining</a><a href="news.html">News</a><a href="cannabis.html">Cannabis</a><a href="nightlife.html">Nightlife</a><a href="health-wellness.html">Health &amp; Wellness</a><a href="events.html">Events</a><a href="classes.html">Classes</a></div></div>
+        <div class="footer-col"><h4>Directory</h4><div class="footer-links"><a href="dispensaries.html">Dispensaries</a><a href="gta-radio.html">GTA Radio</a></div></div>
+        <div class="footer-col"><h4>Company</h4><div class="footer-links"><a href="advertise.html">Advertise</a><a href="about.html">About</a><a href="contact.html">Contact</a></div></div>
+        <div class="footer-col"><h4>Footer Links</h4><div class="footer-links"><a href="about.html">About</a><a href="contact.html">Contact</a><a href="privacy-policy.html">Privacy Policy</a><a href="terms-of-service.html">Terms of Service</a><a href="disclosure.html">Disclosure</a></div></div>
+      </div>
+      <div class="footer-bottom"><span>&copy; 2025 HappyTimes AZ.</span><div class="footer-legal"><a href="privacy-policy.html">Privacy Policy</a><a href="terms-of-service.html">Terms of Service</a><a href="disclosure.html">Disclosure</a></div><div class="footer-affiliate">Affiliate disclosure: some links may be affiliate links. See our <a href="disclosure.html">Disclosure</a>.</div></div>
     </div>
   </footer>
 
@@ -388,7 +407,6 @@
   <script src="js/radio.js"></script>
   <script src="js/main.js"></script>
   <script>
-  // Full-page radio player that syncs with mini player
   (function() {
     const FALLBACK = [
       { title: 'GTA Radio – Desert Vibes', streamUrl: '', genre: 'Desert Rock' },
@@ -420,7 +438,7 @@
       grid.innerHTML = stations.map((s, i) => {
         const coverUrl = s.coverImage ? window.sanityImage(s.coverImage, 104, 104) : null;
         return `
-          <button class="station-tile ${i === currentIdx ? 'active' : ''}" data-idx="${i}">
+          <button type="button" class="station-tile ${i === currentIdx ? 'active' : ''}" data-idx="${i}">
             <div class="station-tile-cover">${coverUrl ? `<img src="${coverUrl}" alt="${esc(s.title)}" loading="lazy">` : `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`}</div>
             <div class="station-tile-info">
               <div class="station-tile-name">${esc(s.title)}</div>
@@ -496,7 +514,6 @@
       btn.querySelector('.icon-play').style.display = playing ? 'none' : '';
       btn.querySelector('.icon-pause').style.display = playing ? '' : 'none';
       btn.classList.toggle('playing', playing);
-      // Update tile indicator
       document.querySelectorAll('.station-tile').forEach((t, i) => {
         t.classList.toggle('playing', i === currentIdx && playing);
       });

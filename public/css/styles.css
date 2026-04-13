@@ -302,7 +302,7 @@ p:last-child { margin-bottom: 0; }
 .card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--transition-slow); }
 .card-image:hover img { transform: scale(1.04); }
 
-/* === SITE HEADER — legacy single row (body.header-layout-legacy, e.g. GTA Radio) === */
+/* === SITE HEADER — legacy single row (body.header-layout-legacy; optional older shells) === */
 #site-header:not(.site-header--brand) {
   position: fixed;
   top: 0;
@@ -590,7 +590,9 @@ p:last-child { margin-bottom: 0; }
   color: #1b1d1d;
 }
 
-#site-header.site-header--brand > .headline-ticker {
+/* Homepage: ticker row uses page cream — no dark band between nav and content */
+body.page-home #site-header.site-header--brand > .headline-ticker {
+  background: var(--cream);
   border-bottom: none;
 }
 
@@ -897,30 +899,6 @@ p:last-child { margin-bottom: 0; }
 @keyframes ht-ticker {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
-}
-
-/* GTA Radio — dark header, same brand border & ticker as site */
-body[data-page="gta-radio"] #site-header {
-  background: rgba(27, 29, 29, 0.98);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-body[data-page="gta-radio"] .nav-link:not(.nav-link--radio) {
-  color: rgba(255, 255, 255, 0.78);
-}
-
-body[data-page="gta-radio"] .nav-link:not(.nav-link--radio):hover {
-  color: var(--brand-yellow);
-  background: rgba(243, 178, 55, 0.12);
-}
-
-body[data-page="gta-radio"] .nav-link svg {
-  opacity: 0.85;
-}
-
-body[data-page="gta-radio"] #mobile-nav-toggle {
-  color: var(--brand-yellow);
 }
 
 /* === HERO MOSAIC === */
@@ -1602,7 +1580,8 @@ body[data-page="events"] .event-page-card {
 .filter-btn:hover { border-color: var(--brand-orange); color: var(--brand-orange); }
 .filter-btn.active { background: var(--brand-orange); border-color: var(--brand-orange); color: var(--white); }
 
-#dispensary-grid {
+#dispensary-grid,
+#cannabis-dispensary-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-6);
@@ -1936,6 +1915,56 @@ main.category-page-main {
 
 main.category-page-main > .cannabis-section--dark:first-child {
   padding-top: var(--space-6);
+}
+
+/* Classes hub — coming soon (stamp / banner treatment) */
+.classes-page-main {
+  min-height: min(62vh, 36rem);
+}
+
+.classes-coming-soon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-12) var(--space-4) var(--space-16);
+  box-sizing: border-box;
+}
+
+.classes-coming-soon__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 800;
+  color: var(--gold);
+  margin: 0 0 var(--space-10);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.classes-coming-soon__stamp {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(1.85rem, 6.5vw, 3rem);
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #4a3208;
+  background: linear-gradient(
+    165deg,
+    var(--gold-light) 0%,
+    var(--gold) 42%,
+    var(--brand-yellow-dark) 100%
+  );
+  border: 4px double rgba(74, 50, 8, 0.55);
+  padding: 0.5em 1.1em 0.45em;
+  transform: rotate(-2.75deg);
+  border-radius: 3px;
+  box-shadow:
+    0 0 0 3px rgba(243, 178, 55, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    0 14px 32px rgba(27, 29, 29, 0.16);
+  line-height: 1.05;
 }
 
 .events-date-tabs {
@@ -2793,7 +2822,8 @@ button.event-page-card__toggle {
   .deals-grid { grid-template-columns: repeat(2, 1fr); }
   .events-grid { grid-template-columns: repeat(2, 1fr); }
   .dispensary-highlights { grid-template-columns: repeat(2, 1fr); }
-  #dispensary-grid { grid-template-columns: repeat(2, 1fr); }
+  #dispensary-grid,
+  #cannabis-dispensary-grid { grid-template-columns: repeat(2, 1fr); }
   .related-grid { grid-template-columns: repeat(2, 1fr); }
   .listing-layout { grid-template-columns: 1fr; }
   .listing-sidebar { position: static; }
@@ -2930,7 +2960,8 @@ button.event-page-card__toggle {
   .deals-grid { grid-template-columns: 1fr; }
   .events-grid { grid-template-columns: 1fr; }
   .dispensary-highlights { grid-template-columns: 1fr; }
-  #dispensary-grid { grid-template-columns: 1fr; }
+  #dispensary-grid,
+  #cannabis-dispensary-grid { grid-template-columns: 1fr; }
   .related-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
 
   .event-full-card { flex-direction: column; }
