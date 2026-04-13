@@ -306,6 +306,23 @@
     return tags;
   }
 
+  function getDispensaryInitials(name) {
+    const s = String(name || '').trim();
+    if (!s) return '?';
+    const parts = s.split(/\s+/).filter(Boolean);
+    const skip = new Set(['the', 'a', 'an']);
+    const meaningful = parts.filter(p => !skip.has(p.toLowerCase()));
+    const use = meaningful.length ? meaningful : parts;
+    if (use.length >= 2) {
+      const a = use[0][0] || '';
+      const b = use[1][0] || '';
+      return (a + b).toUpperCase();
+    }
+    const w = use[0] || s;
+    if (w.length >= 2) return w.slice(0, 2).toUpperCase();
+    return w.charAt(0).toUpperCase();
+  }
+
   function formatHoursCompact(hours) {
     if (!hours || typeof hours !== 'object') return '';
     const order = [
@@ -340,6 +357,33 @@
             ${imgOrPlaceholder(d.heroImage, 520, 390, name)}
           </div>
         </a>
+        <div class="dispensary-card__body">
+          <h3 class="dispensary-card__name"><a href="${url}">${esc(name)}</a></h3>
+          ${d.address ? `<div class="dispensary-card__address">${esc(d.address)}</div>` : ''}
+          ${d.city ? `<div class="dispensary-card__city"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(d.city)}, AZ</div>` : ''}
+          ${tags.length ? `<div class="dispensary-card__tags">${tags.map(t => `<span class="badge" style="--badge-color:${t.color}">${esc(t.label)}</span>`).join('')}</div>` : ''}
+          ${hours ? `<div class="dispensary-card__hours"><strong>Hours</strong><div>${esc(hours)}</div></div>` : ''}
+          <div class="dispensary-card__actions">
+            ${d.website ? `<a href="${esc(d.website)}" target="_blank" rel="noopener" class="btn btn--sm btn--outline">Website</a>` : ''}
+            ${d.phone ? `<a href="tel:${esc(d.phone)}" class="btn btn--sm btn--ghost">${esc(d.phone)}</a>` : ''}
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  /** Cannabis hub horizontal row — monogram avatar, no hero image (directory page unchanged). */
+  function renderDispensaryCannabisRowCard(d) {
+    if (!d) return '';
+    const name = d.name || d.dispensaryName || 'Dispensary';
+    const slug = (d.slug && typeof d.slug === 'object') ? d.slug.current : d.slug;
+    const url = slug ? `listing?slug=${encodeURIComponent(slug)}` : '#';
+    const tags = getDispensaryCategoryTags(d);
+    const hours = formatHoursCompact(d.hours);
+    const initials = getDispensaryInitials(name);
+    return `
+      <article class="dispensary-card dispensary-card--cannabis-row">
+        <a href="${url}" class="dispensary-card__monogram" aria-label="${esc(name)} — view listing">${esc(initials)}</a>
         <div class="dispensary-card__body">
           <h3 class="dispensary-card__name"><a href="${url}">${esc(name)}</a></h3>
           ${d.address ? `<div class="dispensary-card__address">${esc(d.address)}</div>` : ''}
@@ -1226,7 +1270,7 @@
       if (!dispensaries || dispensaries.length === 0) {
         dispEl.innerHTML = '<p class="empty-msg">No dispensaries found.</p>';
       } else {
-        dispEl.innerHTML = dispensaries.map(d => renderDispensaryDirectoryCard(d)).join('');
+        dispEl.innerHTML = dispensaries.map(d => renderDispensaryCannabisRowCard(d)).join('');
       }
     }
 
