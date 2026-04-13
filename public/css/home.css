@@ -485,40 +485,109 @@ body.page-home > main > .home-hero:first-child {
 
 /* Newsletter */
 .newsletter-cta {
-  padding-block: var(--space-16);
+  padding-block: var(--space-6);
   background: #1b1d1d;
   color: #efefef;
-  border-top: 3px solid #f3b237;
-  border-bottom: 3px solid #f3b237;
+  border-top: 2px solid #f3b237;
+  border-bottom: 2px solid #f3b237;
 }
 
 .newsletter-cta .container {
-  max-width: 560px;
-  text-align: center;
+  max-width: var(--max-width);
+  text-align: left;
 }
 
 .newsletter-cta h2 {
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 900;
-  margin-bottom: var(--space-3);
+  font-size: clamp(1.125rem, 2.2vw, 1.5rem);
+  font-weight: 800;
+  margin: 0 0 var(--space-2);
   color: #fff;
+  letter-spacing: -0.02em;
 }
 
-.newsletter-cta p {
-  font-size: 0.9375rem;
-  opacity: 0.9;
-  margin-bottom: var(--space-6);
+.newsletter-cta__lede {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  opacity: 0.82;
+  margin: 0 0 var(--space-4);
+  max-width: 36rem;
 }
 
-.newsletter-cta__embed {
-  width: 100%;
-  margin-inline: auto;
+.newsletter-cta__box {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(243, 178, 55, 0.22);
 }
 
-.newsletter-cta__embed iframe {
-  display: block;
-  max-width: 100%;
+.newsletter-cta__form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+.newsletter-cta__fields {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 12rem;
+  min-width: 0;
+  gap: var(--space-2);
+}
+
+.newsletter-cta__input {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--ink);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.newsletter-cta__input::placeholder {
+  color: var(--ink-light);
+}
+
+.newsletter-cta__input:focus {
+  border-color: var(--brand-orange);
+  box-shadow: 0 0 0 2px rgba(254, 133, 38, 0.25);
+}
+
+.newsletter-cta__submit {
+  flex: 0 0 auto;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.newsletter-cta__msg {
+  margin: var(--space-3) 0 0;
+  font-size: 0.8125rem;
+  min-height: 1.25em;
+  color: var(--gold-light);
+}
+
+@media (max-width: 640px) {
+  .newsletter-cta__form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .newsletter-cta__fields {
+    flex-direction: column;
+  }
+
+  .newsletter-cta__submit {
+    width: 100%;
+  }
 }
 
 /* Editorial section on home */

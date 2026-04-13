@@ -259,10 +259,17 @@
     <section class="newsletter-cta" aria-labelledby="newsletter-heading">
       <div class="container">
         <h2 id="newsletter-heading">Get HappyTimes in your inbox</h2>
-        <p>Arizona food, events, and culture—weekly picks from the Valley.</p>
-        <div class="newsletter-cta__embed">
-          <iframe src="https://link.xentralcore.com/widget/form/wBrBywoxmMlp18qPNANa" style="width:100%;height:689px;border:none;border-radius:3px" id="inline-wBrBywoxmMlp18qPNANa" data-layout='{"id":"INLINE"}' data-trigger-type="alwaysShow" data-trigger-value="" data-activation-type="alwaysActivated" data-activation-value="" data-deactivation-type="neverDeactivate" data-deactivation-value="" data-form-name="SignUp HTAZ" data-height="689" data-layout-iframe-id="inline-wBrBywoxmMlp18qPNANa" data-form-id="wBrBywoxmMlp18qPNANa" title="SignUp HTAZ"></iframe>
+        <p class="newsletter-cta__lede">Arizona food, events, and culture—weekly picks from the Valley.</p>
+        <div class="newsletter-cta__box">
+          <form id="newsletter-form" class="newsletter-cta__form" action="#" method="post" novalidate>
+            <div class="newsletter-cta__fields">
+              <input type="text" id="newsletter-name" name="name" class="newsletter-cta__input" placeholder="Name" autocomplete="name" aria-label="Name">
+              <input type="email" id="newsletter-email" name="email" class="newsletter-cta__input" placeholder="Email" required autocomplete="email" aria-label="Email">
+            </div>
+            <button type="submit" class="btn btn--primary newsletter-cta__submit">Subscribe</button>
+          </form>
         </div>
+        <p id="newsletter-form-msg" class="newsletter-cta__msg" role="status" aria-live="polite"></p>
       </div>
     </section>
 
