@@ -1889,38 +1889,37 @@ body[data-page="events"] .event-page-card {
 /* === EVENTS PAGE === */
 .events-page { background: var(--cream); }
 
-/* Category / section heroes — solid brand black + gold titles */
+/* Category / section pages — minimal cream title strip (aligns with .container) */
 .category-page-hero {
-  background: var(--brand-black);
-  color: var(--white);
-  padding-block: var(--space-16);
-  text-align: center;
-  border-bottom: 1px solid rgba(243, 178, 55, 0.35);
+  background: var(--cream);
+  text-align: left;
+  padding-block: var(--space-2) 0;
 }
 
-.category-page-hero__label {
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--brand-yellow);
-  margin-bottom: var(--space-3);
+.category-page-hero .container {
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid rgba(243, 178, 55, 0.42);
 }
 
+.category-page-hero__title,
 .category-page-hero h1 {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 900;
+  font-size: 2rem;
+  font-weight: 800;
   color: var(--brand-yellow);
-  margin-bottom: var(--space-3);
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
-.category-page-hero__sub {
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 1.0625rem;
-  max-width: 560px;
-  margin-inline: auto;
-  line-height: 1.5;
+/* Tight main below strip + leaderboard (replaces .section top padding on hub pages) */
+main.category-page-main {
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-16);
+}
+
+main.category-page-main > .cannabis-section--dark:first-child {
+  padding-top: var(--space-6);
 }
 
 .events-date-tabs {
@@ -2695,16 +2694,30 @@ button.event-page-card__toggle {
 
 /* === PAGE HERO SECTIONS === */
 .page-hero {
-  /* legacy — prefer .category-page-hero */
-  background: var(--brand-black);
-  color: var(--white);
-  padding-block: var(--space-16);
-  text-align: center;
-  border-bottom: 1px solid rgba(243, 178, 55, 0.35);
+  /* legacy — match minimal category strip if used */
+  background: var(--cream);
+  text-align: left;
+  padding-block: var(--space-2) 0;
 }
 
-.page-hero h1 { color: var(--brand-yellow); margin-bottom: var(--space-3); }
-.page-hero p { color: rgba(255,255,255,0.85); font-size: 1.125rem; max-width: 560px; margin-inline: auto; }
+.page-hero .container {
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid rgba(243, 178, 55, 0.42);
+}
+
+.page-hero h1 {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--brand-yellow);
+  margin: 0;
+}
+.page-hero p {
+  color: var(--ink-light);
+  font-size: 1rem;
+  max-width: 560px;
+  margin-top: var(--space-2);
+}
 
 .breadcrumb {
   display: flex;
@@ -2929,10 +2942,10 @@ button.event-page-card__toggle {
     grid-template-columns: 1fr;
   }
 
-  .category-page-hero,
-  .page-hero {
-    padding-block: var(--space-10);
-    padding-inline: calc(var(--content-pad) + var(--safe-left)) calc(var(--content-pad) + var(--safe-right));
+  .category-page-hero__title,
+  .category-page-hero h1,
+  .page-hero h1 {
+    font-size: 1.75rem;
   }
 }
 
