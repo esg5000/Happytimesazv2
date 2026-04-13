@@ -321,89 +321,9 @@ body.page-home .home-masthead .radio-header-mini__play.playing {
   background: rgba(243, 178, 55, 0.18);
 }
 
-/* Full-width category word rotator (below header ticker, above main hero) */
-.home-category-hero {
-  width: 100%;
-  min-height: 220px;
-  height: 220px;
-  box-sizing: border-box;
-  background: #1b1d1d;
-  border-bottom: 3px solid #fe8526;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--content-pad);
-  text-align: center;
-}
-
-.home-category-hero__inner {
-  min-height: 3.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.home-category-hero__rotator {
-  margin: 0;
-  line-height: 1.1;
-}
-
-.home-category-hero__word {
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 6vw, 3.5rem);
-  font-weight: 800;
-  color: #f3b237;
-  letter-spacing: -0.03em;
-  transition: opacity 0.38s ease, transform 0.38s ease;
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.home-category-hero__word.is-out {
-  opacity: 0;
-  transform: translateY(-12px);
-}
-
-.home-category-hero__word.is-in {
-  opacity: 0;
-  transform: translateY(14px);
-}
-
-.home-category-hero__subtitle {
-  margin: 0;
-  max-width: 36rem;
-  font-size: clamp(0.9375rem, 2.2vw, 1.125rem);
-  font-weight: 600;
-  line-height: 1.45;
-  color: #fff;
-  letter-spacing: 0.01em;
-}
-
-@media (max-width: 640px) {
-  .home-category-hero {
-    min-height: 200px;
-    height: auto;
-    padding-block: var(--space-5);
-  }
-
-  .home-category-hero__word {
-    font-size: clamp(1.75rem, 8vw, 2.5rem);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .home-category-hero__word {
-    transition: none;
-  }
-
-  .home-category-hero__word.is-out,
-  .home-category-hero__word.is-in {
-    opacity: 1;
-    transform: none;
-  }
+/* Homepage: tight gap below minimal Latest strip (same as category hubs) */
+body.page-home > main > .home-hero:first-child {
+  padding-top: var(--space-3);
 }
 
 /* Hero 3-column */

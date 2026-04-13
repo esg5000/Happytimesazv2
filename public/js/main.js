@@ -369,46 +369,6 @@
 
   const HOME_HERO_TAKE = 9;
 
-  const HOME_CATEGORY_HERO_WORDS = [
-    'Food.',
-    'Cannabis.',
-    'Nightlife.',
-    'Health & Wellness.',
-    'Events.',
-    'News.'
-  ];
-
-  /** Cycling category labels below the homepage ticker (fade + slide). */
-  function initHomeCategoryHeroRotator() {
-    const el = document.getElementById('home-category-rotator');
-    if (!el) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    const HOLD_MS = 1500;
-    const FADE_MS = 380;
-    let i = 0;
-
-    function step() {
-      window.setTimeout(() => {
-        el.classList.add('is-out');
-        window.setTimeout(() => {
-          i = (i + 1) % HOME_CATEGORY_HERO_WORDS.length;
-          el.textContent = HOME_CATEGORY_HERO_WORDS[i];
-          el.classList.remove('is-out');
-          el.classList.add('is-in');
-          window.requestAnimationFrame(() => {
-            window.requestAnimationFrame(() => {
-              el.classList.remove('is-in');
-            });
-          });
-          step();
-        }, FADE_MS);
-      }, HOLD_MS);
-    }
-
-    step();
-  }
-
   function renderHomeMastheadDate() {
     const el = document.getElementById('home-masthead-date');
     if (!el) return;
@@ -547,7 +507,6 @@
   async function initHomepage() {
     setMeta('HappyTimes AZ – Arizona Lifestyle Magazine', 'Your guide to Arizona food, cannabis, nightlife, events and more.');
 
-    initHomeCategoryHeroRotator();
     initNewsletterForm();
 
     // Fire all fetches in parallel
