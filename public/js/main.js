@@ -1224,8 +1224,7 @@
     const dispEl = document.getElementById('cannabis-dispensary-grid');
     if (dispEl) {
       if (!dispensaries || dispensaries.length === 0) {
-        dispEl.innerHTML =
-          '<p class="empty-msg" style="grid-column:1/-1">No dispensaries found.</p>';
+        dispEl.innerHTML = '<p class="empty-msg">No dispensaries found.</p>';
       } else {
         dispEl.innerHTML = dispensaries.map(d => renderDispensaryDirectoryCard(d)).join('');
       }
