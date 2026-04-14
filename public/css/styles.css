@@ -2086,17 +2086,26 @@ body[data-page="events"] .event-page-card {
 
 .food-page-featured__inner .article-card--large {
   max-width: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Shorter hero so the featured story does not fill the viewport */
 .food-page-featured__inner .article-card--large .article-card__image {
   max-height: 220px;
+  width: 100%;
 }
 
 @media (min-width: 641px) {
   .food-page-featured__inner .article-card--large .article-card__image {
     max-height: 350px;
   }
+}
+
+.food-page-featured__inner .article-card--large .article-card__image-link {
+  display: block;
+  width: 100%;
 }
 
 .food-top25 {
