@@ -83,20 +83,24 @@
   </nav>
 
   <main id="article-main">
-    <!-- Hero image -->
-    <div id="article-hero" class="article-hero"></div>
-
-    <!-- Article header -->
-    <div class="article-header">
-      <nav class="breadcrumb">
-        <a href="/index.html">Home</a>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-        <span id="article-breadcrumb-cat">Article</span>
-      </nav>
-      <div id="article-meta"></div>
-      <h1 id="article-title" style="font-family:'Fraunces',Georgia,serif;font-size:clamp(1.75rem,4vw,3rem);font-weight:900;line-height:1.15;color:var(--ink);margin-bottom:1.25rem">Loading article…</h1>
-      <p id="article-excerpt"></p>
-    </div>
+    <!-- Article hero card (stacked: image top, title/meta below) -->
+    <section class="article-page-hero">
+      <div class="container">
+        <article class="article-card article-card--large article-page-hero-card">
+          <div id="article-hero" class="article-card__image article-page-hero__image" aria-label="Article hero image"></div>
+          <div class="article-card__body article-page-hero__body">
+            <nav class="breadcrumb">
+              <a href="/index.html">Home</a>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              <span id="article-breadcrumb-cat">Article</span>
+            </nav>
+            <div id="article-meta"></div>
+            <h1 id="article-title">Loading article…</h1>
+            <p id="article-excerpt"></p>
+          </div>
+        </article>
+      </div>
+    </section>
 
     <!-- Article body -->
     <div class="article-layout">
