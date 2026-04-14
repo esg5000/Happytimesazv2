@@ -2090,12 +2090,12 @@ body[data-page="events"] .event-page-card {
 
 /* Shorter hero so the featured story does not fill the viewport */
 .food-page-featured__inner .article-card--large .article-card__image {
-  max-height: 250px;
+  max-height: 220px;
 }
 
 @media (min-width: 641px) {
   .food-page-featured__inner .article-card--large .article-card__image {
-    max-height: 400px;
+    max-height: 350px;
   }
 }
 
