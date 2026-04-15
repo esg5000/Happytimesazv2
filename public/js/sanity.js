@@ -78,7 +78,7 @@ window.getHomepageSettings = () => sanityFetch(`
 `);
 
 window.getLatestPosts = (limit = 12) => sanityFetch(`
-  *[_type == "post"] | order(_createdAt desc) [0...${limit}]{
+  *[_type == "post"] | order(coalesce(isFeatured, false) desc, _createdAt desc) [0...${limit}]{
     title,
     "slug": slug.current,
     excerpt,
@@ -91,7 +91,7 @@ window.getLatestPosts = (limit = 12) => sanityFetch(`
 `);
 
 window.getPostsByCategory = (cat, limit = 12) => sanityFetch(`
-  *[_type == "post" && category->slug.current == $cat] | order(_createdAt desc) [0...${limit}]{
+  *[_type == "post" && category->slug.current == $cat] | order(coalesce(isFeatured, false) desc, _createdAt desc) [0...${limit}]{
     title,
     "slug": slug.current,
     excerpt,
@@ -108,7 +108,7 @@ window.getNewsPosts = (limit = 24) => sanityFetch(`
   *[
     _type == "post" &&
     (source == "newsapi" || category->slug.current == "news")
-  ] | order(_createdAt desc) [0...${limit}]{
+  ] | order(coalesce(isFeatured, false) desc, _createdAt desc) [0...${limit}]{
     title,
     "slug": slug.current,
     excerpt,
