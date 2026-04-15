@@ -1134,6 +1134,7 @@ body[data-page="events"] .event-page-card {
 
 /* Large article card variant */
 .article-card--large .article-card__image { aspect-ratio: 16/9; }
+.article-card--large .article-card__image img { object-position: top; }
 .article-card--large .article-card__title { font-size: 1.25rem; -webkit-line-clamp: 4; }
 
 /* === CANNABIS SPOTLIGHT === */
@@ -1805,7 +1806,7 @@ body[data-page="events"] .event-page-card {
 .article-page-hero__image {
   width: 100%;
   background-size: cover;
-  background-position: center;
+  background-position: top center;
   background-color: var(--ink);
   max-height: 260px;
 }
