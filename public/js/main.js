@@ -170,6 +170,7 @@
       'health-wellness': '#8b4513', 'health & wellness': '#8b4513',
       mushroom: '#8b4513', mushrooms: '#8b4513', wellness: '#8b4513',
       news: '#1a6fa0',
+      sports: '#1a6fa0',
       events: '#d4a03c', event: '#d4a03c',
       classes: '#1a6fa0', class: '#1a6fa0', education: '#1a6fa0',
       music: '#c94a1f',
@@ -1657,7 +1658,7 @@
     gridEl.innerHTML = posts.map(p => renderArticleCard(p)).join('');
   }
 
-  // ─── CATEGORY PAGE (food / nightlife / health-wellness / classes) ───────────
+  // ─── CATEGORY PAGE (food / nightlife / health-wellness / sports / classes) ─
 
   async function initCategoryPage() {
     const cat   = document.body.dataset.category || '';
