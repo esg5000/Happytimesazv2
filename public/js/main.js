@@ -124,6 +124,33 @@
     return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
+  function authorDisplayName(post) {
+    if (!post || post.author == null) return '';
+    const a = post.author;
+    if (typeof a === 'string') return a.trim();
+    if (typeof a === 'object') {
+      if (typeof a.name === 'string' && a.name.trim()) return a.name.trim();
+      if (typeof a.title === 'string' && a.title.trim()) return a.title.trim();
+    }
+    return '';
+  }
+
+  function formatArticleByline(post) {
+    const name = authorDisplayName(post) || 'HappyTimesAZ AI Desk';
+    return `By ${esc(name)}`;
+  }
+
+  function isScannerArticle(post) {
+    const s = String(post && post.source != null ? post.source : '').toLowerCase().trim();
+    return s === 'scanner';
+  }
+
+  function scannerDisclaimerText(post) {
+    if (!post || post.disclaimer == null) return '';
+    if (typeof post.disclaimer !== 'string') return '';
+    return post.disclaimer.trim();
+  }
+
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -209,11 +236,11 @@
         </a>
         <div class="article-card__body">
           <h3 class="article-card__title"><a href="${esc(url)}">${esc(post.title)}</a></h3>
+          <p class="article-card__byline">${formatArticleByline(post)}</p>
           ${post.excerpt ? `<p class="article-card__excerpt">${esc(post.excerpt)}</p>` : ''}
           <div class="article-card__meta">
             ${date ? `<span>${date}</span>` : ''}
             ${mins ? `<span>${mins}</span>` : ''}
-            ${post.author ? `<span>${esc(post.author)}</span>` : ''}
           </div>
         </div>
       </article>
@@ -1147,13 +1174,15 @@
         ${categoryBadge(post.categories)}
         ${post.publishedAt ? `<span>${window.formatDate(post.publishedAt)}</span>` : ''}
         ${post.readTime ? `<span>${post.readTime} min read</span>` : ''}
-        ${post.author ? `<span>By ${esc(post.author)}</span>` : ''}
       `;
     }
 
     // Title
     const titleEl = document.getElementById('article-title');
     if (titleEl) titleEl.textContent = post.title;
+
+    const bylineEl = document.getElementById('article-byline');
+    if (bylineEl) bylineEl.innerHTML = formatArticleByline(post);
 
     // Excerpt
     const excEl = document.getElementById('article-excerpt');
@@ -1174,6 +1203,13 @@
           (videoHtml || '') +
           (galleryHtml || '') +
           '<p class="empty-msg">Article content coming soon.</p>';
+      }
+      const disc = scannerDisclaimerText(post);
+      if (isScannerArticle(post) && disc) {
+        const p = document.createElement('p');
+        p.className = 'article-disclaimer';
+        p.textContent = disc;
+        bodyEl.appendChild(p);
       }
     }
 
