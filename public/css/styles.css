@@ -2122,6 +2122,13 @@ body[data-page="events"] .event-page-card {
 /* === EVENTS PAGE === */
 .events-page { background: var(--cream); }
 
+.events-coverage-divider {
+  border: 0;
+  border-top: 1px solid var(--sand);
+  margin: var(--space-10) 0;
+  opacity: 0.9;
+}
+
 /* === FOOD PAGE — featured + Top 25 row === */
 .food-page-main #food-content {
   display: flex;

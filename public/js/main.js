@@ -1443,10 +1443,21 @@
 
   async function initEventsPage() {
     setMeta('Events – Arizona Events & Shows');
+    const coverageEl = document.getElementById('events-coverage-grid');
     const el = document.getElementById('events-list');
     const tabRoot = document.getElementById('events-date-tabs');
     if (!el) return;
+    if (coverageEl) showSkeleton(coverageEl, 6, 'card');
     showSkeleton(el, 8, 'card');
+
+    if (coverageEl && typeof window.getPostsByCategory === 'function') {
+      const posts = await window.getPostsByCategory('events', 12).catch(() => null);
+      if (!posts || !posts.length) {
+        coverageEl.innerHTML = '<p class="empty-msg">No event coverage articles yet.</p>';
+      } else {
+        coverageEl.innerHTML = posts.map(p => renderArticleCard(p)).join('');
+      }
+    }
 
     const d = new Date();
     d.setHours(0, 0, 0, 0);
