@@ -2475,10 +2475,19 @@ main.category-page-main > .cannabis-section--dark:first-child {
   margin-bottom: var(--space-6);
 }
 
-.events-date-tabs .filter-btn {
+.events-date-tabs .filter-btn,
+.events-city-tabs .filter-btn {
   flex: 1 1 auto;
   min-width: 0;
   text-align: center;
+}
+
+.events-city-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: calc(-1 * var(--space-2)) 0 var(--space-6);
+  padding-top: var(--space-2);
 }
 
 .events-page-grid {

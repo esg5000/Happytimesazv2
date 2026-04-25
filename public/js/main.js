@@ -1349,6 +1349,20 @@
     });
   }
 
+  function normalizeCityName(raw) {
+    if (!raw) return '';
+    return String(raw)
+      .replace(/,\s*az\b/i, '')
+      .trim()
+      .toLowerCase();
+  }
+
+  function filterEventsByCity(events, city) {
+    const want = normalizeCityName(city);
+    if (!want) return events;
+    return events.filter(ev => normalizeCityName(ev && ev.city) === want);
+  }
+
   function eventOutboundUrl(event) {
     const t = (event.ticketUrl || '').trim();
     const l = (event.link || '').trim();
@@ -1446,6 +1460,7 @@
     const coverageEl = document.getElementById('events-coverage-grid');
     const el = document.getElementById('events-list');
     const tabRoot = document.getElementById('events-date-tabs');
+    const cityRoot = document.getElementById('events-city-tabs');
     if (!el) return;
     if (coverageEl) showSkeleton(coverageEl, 6, 'card');
     showSkeleton(el, 8, 'card');
@@ -1465,6 +1480,7 @@
     if (!events || events.length === 0) {
       el.innerHTML = '<p class="empty-msg">No upcoming events found. Check back soon!</p>';
       if (tabRoot) tabRoot.style.display = 'none';
+      if (cityRoot) cityRoot.style.display = 'none';
       return;
     }
 
@@ -1495,8 +1511,21 @@
       });
     }
 
-    function renderRange(range) {
-      const filtered = filterEventsByRange(events, range);
+    function setActiveCity(city) {
+      if (!cityRoot) return;
+      cityRoot.querySelectorAll('.events-city-tab').forEach(btn => {
+        const on = normalizeCityName(btn.dataset.city) === normalizeCityName(city);
+        btn.classList.toggle('active', on);
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
+
+    let currentRange = 'week';
+    let currentCity = '';
+
+    function renderFiltered() {
+      const byRange = filterEventsByRange(events, currentRange);
+      const filtered = filterEventsByCity(byRange, currentCity);
       if (!filtered.length) {
         el.innerHTML = '<p class="empty-msg">No events in this time range.</p>';
         return;
@@ -1509,14 +1538,26 @@
         btn.addEventListener('click', () => {
           const range = btn.dataset.range;
           if (!range) return;
-          setActiveTab(range);
-          renderRange(range);
+          currentRange = range;
+          setActiveTab(currentRange);
+          renderFiltered();
         });
       });
     }
 
-    setActiveTab('week');
-    renderRange('week');
+    if (cityRoot) {
+      cityRoot.querySelectorAll('.events-city-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentCity = btn.dataset.city || '';
+          setActiveCity(currentCity);
+          renderFiltered();
+        });
+      });
+    }
+
+    setActiveTab(currentRange);
+    setActiveCity(currentCity);
+    renderFiltered();
   }
 
   // ─── CANNABIS PAGE ────────────────────────────────────────────────────────────
