@@ -2766,6 +2766,28 @@ button.event-page-card__toggle {
 
 .cannabis-deals-city-tabs::-webkit-scrollbar { display: none; }
 
+@media (min-width: 769px) {
+  /* Desktop: show a thin on-brand scrollbar */
+  .cannabis-deals-city-tabs {
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #f3b237 #0b1010; /* thumb track */
+  }
+
+  .cannabis-deals-city-tabs::-webkit-scrollbar {
+    display: block;
+    height: 4px;
+  }
+
+  .cannabis-deals-city-tabs::-webkit-scrollbar-track {
+    background: #0b1010;
+  }
+
+  .cannabis-deals-city-tabs::-webkit-scrollbar-thumb {
+    background: #f3b237;
+    border-radius: 999px;
+  }
+}
+
 .cannabis-deals-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
