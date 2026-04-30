@@ -1410,19 +1410,22 @@
     `;
   }
 
-  function uniqueCitiesFromDispensaries(list) {
-    const seen = new Set();
+  function cityFilterOptionsFromDispensaries(list) {
+    const map = new Map(); // normalized -> label
     (Array.isArray(list) ? list : []).forEach(d => {
-      const c = normalizeCityName(d && d.city);
-      if (c) seen.add(c);
+      const raw = d && d.city != null ? String(d.city) : '';
+      const norm = normalizeCityName(raw);
+      if (!norm) return;
+      if (!map.has(norm)) {
+        // Prefer the original city string (minus ", AZ") as display label.
+        const label = String(raw).replace(/,\s*az\b/i, '').trim();
+        map.set(norm, label || norm);
+      }
     });
-    return [...seen].sort((a, b) => a.localeCompare(b));
-  }
 
-  function titleCaseCity(normalized) {
-    const raw = String(normalized || '').trim();
-    if (!raw) return '';
-    return raw.split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    return [...map.entries()]
+      .map(([norm, label]) => ({ value: label, label }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }
 
   function eventOutboundUrl(event) {
@@ -1681,7 +1684,7 @@
       return;
     }
 
-    const allCities = uniqueCitiesFromDispensaries(dispensaries);
+    const allCities = cityFilterOptionsFromDispensaries(dispensaries);
     let currentCity = '';
 
     function setActiveCity(city) {
@@ -1705,7 +1708,7 @@
     if (cityRoot) {
       const cityButtons = [
         { label: 'All Cities', city: '' },
-        ...allCities.map(c => ({ label: titleCaseCity(c), city: titleCaseCity(c) }))
+        ...allCities.map(c => ({ label: c.label, city: c.value }))
       ];
       cityRoot.innerHTML = cityButtons.map((c, i) => `
         <button type="button" class="filter-btn events-city-tab${i === 0 ? ' active' : ''}" data-city="${esc(c.city)}" role="tab" aria-selected="${i === 0 ? 'true' : 'false'}">${esc(c.label)}</button>

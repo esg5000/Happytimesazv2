@@ -2753,6 +2753,19 @@ button.event-page-card__toggle {
   margin-bottom: var(--space-8);
 }
 
+/* Ensure city filter is a single scrollable row on all sizes */
+.cannabis-deals-city-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.cannabis-deals-city-tabs::-webkit-scrollbar { display: none; }
+
 .cannabis-deals-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
