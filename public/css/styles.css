@@ -2709,6 +2709,124 @@ button.event-page-card__toggle {
 .cannabis-section--dark .section-title-bar::before { background: var(--gold); }
 .cannabis-section--dark .view-all-link { color: var(--gold); }
 
+.cannabis-deals-page {
+  background: #0b1010;
+  color: rgba(255,255,255,0.88);
+}
+
+.cannabis-deals-hero {
+  padding: var(--space-10) 0 var(--space-6);
+  background:
+    radial-gradient(900px 420px at 15% 25%, rgba(243,178,55,0.20), transparent 60%),
+    radial-gradient(900px 420px at 85% 15%, rgba(45,122,58,0.18), transparent 55%),
+    linear-gradient(180deg, #0b1010 0%, #0f1616 60%, #0b1010 100%);
+  border-bottom: 1px solid rgba(243,178,55,0.18);
+}
+
+.cannabis-deals-hero__title {
+  color: #f3b237;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-2);
+}
+
+.cannabis-deals-hero__subtitle {
+  margin: 0;
+  max-width: 64ch;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.55;
+}
+
+.cannabis-deals-main {
+  padding: var(--space-8) 0 var(--space-12);
+  background: #0b1010;
+}
+
+.cannabis-deals-main .breadcrumb a,
+.cannabis-deals-main .breadcrumb span {
+  color: rgba(255,255,255,0.72);
+}
+
+.cannabis-deals-main .breadcrumb a:hover { color: var(--brand-yellow); }
+
+.cannabis-deals-city-tabs {
+  margin-bottom: var(--space-8);
+}
+
+.cannabis-deals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+
+@media (max-width: 1100px) {
+  .cannabis-deals-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .cannabis-deals-grid { grid-template-columns: 1fr; }
+}
+
+.cannabis-deals-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(243,178,55,0.18);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 18px 44px rgba(0,0,0,0.25);
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: var(--space-5);
+  align-items: center;
+  padding: var(--space-5);
+}
+
+.cannabis-deals-card__logo {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(243,178,55,0.85);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.cannabis-deals-card__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: rgba(0,0,0,0.15);
+}
+
+.cannabis-deals-card__body { min-width: 0; }
+
+.cannabis-deals-card__name {
+  margin: 0 0 var(--space-2);
+  color: rgba(255,255,255,0.92);
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.cannabis-deals-card__city {
+  font-size: 0.8125rem;
+  color: rgba(255,255,255,0.68);
+  margin-bottom: var(--space-4);
+}
+
+.cannabis-deals-card__actions { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+
+@media (max-width: 520px) {
+  .cannabis-deals-card {
+    grid-template-columns: 88px 1fr;
+    padding: var(--space-4);
+    gap: var(--space-4);
+  }
+  .cannabis-deals-card__logo { width: 88px; height: 88px; }
+}
+
 /* === LISTING PAGE === */
 .listing-page { background: var(--cream); }
 

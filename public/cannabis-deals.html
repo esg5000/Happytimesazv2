@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Cannabis – Dispensaries &amp; Deals | HappyTimes AZ</title>
-  <meta name="description" content="Arizona cannabis dispensary deals, strains, products, and culture. Find the best dispensaries and current promotions.">
+  <title>Cannabis Deals – Dispensary Deals by City | HappyTimes AZ</title>
+  <meta name="description" content="Browse Arizona dispensary deals by city. Click to view current deals directly from dispensaries.">
   <meta name="theme-color" content="#2d7a3a">
   <link rel="stylesheet" href="css/styles.css">
 
@@ -17,7 +17,7 @@
     gtag('config', 'G-M86JBB5YTP');
   </script>
 </head>
-<body class="cannabis-page" data-page="cannabis">
+<body class="cannabis-deals-page" data-page="cannabis-deals">
 
           <header id="site-header" class="site-header--brand">
     <div class="site-masthead">
@@ -50,7 +50,7 @@
         <a href="classes.html" class="nav-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Classes</a>
         </nav>
         <div class="header-actions">
-          <div id="search-bar"><input type="text" id="search-input" placeholder="Search cannabis…" aria-label="Search"></div>
+          <div id="search-bar"><input type="text" id="search-input" placeholder="Search deals…" aria-label="Search"></div>
           <button type="button" id="search-toggle" aria-label="Toggle search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
           <button type="button" id="mobile-nav-toggle" aria-label="Open menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
         </div>
@@ -85,81 +85,39 @@
     <a href="gta-radio.html" class="mobile-nav-link mobile-nav-link--radio">GTA Radio</a>
     <div class="mobile-nav-divider"></div>
     <a href="dispensaries.html" class="mobile-nav-link">Dispensary Directory</a>
+    <a href="cannabis-deals.html" class="mobile-nav-link">Dispensary Deals</a>
     <a href="advertise.html" class="mobile-nav-link">Advertise</a>
   </nav>
 
-  <section class="category-page-hero" aria-label="Section heading">
+  <section class="cannabis-deals-hero" aria-label="Cannabis Deals heading">
     <div class="container">
-      <h1 class="category-page-hero__title">Deals, Dispensaries &amp; Culture</h1>
+      <h1 class="cannabis-deals-hero__title">Dispensary Deals</h1>
+      <p class="cannabis-deals-hero__subtitle">Browse active dispensaries with live deal pages. Filter by city and tap “View Deals”.</p>
     </div>
   </section>
 
-  <!-- Leaderboard below hero -->
-  <div class="ad-slot ad-slot--leaderboard" data-placement="cannabis_listing_leaderboard" data-size="leaderboard" style="padding-inline:1.5rem"></div>
+  <main class="cannabis-deals-main">
+    <div class="container">
+      <nav class="breadcrumb" style="margin-bottom:1.25rem">
+        <a href="index.html">Home</a>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <a href="cannabis.html">Cannabis</a>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <span>Dispensary Deals</span>
+      </nav>
 
-  <main class="category-page-main">
-
-    <!-- Cannabis Deals Section -->
-    <section class="cannabis-section--dark">
-      <div class="container">
-        <div class="section-header">
-          <div class="section-title-bar">
-            <h2 class="section-title">Current Deals</h2>
-          </div>
-          <a href="cannabis-deals.html" class="view-all-link">Dispensary Deals <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
-        </div>
-        <div id="cannabis-deals-grid" class="deals-grid">
-          <div class="skeleton-card" style="background:rgba(255,255,255,0.08)"><div class="skeleton-img"></div></div>
-          <div class="skeleton-card" style="background:rgba(255,255,255,0.08)"><div class="skeleton-img"></div></div>
-          <div class="skeleton-card" style="background:rgba(255,255,255,0.08)"><div class="skeleton-img"></div></div>
-          <div class="skeleton-card" style="background:rgba(255,255,255,0.08)"><div class="skeleton-img"></div></div>
-        </div>
+      <div class="events-city-tabs cannabis-deals-city-tabs" id="cannabis-deals-city-tabs" role="tablist" aria-label="Filter dispensary deals by city">
+        <button type="button" class="filter-btn events-city-tab active" data-city="" role="tab" aria-selected="true">All Cities</button>
       </div>
-    </section>
 
-    <!-- Dispensary Directory Section -->
-    <section class="section cannabis-dispensary-section" style="background:var(--cream)">
-      <div class="container">
-        <div class="section-header">
-          <div class="section-title-bar">
-            <h2 class="section-title">Dispensary Directory</h2>
-          </div>
-          <a href="dispensaries.html" class="view-all-link">Full Directory <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+      <section class="cannabis-deals-grid-wrap" aria-label="Dispensary deals grid">
+        <div id="cannabis-deals-dispensary-grid" class="cannabis-deals-grid">
+          <div class="skeleton-card" style="background:rgba(255,255,255,0.08)"><div class="skeleton-img"></div><div class="skeleton-line w-60"></div></div>
+          <div class="skeleton-card" style="background:rgba(255,255,255,0.08)"><div class="skeleton-img"></div><div class="skeleton-line w-60"></div></div>
+          <div class="skeleton-card" style="background:rgba(255,255,255,0.08)"><div class="skeleton-img"></div><div class="skeleton-line w-60"></div></div>
         </div>
-        <div class="cannabis-dispensary-scroll" role="region" aria-label="Dispensary directory preview">
-          <div id="cannabis-dispensary-grid">
-            <div class="cannabis-dispensary-skeleton" aria-hidden="true"><div class="cannabis-dispensary-skeleton__monogram"></div><div class="cannabis-dispensary-skeleton__body"><div class="skeleton-line w-80" style="margin:0 0 .35rem"></div><div class="skeleton-line w-60" style="margin:0 0 .35rem"></div><div class="skeleton-line w-50" style="margin:0"></div></div></div>
-            <div class="cannabis-dispensary-skeleton" aria-hidden="true"><div class="cannabis-dispensary-skeleton__monogram"></div><div class="cannabis-dispensary-skeleton__body"><div class="skeleton-line w-80" style="margin:0 0 .35rem"></div><div class="skeleton-line w-60" style="margin:0 0 .35rem"></div><div class="skeleton-line w-50" style="margin:0"></div></div></div>
-            <div class="cannabis-dispensary-skeleton" aria-hidden="true"><div class="cannabis-dispensary-skeleton__monogram"></div><div class="cannabis-dispensary-skeleton__body"><div class="skeleton-line w-80" style="margin:0 0 .35rem"></div><div class="skeleton-line w-60" style="margin:0 0 .35rem"></div><div class="skeleton-line w-50" style="margin:0"></div></div></div>
-            <div class="cannabis-dispensary-skeleton" aria-hidden="true"><div class="cannabis-dispensary-skeleton__monogram"></div><div class="cannabis-dispensary-skeleton__body"><div class="skeleton-line w-80" style="margin:0 0 .35rem"></div><div class="skeleton-line w-60" style="margin:0 0 .35rem"></div><div class="skeleton-line w-50" style="margin:0"></div></div></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Rectangle ad between dispensaries and articles -->
-    <div style="background:var(--cream);padding:0 1.5rem">
-      <div class="container">
-        <div class="ad-slot ad-slot--leaderboard" data-placement="cannabis_listing_rectangle" data-size="leaderboard"></div>
-      </div>
+      </section>
     </div>
-
-    <!-- Cannabis Articles Section -->
-    <section class="section" style="background:var(--cream)">
-      <div class="container">
-        <div class="section-header">
-          <div class="section-title-bar">
-            <h2 class="section-title">Cannabis Stories</h2>
-          </div>
-        </div>
-        <div id="cannabis-posts-grid" class="editorial-grid">
-          <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line w-20" style="margin-top:1rem"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-60"></div></div>
-          <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line w-20" style="margin-top:1rem"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-60"></div></div>
-          <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line w-20" style="margin-top:1rem"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-60"></div></div>
-        </div>
-      </div>
-    </section>
-
   </main>
 
   <div class="ad-slot ad-slot--footer-leaderboard" data-placement="cannabis_footer_leaderboard" data-size="leaderboard" style="padding-inline:1.5rem"></div>
@@ -196,3 +154,4 @@
   <script src="js/main.js"></script>
 </body>
 </html>
+

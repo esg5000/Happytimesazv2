@@ -1363,6 +1363,68 @@
     return events.filter(ev => normalizeCityName(ev && ev.city) === want);
   }
 
+  function sanitizeExternalUrl(raw) {
+    const u = String(raw || '').trim();
+    if (!u) return '';
+    if (/^https?:\/\//i.test(u)) return u;
+    if (/^\/\//.test(u)) return `https:${u}`;
+    return '';
+  }
+
+  function cannabisLeafPlaceholderSvg() {
+    return `
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 2c3.3 1.8 6.3 5.1 6.3 9.3 0 4.5-3 8.2-6.3 10.7-3.3-2.5-6.3-6.2-6.3-10.7C5.7 7.1 8.7 3.8 12 2Z" stroke="currentColor" stroke-width="1.8" />
+        <path d="M12 6v14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M9 10c1 .7 2 .9 3 1 1-.1 2-.3 3-1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M8.2 13.5c1.1.9 2.4 1.3 3.8 1.5 1.4-.2 2.7-.6 3.8-1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+    `;
+  }
+
+  function renderDispensaryDealCard(d) {
+    if (!d) return '';
+    const name = d.name || 'Dispensary';
+    const city = d.city ? String(d.city).trim() : '';
+    const dealsUrl = sanitizeExternalUrl(d.dealsUrl);
+    const logoUrl = (window.sanityImage && d.logo) ? window.sanityImage(d.logo, 240, 240, 'fit') : '';
+    const scrapedUrl = sanitizeExternalUrl(d.scrapedImage);
+
+    const imgHtml = logoUrl
+      ? `<img src="${esc(logoUrl)}" alt="${esc(name)} logo" loading="lazy" width="120" height="120">`
+      : scrapedUrl
+        ? `<img src="${esc(scrapedUrl)}" alt="${esc(name)}" loading="lazy" width="120" height="120" referrerpolicy="no-referrer">`
+        : `<div class="cannabis-deals-card__placeholder" aria-hidden="true">${cannabisLeafPlaceholderSvg()}</div>`;
+
+    return `
+      <article class="cannabis-deals-card">
+        <div class="cannabis-deals-card__logo">${imgHtml}</div>
+        <div class="cannabis-deals-card__body">
+          <h3 class="cannabis-deals-card__name">${esc(name)}</h3>
+          ${city ? `<div class="cannabis-deals-card__city">${esc(city)}, AZ</div>` : ''}
+          <div class="cannabis-deals-card__actions">
+            ${dealsUrl ? `<a class="btn btn--sm btn--cannabis" href="${esc(dealsUrl)}" target="_blank" rel="noopener">View Deals</a>` : `<span class="btn btn--sm btn--ghost" aria-disabled="true">No Deals Link</span>`}
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function uniqueCitiesFromDispensaries(list) {
+    const seen = new Set();
+    (Array.isArray(list) ? list : []).forEach(d => {
+      const c = normalizeCityName(d && d.city);
+      if (c) seen.add(c);
+    });
+    return [...seen].sort((a, b) => a.localeCompare(b));
+  }
+
+  function titleCaseCity(normalized) {
+    const raw = String(normalized || '').trim();
+    if (!raw) return '';
+    return raw.split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  }
+
   function eventOutboundUrl(event) {
     const t = (event.ticketUrl || '').trim();
     const l = (event.link || '').trim();
@@ -1599,6 +1661,69 @@
     }
   }
 
+  async function initCannabisDealsPage() {
+    setMeta(
+      'Cannabis Deals – Dispensary Deals by City',
+      'Browse Arizona dispensary deals by city. Click to view current deals directly from dispensaries.'
+    );
+
+    const gridEl = document.getElementById('cannabis-deals-dispensary-grid');
+    const cityRoot = document.getElementById('cannabis-deals-city-tabs');
+    if (!gridEl) return;
+    showSkeleton(gridEl, 9, 'card');
+
+    const list = await (window.getActiveDispensaryDeals ? window.getActiveDispensaryDeals() : Promise.resolve(null)).catch(() => null);
+    const dispensaries = Array.isArray(list) ? list.filter(Boolean) : [];
+
+    if (!dispensaries.length) {
+      gridEl.innerHTML = '<p class="empty-msg">No active dispensary deals found.</p>';
+      if (cityRoot) cityRoot.style.display = 'none';
+      return;
+    }
+
+    const allCities = uniqueCitiesFromDispensaries(dispensaries);
+    let currentCity = '';
+
+    function setActiveCity(city) {
+      if (!cityRoot) return;
+      cityRoot.querySelectorAll('.events-city-tab').forEach(btn => {
+        const on = normalizeCityName(btn.dataset.city) === normalizeCityName(city);
+        btn.classList.toggle('active', on);
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
+
+    function renderFiltered() {
+      const filtered = filterEventsByCity(dispensaries, currentCity);
+      if (!filtered.length) {
+        gridEl.innerHTML = '<p class="empty-msg">No dispensary deals found for this city.</p>';
+        return;
+      }
+      gridEl.innerHTML = filtered.map(d => renderDispensaryDealCard(d)).join('');
+    }
+
+    if (cityRoot) {
+      const cityButtons = [
+        { label: 'All Cities', city: '' },
+        ...allCities.map(c => ({ label: titleCaseCity(c), city: titleCaseCity(c) }))
+      ];
+      cityRoot.innerHTML = cityButtons.map((c, i) => `
+        <button type="button" class="filter-btn events-city-tab${i === 0 ? ' active' : ''}" data-city="${esc(c.city)}" role="tab" aria-selected="${i === 0 ? 'true' : 'false'}">${esc(c.label)}</button>
+      `).join('');
+
+      cityRoot.querySelectorAll('.events-city-tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentCity = btn.dataset.city || '';
+          setActiveCity(currentCity);
+          renderFiltered();
+        });
+      });
+    }
+
+    setActiveCity(currentCity);
+    renderFiltered();
+  }
+
   // ─── LISTING PAGE (single dispensary/venue) ───────────────────────────────────
 
   async function initListingPage() {
@@ -1817,6 +1942,7 @@
       article:      initArticlePage,
       events:       initEventsPage,
       cannabis:     initCannabisPage,
+      'cannabis-deals': initCannabisDealsPage,
       listing:      initListingPage,
       category:     initCategoryPage,
       news:         initNewsPage,

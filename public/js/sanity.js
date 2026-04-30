@@ -205,6 +205,23 @@ window.getActiveDispensaries = () => sanityFetch(`
   }
 `);
 
+// Active dispensaries with a deals URL (for cannabis-deals page)
+window.getActiveDispensaryDeals = () => sanityFetch(`
+  *[
+    _type == "dispensary" &&
+    isActive == true &&
+    defined(dealsUrl) &&
+    dealsUrl != ""
+  ] | order(name asc){
+    name,
+    "slug": slug.current,
+    city,
+    dealsUrl,
+    "logo": coalesce(logo, logoImage, brandLogo){ asset{ _ref }, alt },
+    scrapedImage
+  }
+`);
+
 /** Top 25 restaurants by tab city (`searchCity` must match selected tab label, e.g. Phoenix). */
 window.getRestaurantsByCity = (city, limit = 25) => {
   const n = Math.min(Math.max(1, limit), 50);
