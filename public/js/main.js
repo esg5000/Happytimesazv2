@@ -616,7 +616,7 @@
     `;
   }
 
-  /** Cannabis hub horizontal row — thumb sources ordered below; Sanity URLs use `dispensaryDirectorySanityImageUrl` (same as dispensaries.html directory cards). */
+  /** Cannabis hub carousel — vertical cards (image on top, body below) like dispensaries.html; Sanity URLs via `dispensaryDirectorySanityImageUrl`. */
   function renderDispensaryCannabisRowCard(d) {
     if (!d) return '';
     const name = d.name || d.dispensaryName || 'Dispensary';
@@ -629,7 +629,7 @@
     const imageUrl = dispensaryDirectorySanityImageUrl(d.image);
     const heroUrl = dispensaryDirectorySanityImageUrl(d.heroImage);
     const imgTag = (src, extra) =>
-      `<img class="dispensary-card__thumb-img" src="${esc(src)}" alt="${esc(name)}" loading="lazy" decoding="async" width="160" height="80"${extra || ''}>`;
+      `<img class="dispensary-card__img" src="${esc(src)}" alt="${esc(name)}" loading="lazy" decoding="async" width="160" height="120"${extra || ''}>`;
     let thumbMedia = '';
     if (logoUrl) {
       thumbMedia = imgTag(logoUrl);
@@ -644,8 +644,8 @@
     }
     return `
       <article class="dispensary-card dispensary-card--cannabis-row">
-        <a href="${url}" class="dispensary-card__thumb" aria-label="${esc(name)} — view listing">
-          <div class="dispensary-card__thumb-inner">${thumbMedia}</div>
+        <a href="${url}" class="dispensary-card__image-link" aria-label="${esc(name)} — view listing">
+          <div class="dispensary-card__image dispensary-card__image--directory">${thumbMedia}</div>
         </a>
         <div class="dispensary-card__body">
           <h3 class="dispensary-card__name"><a href="${url}">${esc(name)}</a></h3>

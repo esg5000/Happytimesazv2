@@ -1474,8 +1474,9 @@ body[data-page="events"] .event-page-card {
 .dispensary-page { background: var(--cream); }
 .dispensary-page .section-title { margin-bottom: var(--space-6); }
 
-/* Directory cards — compact hero; all images use contain so logos never stretch */
-body[data-page="dispensaries"] .dispensary-card__image--directory {
+/* Directory cards — compact hero; all images use contain so logos never stretch (dispensaries grid + cannabis hub carousel). */
+body[data-page="dispensaries"] .dispensary-card__image--directory,
+body[data-page="cannabis"] .cannabis-dispensary-scroll .dispensary-card__image--directory {
   aspect-ratio: auto;
   height: 120px;
   max-height: 120px;
@@ -1488,7 +1489,8 @@ body[data-page="dispensaries"] .dispensary-card__image--directory {
   justify-content: center;
 }
 
-body[data-page="dispensaries"] .dispensary-card__image--directory img.dispensary-card__img {
+body[data-page="dispensaries"] .dispensary-card__image--directory img.dispensary-card__img,
+body[data-page="cannabis"] .cannabis-dispensary-scroll .dispensary-card__image--directory img.dispensary-card__img {
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -1496,11 +1498,27 @@ body[data-page="dispensaries"] .dispensary-card__image--directory img.dispensary
   display: block;
 }
 
-body[data-page="dispensaries"] .dispensary-card__image--directory .img-placeholder {
+body[data-page="dispensaries"] .dispensary-card__image--directory .img-placeholder,
+body[data-page="cannabis"] .cannabis-dispensary-scroll .dispensary-card__image--directory .img-placeholder {
   width: 100%;
   height: 100%;
   min-height: 100%;
   object-fit: contain;
+}
+
+body[data-page="cannabis"] .cannabis-dispensary-scroll .dispensary-card__image--directory .dispensary-card__thumb-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  color: #7a8f72;
+}
+
+body[data-page="cannabis"] .cannabis-dispensary-scroll .dispensary-card__image--directory .dispensary-card__thumb-fallback svg {
+  width: 28px;
+  height: 28px;
 }
 
 body[data-page="dispensaries"] #dispensary-grid .dispensary-card {
@@ -1512,7 +1530,8 @@ body[data-page="dispensaries"] #dispensary-grid .dispensary-card:hover {
   box-shadow: var(--shadow-md);
 }
 
-body[data-page="dispensaries"] #dispensary-grid .dispensary-card:hover .dispensary-card__image img {
+body[data-page="dispensaries"] #dispensary-grid .dispensary-card:hover .dispensary-card__image img,
+body[data-page="cannabis"] .cannabis-dispensary-scroll .dispensary-card--cannabis-row:hover .dispensary-card__image img {
   transform: none;
 }
 
@@ -1715,84 +1734,40 @@ body[data-page="dispensaries"] #dispensary-grid .dispensary-card__actions .btn {
   flex-wrap: wrap;
 }
 
+/* Vertical cards (image on top, body below) — same structure & density as dispensaries.html directory grid */
 .cannabis-dispensary-scroll #cannabis-dispensary-grid > .dispensary-card--cannabis-row {
   flex: 0 0 auto;
-  width: min(340px, calc(100vw - 2.5rem));
+  width: min(200px, calc(100vw - 3rem));
   height: auto;
   min-height: 0;
-  flex-direction: row;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: stretch;
   scroll-snap-align: start;
   overflow: hidden;
-  padding: var(--space-4);
-  gap: var(--space-3);
+  padding: 0;
+  gap: 0;
   box-sizing: border-box;
+  border-radius: var(--radius-md);
 }
 
 .cannabis-dispensary-scroll .dispensary-card--cannabis-row:hover {
-  transform: translateY(-2px);
-}
-
-.cannabis-dispensary-scroll .dispensary-card__thumb {
-  flex-shrink: 0;
-  display: block;
-  text-decoration: none;
-  margin-top: 2px;
-  width: 96px;
-  transition: opacity var(--transition);
-}
-
-.cannabis-dispensary-scroll .dispensary-card__thumb:hover {
-  opacity: 0.92;
-}
-
-/* Same treatment as dispensaries.html directory hero: contain on #f5f5f5 (80px / 8px for this row). */
-.cannabis-dispensary-scroll .dispensary-card__thumb-inner {
-  box-sizing: border-box;
-  height: 80px;
-  min-height: 80px;
-  max-height: 80px;
-  padding: 8px;
-  background: #f5f5f5;
-  border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.cannabis-dispensary-scroll .dispensary-card__thumb-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  display: block;
-}
-
-.cannabis-dispensary-scroll .dispensary-card__thumb-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #7a8f72;
-}
-
-.cannabis-dispensary-scroll .dispensary-card__thumb-fallback svg {
-  width: 28px;
-  height: 28px;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .cannabis-dispensary-scroll .dispensary-card--cannabis-row .dispensary-card__body {
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   min-width: 0;
-  padding: 0;
-  gap: var(--space-2);
+  padding: 0.625rem 0.75rem;
+  gap: 0.375rem;
   overflow: visible;
   justify-content: flex-start;
 }
 
 .cannabis-dispensary-scroll .dispensary-card--cannabis-row .dispensary-card__name {
-  font-size: 1rem;
-  line-height: 1.3;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
@@ -1801,7 +1776,7 @@ body[data-page="dispensaries"] #dispensary-grid .dispensary-card__actions .btn {
 
 .cannabis-dispensary-scroll .dispensary-card--cannabis-row .dispensary-card__address {
   font-size: 0.75rem;
-  line-height: 1.4;
+  line-height: 1.35;
   color: var(--ink-light);
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -1819,25 +1794,44 @@ body[data-page="dispensaries"] #dispensary-grid .dispensary-card__actions .btn {
 }
 
 .cannabis-dispensary-scroll .dispensary-card--cannabis-row .dispensary-card__tags {
-  padding-top: 0;
-  gap: var(--space-1);
+  padding-top: 0.25rem;
+  gap: 0.25rem;
   flex-wrap: wrap;
 }
 
+.cannabis-dispensary-scroll .dispensary-card--cannabis-row .dispensary-card__tags .badge {
+  font-size: 0.625rem;
+  padding: 0.12em 0.4em;
+}
+
 .cannabis-dispensary-scroll .dispensary-card--cannabis-row .dispensary-card__hours {
-  display: none;
+  font-size: 0.6875rem;
+  margin-top: 0.25rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--sand);
+  color: var(--ink-light);
+  display: grid;
+  gap: 0.25rem;
+}
+
+.cannabis-dispensary-scroll .dispensary-card--cannabis-row .dispensary-card__hours strong {
+  font-size: 0.625rem;
+  color: var(--ink-muted);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .cannabis-dispensary-scroll .dispensary-card--cannabis-row .dispensary-card__actions {
   margin-top: 0;
-  padding-top: var(--space-2);
+  padding-top: 0.5rem;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  gap: 0.375rem;
 }
 
 .cannabis-dispensary-scroll .dispensary-card--cannabis-row .dispensary-card__actions .btn {
-  font-size: 0.75rem;
-  padding: 0.4rem 0.65rem;
+  font-size: 0.6875rem;
+  padding: 0.25rem 0.5rem;
 }
 
 .cannabis-dispensary-scroll .empty-msg {
@@ -1851,32 +1845,31 @@ body[data-page="dispensaries"] #dispensary-grid .dispensary-card__actions .btn {
 
 .cannabis-dispensary-skeleton {
   flex: 0 0 auto;
-  width: min(340px, calc(100vw - 2.5rem));
+  width: min(200px, calc(100vw - 3rem));
   min-height: 0;
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-4);
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
   box-sizing: border-box;
   background: var(--white);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   scroll-snap-align: start;
 }
 
-.cannabis-dispensary-skeleton__thumb {
-  width: 96px;
-  height: 80px;
+.cannabis-dispensary-skeleton__image {
+  width: 100%;
+  height: 120px;
   flex-shrink: 0;
-  border-radius: var(--radius-md);
   background: linear-gradient(135deg, #ececec 0%, #dedede 100%);
 }
 
 .cannabis-dispensary-skeleton__body {
   flex: 1;
-  padding: 0;
+  padding: 0.625rem 0.75rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
