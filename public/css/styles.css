@@ -1733,29 +1733,49 @@ body[data-page="dispensaries"] #dispensary-grid .dispensary-card__actions .btn {
   transform: translateY(-2px);
 }
 
-.cannabis-dispensary-scroll .dispensary-card__monogram {
+.cannabis-dispensary-scroll .dispensary-card__thumb {
   flex-shrink: 0;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: #1b1d1d;
-  color: var(--gold);
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 1rem;
-  letter-spacing: -0.03em;
+  display: block;
+  text-decoration: none;
+  margin-top: 2px;
+  width: 96px;
+  transition: opacity var(--transition);
+}
+
+.cannabis-dispensary-scroll .dispensary-card__thumb:hover {
+  opacity: 0.92;
+}
+
+.cannabis-dispensary-scroll .dispensary-card__thumb-inner {
+  box-sizing: border-box;
+  height: 80px;
+  padding: 8px;
+  background: #f5f5f5;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
-  line-height: 1;
-  margin-top: 2px;
-  transition: background var(--transition), color var(--transition);
+  overflow: hidden;
 }
 
-.cannabis-dispensary-scroll .dispensary-card__monogram:hover {
-  background: #2d2f2f;
-  color: var(--gold-light);
+.cannabis-dispensary-scroll .dispensary-card__thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+.cannabis-dispensary-scroll .dispensary-card__thumb-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7a8f72;
+}
+
+.cannabis-dispensary-scroll .dispensary-card__thumb-fallback svg {
+  width: 28px;
+  height: 28px;
 }
 
 .cannabis-dispensary-scroll .dispensary-card--cannabis-row .dispensary-card__body {
@@ -1843,12 +1863,12 @@ body[data-page="dispensaries"] #dispensary-grid .dispensary-card__actions .btn {
   scroll-snap-align: start;
 }
 
-.cannabis-dispensary-skeleton__monogram {
-  width: 52px;
-  height: 52px;
+.cannabis-dispensary-skeleton__thumb {
+  width: 96px;
+  height: 80px;
   flex-shrink: 0;
-  border-radius: 50%;
-  background: #1b1d1d;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #ececec 0%, #dedede 100%);
 }
 
 .cannabis-dispensary-skeleton__body {

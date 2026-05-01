@@ -198,6 +198,8 @@ window.getActiveDispensaries = () => sanityFetch(`
     phone,
     website,
     "heroImage": coalesce(heroImage, image){ asset{ _ref }, alt },
+    "logo": coalesce(logo, logoImage, brandLogo){ asset{ _ref }, alt },
+    scrapedImage,
     hours,
     medical,
     recreational,
