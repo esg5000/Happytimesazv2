@@ -183,12 +183,6 @@
     return `<div class="img-placeholder" style="background:linear-gradient(135deg,#f3ede6 0%,#e8ddd4 100%)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c9b8a8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
   }
 
-  /** Same Sanity CDN URL as dispensary directory cards: `imgOrPlaceholder(image, 960, 720, …)` → `sanityImage(image, 960, 720)` (default crop, same as imgOrPlaceholder). */
-  function dispensaryDirectorySanityImageUrl(image) {
-    const url = window.sanityImage && image ? window.sanityImage(image, 960, 720) : null;
-    return url || '';
-  }
-
   function categoryBadge(cats) {
     const cat = Array.isArray(cats) ? cats[0] : (cats || '');
     if (!cat) return '';
@@ -616,7 +610,7 @@
     `;
   }
 
-  /** Cannabis hub carousel — vertical cards (image on top, body below) like dispensaries.html; Sanity URLs via `dispensaryDirectorySanityImageUrl`. */
+  /** Cannabis hub carousel — image block matches `renderDispensaryDirectoryCard` exactly (`imgOrPlaceholder` on `heroImage`). */
   function renderDispensaryCannabisRowCard(d) {
     if (!d) return '';
     const name = d.name || d.dispensaryName || 'Dispensary';
@@ -624,28 +618,12 @@
     const url = slug ? `listing?slug=${encodeURIComponent(slug)}` : '#';
     const tags = getDispensaryCategoryTags(d);
     const hours = formatHoursCompact(d.hours);
-    const logoUrl = dispensaryDirectorySanityImageUrl(d.logo);
-    const scrapedUrl = sanitizeExternalUrl(d.scrapedImage);
-    const imageUrl = dispensaryDirectorySanityImageUrl(d.image);
-    const heroUrl = dispensaryDirectorySanityImageUrl(d.heroImage);
-    const imgTag = (src, extra) =>
-      `<img class="dispensary-card__img" src="${esc(src)}" alt="${esc(name)}" loading="lazy" decoding="async" width="160" height="120"${extra || ''}>`;
-    let thumbMedia = '';
-    if (logoUrl) {
-      thumbMedia = imgTag(logoUrl);
-    } else if (scrapedUrl) {
-      thumbMedia = imgTag(scrapedUrl, ' referrerpolicy="no-referrer"');
-    } else if (imageUrl) {
-      thumbMedia = imgTag(imageUrl);
-    } else if (heroUrl) {
-      thumbMedia = imgTag(heroUrl);
-    } else {
-      thumbMedia = `<span class="dispensary-card__thumb-fallback" aria-hidden="true">${cannabisLeafPlaceholderSvg()}</span>`;
-    }
     return `
       <article class="dispensary-card dispensary-card--cannabis-row">
-        <a href="${url}" class="dispensary-card__image-link" aria-label="${esc(name)} — view listing">
-          <div class="dispensary-card__image dispensary-card__image--directory">${thumbMedia}</div>
+        <a href="${url}" class="dispensary-card__image-link">
+          <div class="dispensary-card__image dispensary-card__image--directory">
+            ${imgOrPlaceholder(d.heroImage, 960, 720, name, 'dispensary-card__img')}
+          </div>
         </a>
         <div class="dispensary-card__body">
           <h3 class="dispensary-card__name"><a href="${url}">${esc(name)}</a></h3>

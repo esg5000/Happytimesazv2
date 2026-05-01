@@ -1506,21 +1506,6 @@ body[data-page="cannabis"] .cannabis-dispensary-scroll .dispensary-card__image--
   object-fit: contain;
 }
 
-body[data-page="cannabis"] .cannabis-dispensary-scroll .dispensary-card__image--directory .dispensary-card__thumb-fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  min-height: 100%;
-  color: #7a8f72;
-}
-
-body[data-page="cannabis"] .cannabis-dispensary-scroll .dispensary-card__image--directory .dispensary-card__thumb-fallback svg {
-  width: 28px;
-  height: 28px;
-}
-
 body[data-page="dispensaries"] #dispensary-grid .dispensary-card {
   border-radius: var(--radius-md);
 }
