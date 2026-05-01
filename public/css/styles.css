@@ -1474,23 +1474,18 @@ body[data-page="events"] .event-page-card {
 .dispensary-page { background: var(--cream); }
 .dispensary-page .section-title { margin-bottom: var(--space-6); }
 
-/* Directory cards — fixed hero height; logos default to contain on white; wide photos use cover */
+/* Directory cards — compact hero; all images use contain so logos never stretch */
 body[data-page="dispensaries"] .dispensary-card__image--directory {
   aspect-ratio: auto;
-  height: 200px;
-  max-height: 200px;
-  min-height: 200px;
+  height: 120px;
+  max-height: 120px;
+  min-height: 120px;
   box-sizing: border-box;
-  background: #fff;
-  padding: 20px;
+  background: #f5f5f5;
+  padding: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-body[data-page="dispensaries"] .dispensary-card__image--directory.dispensary-card__image--cover {
-  padding: 0;
-  background: #1b1d1d;
 }
 
 body[data-page="dispensaries"] .dispensary-card__image--directory img.dispensary-card__img {
@@ -1501,15 +1496,74 @@ body[data-page="dispensaries"] .dispensary-card__image--directory img.dispensary
   display: block;
 }
 
-body[data-page="dispensaries"] .dispensary-card__image--directory.dispensary-card__image--cover img.dispensary-card__img {
-  object-fit: cover;
-  object-position: center;
-}
-
 body[data-page="dispensaries"] .dispensary-card__image--directory .img-placeholder {
   width: 100%;
   height: 100%;
   min-height: 100%;
+  object-fit: contain;
+}
+
+body[data-page="dispensaries"] #dispensary-grid .dispensary-card {
+  border-radius: var(--radius-md);
+}
+
+body[data-page="dispensaries"] #dispensary-grid .dispensary-card:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+body[data-page="dispensaries"] #dispensary-grid .dispensary-card:hover .dispensary-card__image img {
+  transform: none;
+}
+
+body[data-page="dispensaries"] #dispensary-grid .dispensary-card__body {
+  padding: 0.625rem 0.75rem;
+  gap: 0.375rem;
+}
+
+body[data-page="dispensaries"] #dispensary-grid .dispensary-card__name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+body[data-page="dispensaries"] #dispensary-grid .dispensary-card__address {
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+body[data-page="dispensaries"] #dispensary-grid .dispensary-card__city {
+  font-size: 0.75rem;
+}
+
+body[data-page="dispensaries"] #dispensary-grid .dispensary-card__tags {
+  padding-top: 0.25rem;
+  gap: 0.25rem;
+}
+
+body[data-page="dispensaries"] #dispensary-grid .dispensary-card__tags .badge {
+  font-size: 0.625rem;
+  padding: 0.12em 0.4em;
+}
+
+body[data-page="dispensaries"] #dispensary-grid .dispensary-card__hours {
+  font-size: 0.6875rem;
+  margin-top: 0.25rem;
+  padding-top: 0.5rem;
+}
+
+body[data-page="dispensaries"] #dispensary-grid .dispensary-card__hours strong {
+  font-size: 0.625rem;
+}
+
+body[data-page="dispensaries"] #dispensary-grid .dispensary-card__actions {
+  padding-top: 0.5rem;
+  gap: 0.375rem;
+}
+
+body[data-page="dispensaries"] #dispensary-grid .dispensary-card__actions .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.6875rem;
 }
 
 .disp-filterbar {
@@ -1628,8 +1682,8 @@ body[data-page="dispensaries"] .dispensary-card__image--directory .img-placehold
 
 #dispensary-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-6);
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-4);
 }
 
 /* Cannabis hub — horizontal dispensary preview row */
@@ -3612,7 +3666,7 @@ button.event-page-card__toggle {
   .deals-grid { grid-template-columns: repeat(2, 1fr); }
   .events-grid { grid-template-columns: repeat(2, 1fr); }
   .dispensary-highlights { grid-template-columns: repeat(2, 1fr); }
-  #dispensary-grid { grid-template-columns: repeat(2, 1fr); }
+  #dispensary-grid { grid-template-columns: repeat(3, 1fr); }
   .related-grid { grid-template-columns: repeat(2, 1fr); }
   .listing-layout { grid-template-columns: 1fr; }
   .listing-sidebar { position: static; }
@@ -3749,7 +3803,7 @@ button.event-page-card__toggle {
   .deals-grid { grid-template-columns: 1fr; }
   .events-grid { grid-template-columns: 1fr; }
   .dispensary-highlights { grid-template-columns: 1fr; }
-  #dispensary-grid { grid-template-columns: 1fr; }
+  #dispensary-grid { grid-template-columns: repeat(2, 1fr); }
   .related-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
 
   .event-full-card { flex-direction: column; }
