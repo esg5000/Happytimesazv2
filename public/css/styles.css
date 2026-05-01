@@ -1746,9 +1746,12 @@ body[data-page="dispensaries"] #dispensary-grid .dispensary-card__actions .btn {
   opacity: 0.92;
 }
 
+/* Same treatment as dispensaries.html directory hero: contain on #f5f5f5 (80px / 8px for this row). */
 .cannabis-dispensary-scroll .dispensary-card__thumb-inner {
   box-sizing: border-box;
   height: 80px;
+  min-height: 80px;
+  max-height: 80px;
   padding: 8px;
   background: #f5f5f5;
   border-radius: var(--radius-md);

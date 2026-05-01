@@ -610,7 +610,7 @@
     `;
   }
 
-  /** Cannabis hub horizontal row — scraped image or Sanity logo; leaf icon if neither. */
+  /** Cannabis hub horizontal row — thumb: logo, then scrapedImage, then Sanity image, else leaf (matches directory image treatment). */
   function renderDispensaryCannabisRowCard(d) {
     if (!d) return '';
     const name = d.name || d.dispensaryName || 'Dispensary';
@@ -618,13 +618,18 @@
     const url = slug ? `listing?slug=${encodeURIComponent(slug)}` : '#';
     const tags = getDispensaryCategoryTags(d);
     const hours = formatHoursCompact(d.hours);
-    const scrapedUrl = sanitizeExternalUrl(d.scrapedImage);
     const logoUrl = (window.sanityImage && d.logo) ? window.sanityImage(d.logo, 320, 240, 'fit') : '';
+    const scrapedUrl = sanitizeExternalUrl(d.scrapedImage);
+    const imageUrl = (window.sanityImage && d.image) ? window.sanityImage(d.image, 960, 720, 'fit') : '';
+    const imgTag = (src, extra) =>
+      `<img class="dispensary-card__thumb-img" src="${esc(src)}" alt="${esc(name)}" loading="lazy" decoding="async" width="160" height="80"${extra || ''}>`;
     let thumbMedia = '';
-    if (scrapedUrl) {
-      thumbMedia = `<img class="dispensary-card__thumb-img" src="${esc(scrapedUrl)}" alt="${esc(name)}" loading="lazy" decoding="async" width="160" height="80" referrerpolicy="no-referrer">`;
-    } else if (logoUrl) {
-      thumbMedia = `<img class="dispensary-card__thumb-img" src="${esc(logoUrl)}" alt="${esc(name)}" loading="lazy" decoding="async" width="160" height="80">`;
+    if (logoUrl) {
+      thumbMedia = imgTag(logoUrl);
+    } else if (scrapedUrl) {
+      thumbMedia = imgTag(scrapedUrl, ' referrerpolicy="no-referrer"');
+    } else if (imageUrl) {
+      thumbMedia = imgTag(imageUrl);
     } else {
       thumbMedia = `<span class="dispensary-card__thumb-fallback" aria-hidden="true">${cannabisLeafPlaceholderSvg()}</span>`;
     }
