@@ -176,10 +176,37 @@
     return '';
   }
 
-  function imgOrPlaceholder(image, w, h, alt) {
+  function imgOrPlaceholder(image, w, h, alt, imgClass) {
     const url = window.sanityImage && image ? window.sanityImage(image, w, h) : null;
-    if (url) return `<img src="${esc(url)}" alt="${esc(alt || '')}" loading="lazy">`;
+    const cls = imgClass ? ` class="${esc(imgClass)}"` : '';
+    if (url) return `<img src="${esc(url)}" alt="${esc(alt || '')}"${cls} loading="lazy">`;
     return `<div class="img-placeholder" style="background:linear-gradient(135deg,#f3ede6 0%,#e8ddd4 100%)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c9b8a8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
+  }
+
+  /** Dispensary directory hero: default logo-style; wide landscape images get cover treatment (see setupDispensaryDirectoryImages). */
+  function classifyDispensaryHeroImage(nw, nh) {
+    if (!nw || !nh) return 'logo';
+    const ratio = nw / nh;
+    const maxDim = Math.max(nw, nh);
+    if (maxDim < 260) return 'logo';
+    if (nh >= nw * 1.05) return 'logo';
+    if (ratio >= 1.4) return 'photo';
+    if (ratio >= 1.22 && nw >= 420) return 'photo';
+    return 'logo';
+  }
+
+  function setupDispensaryDirectoryImages(root) {
+    if (!root || !root.querySelectorAll) return;
+    root.querySelectorAll('.dispensary-card__image--directory img.dispensary-card__img').forEach(img => {
+      const wrap = img.closest('.dispensary-card__image--directory');
+      if (!wrap) return;
+      const apply = () => {
+        const kind = classifyDispensaryHeroImage(img.naturalWidth, img.naturalHeight);
+        wrap.classList.toggle('dispensary-card__image--cover', kind === 'photo');
+      };
+      if (img.complete && img.naturalWidth) apply();
+      else img.addEventListener('load', apply, { once: true });
+    });
   }
 
   function categoryBadge(cats) {
@@ -607,8 +634,8 @@
     return `
       <article class="dispensary-card">
         <a href="${url}" class="dispensary-card__image-link">
-          <div class="dispensary-card__image">
-            ${imgOrPlaceholder(d.heroImage, 520, 390, name)}
+          <div class="dispensary-card__image dispensary-card__image--directory">
+            ${imgOrPlaceholder(d.heroImage, 960, 720, name, 'dispensary-card__img')}
           </div>
         </a>
         <div class="dispensary-card__body">
@@ -989,6 +1016,7 @@
           ? filtered.map(d => renderDispensaryDirectoryCard(d)).join('')
           : '<p class="empty-msg" style="grid-column:1/-1">No dispensaries match your filters.</p>';
         el.innerHTML = html;
+        setupDispensaryDirectoryImages(el);
       } catch (e) {
         console.error('[Dispensaries] render error', e);
         el.innerHTML = '<p class="empty-msg" style="grid-column:1/-1">Could not render dispensaries. Please refresh.</p>';

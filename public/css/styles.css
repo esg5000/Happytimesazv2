@@ -1474,6 +1474,44 @@ body[data-page="events"] .event-page-card {
 .dispensary-page { background: var(--cream); }
 .dispensary-page .section-title { margin-bottom: var(--space-6); }
 
+/* Directory cards — fixed hero height; logos default to contain on white; wide photos use cover */
+body[data-page="dispensaries"] .dispensary-card__image--directory {
+  aspect-ratio: auto;
+  height: 200px;
+  max-height: 200px;
+  min-height: 200px;
+  box-sizing: border-box;
+  background: #fff;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body[data-page="dispensaries"] .dispensary-card__image--directory.dispensary-card__image--cover {
+  padding: 0;
+  background: #1b1d1d;
+}
+
+body[data-page="dispensaries"] .dispensary-card__image--directory img.dispensary-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+body[data-page="dispensaries"] .dispensary-card__image--directory.dispensary-card__image--cover img.dispensary-card__img {
+  object-fit: cover;
+  object-position: center;
+}
+
+body[data-page="dispensaries"] .dispensary-card__image--directory .img-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}
+
 .disp-filterbar {
   display: grid;
   grid-template-columns: 1.4fr 0.9fr 0.9fr auto;
