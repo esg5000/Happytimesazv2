@@ -1629,21 +1629,11 @@
 
   async function initCannabisPage() {
     setMeta('Cannabis – Arizona Dispensaries & Deals');
-    const [deals, dispensariesRaw, posts] = await Promise.all([
-      window.getDeals ? window.getDeals(12).catch(() => null) : Promise.resolve(null),
+    const [dispensariesRaw, posts] = await Promise.all([
       (window.getActiveDispensaries ? window.getActiveDispensaries() : window.getDispensaries()).catch(() => null),
       window.getPostsByCategory('cannabis', 6)
     ]);
     const dispensaries = Array.isArray(dispensariesRaw) ? dispensariesRaw.filter(Boolean) : [];
-
-    const dealsEl = document.getElementById('cannabis-deals-grid');
-    if (dealsEl) {
-      if (!deals || deals.length === 0) {
-        dealsEl.innerHTML = '<p class="empty-msg">No active deals right now.</p>';
-      } else {
-        dealsEl.innerHTML = deals.map(d => renderDealCard(d)).join('');
-      }
-    }
 
     const dispEl = document.getElementById('cannabis-dispensary-grid');
     if (dispEl) {

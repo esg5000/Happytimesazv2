@@ -1610,7 +1610,7 @@ body[data-page="events"] .event-page-card {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  align-items: stretch;
+  align-items: flex-start;
   gap: var(--space-4);
   width: max-content;
   min-height: 0;
@@ -1667,7 +1667,7 @@ body[data-page="events"] .event-page-card {
 }
 
 .cannabis-dispensary-scroll .dispensary-card--cannabis-row .dispensary-card__body {
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 0;
   padding: 0;
   gap: var(--space-2);
@@ -1714,7 +1714,7 @@ body[data-page="events"] .event-page-card {
 }
 
 .cannabis-dispensary-scroll .dispensary-card--cannabis-row .dispensary-card__actions {
-  margin-top: auto;
+  margin-top: 0;
   padding-top: var(--space-2);
   flex-wrap: wrap;
   gap: var(--space-2);
@@ -1737,7 +1737,7 @@ body[data-page="events"] .event-page-card {
 .cannabis-dispensary-skeleton {
   flex: 0 0 auto;
   width: min(340px, calc(100vw - 2.5rem));
-  min-height: 148px;
+  min-height: 0;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -2414,7 +2414,7 @@ main.category-page-main {
   padding-bottom: var(--space-16);
 }
 
-main.category-page-main > .cannabis-section--dark:first-child {
+main.category-page-main > .cannabis-deals-banner:first-child {
   padding-top: var(--space-6);
 }
 
@@ -2708,6 +2708,56 @@ button.event-page-card__toggle {
 .cannabis-section--dark .section-title { color: var(--white); }
 .cannabis-section--dark .section-title-bar::before { background: var(--gold); }
 .cannabis-section--dark .view-all-link { color: var(--gold); }
+
+.cannabis-deals-banner {
+  background: linear-gradient(135deg, #1a3d20 0%, #2d7a3a 100%);
+  padding-block: var(--space-5);
+  border-bottom: 1px solid rgba(243, 178, 55, 0.22);
+}
+
+.cannabis-deals-banner__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.cannabis-deals-banner__left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-width: min(100%, 18rem);
+}
+
+.cannabis-deals-banner__title {
+  margin: 0;
+  color: #f3b237;
+  font-size: clamp(1.125rem, 2.2vw, 1.5rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.cannabis-deals-banner__link {
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+.cannabis-deals-banner__link:hover { color: var(--gold-light); }
+
+.cannabis-deals-banner__cta {
+  border-color: rgba(243, 178, 55, 0.85);
+  color: #f3b237;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.cannabis-deals-banner__cta:hover {
+  background: #f3b237;
+  border-color: #f3b237;
+  color: #1b1d1d;
+}
 
 .cannabis-deals-page {
   background: #0b1010;
