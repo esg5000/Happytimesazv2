@@ -437,33 +437,17 @@
   async function initFoodPage() {
     setMeta('Food & Dining – HappyTimes AZ', "Arizona's best restaurants, food pop-ups, chef profiles, and dining guides.");
     const gridEl = document.getElementById('category-grid');
-    const featuredWrap = document.getElementById('food-featured-wrap');
-    const featuredEl = document.getElementById('food-featured');
 
     if (gridEl) showSkeleton(gridEl, 9, 'card');
 
-    let foodPosts = await window.getPostsByCategory('food', 13).catch(() => []);
+    let foodPosts = await window.getPostsByCategory('food', 12).catch(() => []);
     if (!Array.isArray(foodPosts)) foodPosts = [];
 
-    if (featuredEl && featuredWrap) {
-      if (foodPosts.length > 0) {
-        featuredEl.innerHTML = renderArticleCard(foodPosts[0], 'large');
-        featuredWrap.hidden = false;
-      } else {
-        featuredEl.innerHTML = '';
-        featuredWrap.hidden = true;
-      }
-    }
-
-    const gridPosts = foodPosts.length > 1 ? foodPosts.slice(1) : [];
     if (gridEl) {
-      if (!gridPosts.length) {
-        const msg = foodPosts.length === 0
-          ? 'No articles found yet.'
-          : 'More food stories coming soon.';
-        gridEl.innerHTML = `<p class="empty-msg" style="grid-column:1/-1">${esc(msg)}</p>`;
+      if (!foodPosts.length) {
+        gridEl.innerHTML = '<p class="empty-msg" style="grid-column:1/-1">No articles found yet.</p>';
       } else {
-        gridEl.innerHTML = gridPosts.map(p => renderArticleCard(p)).join('');
+        gridEl.innerHTML = foodPosts.map(p => renderArticleCard(p)).join('');
       }
     }
 
@@ -637,7 +621,7 @@
         <div class="dispensary-card__body">
           <h3 class="dispensary-card__name"><a href="${esc(primary.href)}"${primaryRel}>${esc(name)}</a></h3>
           ${d.address ? `<div class="dispensary-card__address">${esc(d.address)}</div>` : ''}
-          ${d.city ? `<div class="dispensary-card__city"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(d.city)}, AZ</div>` : ''}
+          ${d.city ? `<div class="dispensary-card__city"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="dispensary-card__city-text">${esc(d.city)}, AZ</span></div>` : ''}
           ${tags.length ? `<div class="dispensary-card__tags">${tags.map(t => `<span class="badge" style="--badge-color:${t.color}">${esc(t.label)}</span>`).join('')}</div>` : ''}
           ${hours ? `<div class="dispensary-card__hours"><strong>Hours</strong><div>${esc(hours)}</div></div>` : ''}
           <div class="dispensary-card__actions">
