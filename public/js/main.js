@@ -183,6 +183,31 @@
     return `<div class="img-placeholder" style="background:linear-gradient(135deg,#f3ede6 0%,#e8ddd4 100%)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c9b8a8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
   }
 
+  function dispensaryInitials(name) {
+    const s = String(name || '').trim();
+    if (!s) return '?';
+    const parts = s.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      const a = parts[0][0] || '';
+      const b = parts[1][0] || '';
+      const out = (a + b).toUpperCase();
+      return out || '?';
+    }
+    const p = parts[0];
+    if (p.length >= 2) return p.slice(0, 2).toUpperCase();
+    return (p[0] || '?').toUpperCase();
+  }
+
+  /** Dispensaries directory grid (`dispensaries.html`) — dark green initials when no hero image. */
+  function dispensaryDirectoryHeroMarkup(d, w, h, imgClass) {
+    const name = d.name || d.dispensaryName || 'Dispensary';
+    const url = window.sanityImage && d.heroImage ? window.sanityImage(d.heroImage, w, h) : null;
+    const cls = imgClass ? ` class="${esc(imgClass)}"` : '';
+    if (url) return `<img src="${esc(url)}" alt="${esc(name)}"${cls} loading="lazy">`;
+    const initials = dispensaryInitials(name);
+    return `<div class="img-placeholder img-placeholder--dispensary-directory" role="img" aria-label="${esc(name)}"><span class="img-placeholder__dispensary-initials" aria-hidden="true">${esc(initials)}</span></div>`;
+  }
+
   function categoryBadge(cats) {
     const cat = Array.isArray(cats) ? cats[0] : (cats || '');
     if (!cat) return '';
@@ -585,7 +610,7 @@
       <article class="dispensary-card">
         <a href="${esc(primary.href)}" class="dispensary-card__image-link"${primaryRel}>
           <div class="dispensary-card__image dispensary-card__image--directory">
-            ${imgOrPlaceholder(d.heroImage, 960, 720, name, 'dispensary-card__img')}
+            ${dispensaryDirectoryHeroMarkup(d, 960, 720, 'dispensary-card__img')}
           </div>
         </a>
         <div class="dispensary-card__body">
@@ -603,7 +628,7 @@
     `;
   }
 
-  /** Cannabis hub carousel — image block matches `renderDispensaryDirectoryCard` exactly (`imgOrPlaceholder` on `heroImage`). */
+  /** Cannabis hub carousel — image block matches directory cards when a hero exists (`imgOrPlaceholder` otherwise). */
   function renderDispensaryCannabisRowCard(d) {
     if (!d) return '';
     const name = d.name || d.dispensaryName || 'Dispensary';
