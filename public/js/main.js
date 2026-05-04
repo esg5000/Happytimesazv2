@@ -747,26 +747,31 @@
   function renderHomeHero(settings, posts) {
     const leadWrap = document.getElementById('home-hero-lead');
     const featuredLink = document.getElementById('home-hero-featured-link');
-    const featuredImg = document.getElementById('home-hero-featured-img');
+    const featuredMedia = document.getElementById('home-hero-featured-img');
     const trendingList = document.getElementById('home-trending-list');
-    if (!leadWrap || !featuredLink || !featuredImg || !trendingList) return;
+    if (!leadWrap || !featuredLink || !featuredMedia || !trendingList) return;
 
     let featuredTitle;
     let featuredUrl = 'index.html';
     let featuredCat = 'Arizona Lifestyle';
     let featuredImage = null;
+    let featuredExcerpt = '';
+    let featuredByline = '';
 
     if (settings && settings.featuredHeadline) {
       featuredTitle = settings.featuredHeadline;
       featuredUrl = settings.featuredCtaUrl || featuredUrl;
       featuredCat = settings.featuredThemeLabel || 'Featured';
       featuredImage = settings.featuredImage || null;
+      featuredExcerpt = settings.featuredSubheadline ? String(settings.featuredSubheadline).trim() : '';
     } else if (posts && posts[0]) {
       const p = posts[0];
       featuredTitle = p.title;
       featuredUrl = articleUrl(p.slug);
       featuredCat = (p.categories || [])[0] || 'Latest';
       featuredImage = p.heroImage;
+      featuredExcerpt = p.excerpt ? String(p.excerpt).trim() : '';
+      featuredByline = formatArticleByline(p);
     } else {
       featuredTitle = 'HappyTimes AZ';
       featuredCat = 'Arizona Lifestyle';
@@ -775,20 +780,45 @@
     if (!featuredImage && posts && posts[0] && posts[0].heroImage) {
       featuredImage = posts[0].heroImage;
     }
+    if (!featuredExcerpt && settings && settings.featuredSubheadline) {
+      featuredExcerpt = String(settings.featuredSubheadline).trim();
+    }
+
+    const excerptHtml = featuredExcerpt
+      ? `<p class="home-hero__overlay-excerpt">${esc(featuredExcerpt)}</p>`
+      : '';
+    const bylineHtml = featuredByline
+      ? `<p class="home-hero__overlay-byline">${featuredByline}</p>`
+      : '';
 
     leadWrap.innerHTML = `
-      <span class="home-hero__lead-tag">${esc(featuredCat)}</span>
-      <h1 class="home-hero__headline"><a href="${esc(featuredUrl)}">${esc(featuredTitle)}</a></h1>
+      <span class="home-hero__overlay-badge">${esc(featuredCat)}</span>
+      <p class="home-hero__overlay-title">${esc(featuredTitle)}</p>
+      ${excerptHtml}
+      ${bylineHtml}
     `;
 
     featuredLink.href = featuredUrl;
     const imgUrl =
       featuredImage && window.sanityImage
-        ? window.sanityImage(featuredImage, 1200, 750)
+        ? window.sanityImage(featuredImage, 1200, 360)
         : null;
-    featuredImg.innerHTML = imgUrl
-      ? `<img src="${esc(imgUrl)}" alt="${esc(featuredTitle)}" width="1200" height="750" loading="eager">`
-      : `<img src="assets/heroes/homepage.png" alt="" width="1200" height="750" loading="eager">`;
+    let photoEl = featuredMedia.querySelector('.home-hero__featured-photo');
+    if (!photoEl) {
+      photoEl = document.createElement('img');
+      photoEl.className = 'home-hero__featured-photo';
+      photoEl.width = 1200;
+      photoEl.height = 360;
+      photoEl.loading = 'eager';
+      featuredMedia.insertBefore(photoEl, featuredMedia.firstChild);
+    }
+    if (imgUrl) {
+      photoEl.src = imgUrl;
+      photoEl.alt = featuredTitle || '';
+    } else {
+      photoEl.src = 'assets/heroes/homepage.png';
+      photoEl.alt = '';
+    }
 
     const trendingPosts = (posts || []).slice(4, 7);
     if (trendingPosts.length === 0) {
