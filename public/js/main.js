@@ -581,22 +581,31 @@
     return rows.length ? rows.join(' · ') : '';
   }
 
+  /** Active `dispensary` docs use `getListingBySlug` (`listing` type) — prefer external website like the Website button; else static listing page. */
+  function dispensaryPrimaryHref(d) {
+    const web = sanitizeExternalUrl(d.website);
+    if (web) return { href: web, external: true };
+    const slug = d && (d.slug && typeof d.slug === 'object') ? d.slug.current : d?.slug;
+    if (slug) return { href: `listing.html?slug=${encodeURIComponent(slug)}`, external: false };
+    return { href: '#', external: false };
+  }
+
   function renderDispensaryDirectoryCard(d) {
     if (!d) return '';
     const name = d.name || d.dispensaryName || 'Dispensary';
-    const slug = (d.slug && typeof d.slug === 'object') ? d.slug.current : d.slug;
-    const url = slug ? `listing?slug=${encodeURIComponent(slug)}` : '#';
+    const primary = dispensaryPrimaryHref(d);
+    const primaryRel = primary.external ? ' target="_blank" rel="noopener"' : '';
     const tags = getDispensaryCategoryTags(d);
     const hours = formatHoursCompact(d.hours);
     return `
       <article class="dispensary-card">
-        <a href="${url}" class="dispensary-card__image-link">
+        <a href="${esc(primary.href)}" class="dispensary-card__image-link"${primaryRel}>
           <div class="dispensary-card__image dispensary-card__image--directory">
             ${imgOrPlaceholder(d.heroImage, 960, 720, name, 'dispensary-card__img')}
           </div>
         </a>
         <div class="dispensary-card__body">
-          <h3 class="dispensary-card__name"><a href="${url}">${esc(name)}</a></h3>
+          <h3 class="dispensary-card__name"><a href="${esc(primary.href)}"${primaryRel}>${esc(name)}</a></h3>
           ${d.address ? `<div class="dispensary-card__address">${esc(d.address)}</div>` : ''}
           ${d.city ? `<div class="dispensary-card__city"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(d.city)}, AZ</div>` : ''}
           ${tags.length ? `<div class="dispensary-card__tags">${tags.map(t => `<span class="badge" style="--badge-color:${t.color}">${esc(t.label)}</span>`).join('')}</div>` : ''}
@@ -614,19 +623,19 @@
   function renderDispensaryCannabisRowCard(d) {
     if (!d) return '';
     const name = d.name || d.dispensaryName || 'Dispensary';
-    const slug = (d.slug && typeof d.slug === 'object') ? d.slug.current : d.slug;
-    const url = slug ? `listing?slug=${encodeURIComponent(slug)}` : '#';
+    const primary = dispensaryPrimaryHref(d);
+    const primaryRel = primary.external ? ' target="_blank" rel="noopener"' : '';
     const tags = getDispensaryCategoryTags(d);
     const hours = formatHoursCompact(d.hours);
     return `
       <article class="dispensary-card dispensary-card--cannabis-row">
-        <a href="${url}" class="dispensary-card__image-link">
+        <a href="${esc(primary.href)}" class="dispensary-card__image-link"${primaryRel}>
           <div class="dispensary-card__image dispensary-card__image--directory">
             ${imgOrPlaceholder(d.heroImage, 960, 720, name, 'dispensary-card__img')}
           </div>
         </a>
         <div class="dispensary-card__body">
-          <h3 class="dispensary-card__name"><a href="${url}">${esc(name)}</a></h3>
+          <h3 class="dispensary-card__name"><a href="${esc(primary.href)}"${primaryRel}>${esc(name)}</a></h3>
           ${d.address ? `<div class="dispensary-card__address">${esc(d.address)}</div>` : ''}
           ${d.city ? `<div class="dispensary-card__city"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${esc(d.city)}, AZ</div>` : ''}
           ${tags.length ? `<div class="dispensary-card__tags">${tags.map(t => `<span class="badge" style="--badge-color:${t.color}">${esc(t.label)}</span>`).join('')}</div>` : ''}
