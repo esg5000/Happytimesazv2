@@ -326,10 +326,6 @@ body.page-home > main > .home-hero:first-child {
   padding-top: var(--space-3);
 }
 
-body.page-home .category-page-hero .category-page-hero__title {
-  color: #000;
-}
-
 /* Hero: featured card (image + body like article cards) + trending */
 .home-hero {
   padding-block: var(--space-8);
@@ -630,10 +626,6 @@ body.page-home .category-page-hero .category-page-hero__title {
 /* Editorial section on home */
 body.page-home .editorial-grid-section {
   background: var(--sunset-cream);
-}
-
-body.page-home .section-title {
-  color: var(--sunset-gold);
 }
 
 /* Responsive */

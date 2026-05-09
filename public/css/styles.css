@@ -180,7 +180,7 @@ p:last-child { margin-bottom: 0; }
   font-family: var(--font-display);
   font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 700;
-  color: var(--brand-yellow);
+  color: #000;
   margin-bottom: var(--space-8);
 }
 
@@ -2306,7 +2306,7 @@ body[data-page="dispensaries"] #dispensary-grid .dispensary-card__actions .btn {
   font-family: var(--font-display);
   font-size: clamp(1.35rem, 2.8vw, 1.85rem);
   font-weight: 800;
-  color: var(--brand-yellow);
+  color: #000;
   margin: 0 0 var(--space-4);
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -2536,7 +2536,7 @@ body[data-page="dispensaries"] #dispensary-grid .dispensary-card__actions .btn {
   font-family: var(--font-display);
   font-size: 2rem;
   font-weight: 800;
-  color: var(--brand-yellow);
+  color: #000;
   margin: 0;
   line-height: 1.2;
   letter-spacing: -0.02em;
@@ -2571,7 +2571,7 @@ main.category-page-main > .cannabis-deals-banner:first-child {
   font-family: var(--font-display);
   font-size: clamp(2rem, 5vw, 3.25rem);
   font-weight: 800;
-  color: var(--gold);
+  color: #000;
   margin: 0 0 var(--space-10);
   line-height: 1.15;
   letter-spacing: -0.02em;
