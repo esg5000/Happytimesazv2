@@ -1621,7 +1621,7 @@
       });
     }
 
-    let currentRange = 'week';
+    let currentRange = 'month';
     let currentCity = '';
 
     function renderFiltered() {
