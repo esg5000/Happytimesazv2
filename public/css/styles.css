@@ -2291,7 +2291,7 @@ body[data-page="dispensaries"] #dispensary-grid .dispensary-card__actions .btn {
   opacity: 0.9;
 }
 
-/* === FOOD PAGE — article grid + Top 25 row === */
+/* === FOOD PAGE — Top 25 row + article grid === */
 .food-page-main #food-content {
   display: flex;
   flex-direction: column;
