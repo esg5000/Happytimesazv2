@@ -2643,6 +2643,42 @@ main.category-page-main > .cannabis-deals-banner:first-child {
   align-items: stretch;
 }
 
+/* Events listing — horizontal scroll (all breakpoints; events.html #events-list) */
+.events-page-grid.events-page-grid--scroll {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  margin-inline: calc(-1 * var(--content-pad));
+  padding-inline: var(--content-pad);
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  align-items: stretch;
+}
+
+.events-page-grid.events-page-grid--scroll .event-page-card {
+  flex: 0 0 min(300px, calc(100vw - 2.5rem));
+  max-width: min(300px, calc(100vw - 2.5rem));
+  scroll-snap-align: start;
+}
+
+.events-page-grid.events-page-grid--scroll .skeleton-card {
+  flex: 0 0 min(300px, calc(100vw - 2.5rem));
+  scroll-snap-align: start;
+}
+
+.events-page-grid.events-page-grid--scroll > .empty-msg {
+  flex: 1 1 100%;
+  min-width: 100%;
+  text-align: center;
+  padding: var(--space-6) var(--content-pad);
+  margin: 0;
+}
+
 .event-page-card {
   background: var(--white);
   border-radius: var(--radius-lg);
@@ -3816,29 +3852,6 @@ button.event-page-card__toggle {
   .hero-tile--main .hero-tile__content {
     padding: var(--space-6);
     padding-inline: var(--space-6);
-  }
-
-  .events-page-grid--scroll {
-    display: flex;
-    flex-direction: row;
-    overflow-x: auto;
-    gap: var(--space-4);
-    padding-bottom: var(--space-3);
-    margin-inline: calc(-1 * var(--content-pad));
-    padding-inline: var(--content-pad);
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-  }
-
-  .events-page-grid--scroll .event-page-card {
-    flex: 0 0 min(300px, calc(100vw - 2.5rem));
-    scroll-snap-align: start;
-  }
-
-  .events-page-grid--scroll .skeleton-card {
-    flex: 0 0 min(300px, calc(100vw - 2.5rem));
-    scroll-snap-align: start;
   }
 
   .editorial-grid { grid-template-columns: 1fr; gap: var(--space-4); }
