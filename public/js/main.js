@@ -794,15 +794,16 @@
     }
 
     const excerptHtml = featuredExcerpt
-      ? `<p class="home-hero__overlay-excerpt">${esc(featuredExcerpt)}</p>`
+      ? `<p class="home-hero__featured-excerpt">${esc(featuredExcerpt)}</p>`
       : '';
     const bylineHtml = featuredByline
-      ? `<p class="home-hero__overlay-byline">${featuredByline}</p>`
+      ? `<p class="home-hero__featured-byline">${featuredByline}</p>`
       : '';
+    const badgeColor = getCategoryColor(featuredCat);
 
     leadWrap.innerHTML = `
-      <span class="home-hero__overlay-badge">${esc(featuredCat)}</span>
-      <p class="home-hero__overlay-title">${esc(featuredTitle)}</p>
+      <span class="badge" style="--badge-color:${badgeColor}">${esc(featuredCat)}</span>
+      <h3 class="home-hero__featured-title">${esc(featuredTitle)}</h3>
       ${excerptHtml}
       ${bylineHtml}
     `;
@@ -810,14 +811,14 @@
     featuredLink.href = featuredUrl;
     const imgUrl =
       featuredImage && window.sanityImage
-        ? window.sanityImage(featuredImage, 1200, 360)
+        ? window.sanityImage(featuredImage, 1200, 750)
         : null;
     let photoEl = featuredMedia.querySelector('.home-hero__featured-photo');
     if (!photoEl) {
       photoEl = document.createElement('img');
       photoEl.className = 'home-hero__featured-photo';
       photoEl.width = 1200;
-      photoEl.height = 360;
+      photoEl.height = 750;
       photoEl.loading = 'eager';
       featuredMedia.insertBefore(photoEl, featuredMedia.firstChild);
     }

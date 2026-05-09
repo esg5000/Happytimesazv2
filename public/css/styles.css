@@ -2661,13 +2661,13 @@ main.category-page-main > .cannabis-deals-banner:first-child {
 }
 
 .events-page-grid.events-page-grid--scroll .event-page-card {
-  flex: 0 0 min(300px, calc(100vw - 2.5rem));
-  max-width: min(300px, calc(100vw - 2.5rem));
+  flex: 0 0 min(260px, calc(100vw - 3rem));
+  max-width: min(260px, calc(100vw - 3rem));
   scroll-snap-align: start;
 }
 
 .events-page-grid.events-page-grid--scroll .skeleton-card {
-  flex: 0 0 min(300px, calc(100vw - 2.5rem));
+  flex: 0 0 min(260px, calc(100vw - 3rem));
   scroll-snap-align: start;
 }
 
@@ -2677,6 +2677,12 @@ main.category-page-main > .cannabis-deals-banner:first-child {
   text-align: center;
   padding: var(--space-6) var(--content-pad);
   margin: 0;
+}
+
+/* Match food Top 25 restaurant card (`.food-spot-card`) body density on events listing */
+body[data-page="events"] #events-list .event-page-card__body {
+  padding: var(--space-4);
+  gap: var(--space-2);
 }
 
 .event-page-card {
