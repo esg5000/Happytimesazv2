@@ -355,16 +355,35 @@
     return s;
   }
 
-  /** Top 25 card media: external `thumbnail` URL or dark monogram placeholder. */
+  /**
+   * Top 25 card media (food + nightlife): same rules as food — external `thumbnail` URL,
+   * else Sanity image CDN URL via `sanityImage` (same path as `imgOrPlaceholder`), else monogram.
+   */
   function restaurantCardThumbnailHTML(r) {
-    const name = r.name || 'Restaurant';
-    const thumb = String(r.thumbnail || '').trim();
-    if (thumb && /^https?:\/\//i.test(thumb)) {
-      return `<img src="${esc(thumb)}" alt="${esc(name)}" loading="lazy">`;
+    const name = (r && r.name) || 'Restaurant';
+    const resolveCardImageUrl = field => {
+      if (field == null || field === '') return '';
+      if (typeof field === 'string') {
+        const s = field.trim();
+        if (s && /^https?:\/\//i.test(s)) return s;
+        return '';
+      }
+      if (typeof field === 'object' && window.sanityImage) {
+        const u = window.sanityImage(field, 520, 325, 'crop');
+        return typeof u === 'string' && u ? u : '';
+      }
+      return '';
+    };
+    const fields = [r && r.thumbnail, r && r.heroImage, r && r.image];
+    for (let i = 0; i < fields.length; i++) {
+      const url = resolveCardImageUrl(fields[i]);
+      if (url) {
+        return `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy">`;
+      }
     }
     let letter = '';
-    for (let i = 0; i < name.length; i++) {
-      const ch = name.charAt(i);
+    for (let j = 0; j < name.length; j++) {
+      const ch = name.charAt(j);
       if (/[a-zA-Z]/.test(ch)) {
         letter = ch.toUpperCase();
         break;
