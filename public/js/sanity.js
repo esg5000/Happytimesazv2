@@ -245,6 +245,25 @@ window.getRestaurantsByCity = (city, limit = 25) => {
   `, { city: String(city || '').trim() });
 };
 
+/** Active nightlife venues (bars & clubs), highest rated first. */
+window.getActiveNightlifeVenues = (limit = 25) => {
+  const n = Math.min(Math.max(1, limit), 50);
+  return sanityFetch(`
+    *[_type == "nightlife" && isActive == true] | order(coalesce(rating, starRating, 0) desc, name asc) [0...${n}]{
+      name,
+      "slug": slug.current,
+      website,
+      thumbnail,
+      "address": coalesce(address, streetAddress, venueAddress),
+      city,
+      phone,
+      rating,
+      starRating,
+      "isFeatured": coalesce(isFeatured, featured)
+    }
+  `);
+};
+
 window.getListingBySlug = (slug) => sanityFetch(`
   *[_type == "listing" && slug.current == $slug][0]{
     name,

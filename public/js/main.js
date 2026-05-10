@@ -459,6 +459,71 @@
     await loadCity(initial);
   }
 
+  function nightlifeVenueHref(v) {
+    const web = normalizeRestaurantWebsiteHref(v && v.website);
+    if (web) return web;
+    if (v && v.slug) return `listing?slug=${encodeURIComponent(v.slug)}`;
+    return '#';
+  }
+
+  function telHrefFromPhone(raw) {
+    const s = String(raw || '').trim();
+    if (!s) return '';
+    const digits = s.replace(/[^\d+]/g, '');
+    return digits ? `tel:${digits}` : '';
+  }
+
+  function renderNightlifeSpotCard(v) {
+    if (!v) return '';
+    const feat = !!v.isFeatured;
+    const href = nightlifeVenueHref(v);
+    const isHttp = /^https?:\/\//i.test(href);
+    const name = v.name || 'Venue';
+    const addr = String(v.address || '').trim();
+    const city = String(v.city || '').trim();
+    const phone = String(v.phone || '').trim();
+    const telHref = telHrefFromPhone(phone);
+    const cardClass = `food-spot-card${feat ? ' food-spot-card--featured' : ''}`;
+    const badge = feat ? '<span class="food-spot-card__badge">Featured</span>' : '';
+    const ctaLabel = isHttp ? 'Website' : 'View';
+    const addrHtml = addr ? `<p class="food-spot-card__cuisine">${esc(addr)}</p>` : '';
+    const cityHtml = city ? `<p class="food-spot-card__cuisine">${esc(city)}</p>` : '';
+    const phoneHtml = phone
+      ? `<p class="food-spot-card__cuisine">${telHref ? `<a href="${esc(telHref)}" class="food-spot-card__phone-link">${esc(phone)}</a>` : esc(phone)}</p>`
+      : '';
+    return `
+      <article class="${cardClass}">
+        <div class="food-spot-card__media">
+          ${restaurantCardThumbnailHTML(v)}
+          ${badge}
+        </div>
+        <div class="food-spot-card__body">
+          <h3 class="food-spot-card__name">${esc(name)}</h3>
+          ${addrHtml}
+          ${cityHtml}
+          <div class="food-spot-card__meta">
+            ${renderRestaurantStarRow(v.starRating, v.rating)}
+          </div>
+          ${phoneHtml}
+          <a href="${esc(href)}" class="btn btn--sm btn--outline food-spot-card__cta"${isHttp ? ' target="_blank" rel="noopener"' : ''}>${esc(ctaLabel)}</a>
+        </div>
+      </article>
+    `;
+  }
+
+  async function initNightlifeTopSection() {
+    const row = document.getElementById('nightlife-top25-row');
+    if (!row) return;
+    row.innerHTML = '<p class="food-top25__loading">Loading…</p>';
+    const data = await (window.getActiveNightlifeVenues ? window.getActiveNightlifeVenues(25) : Promise.resolve(null));
+    const list = Array.isArray(data) ? data.filter(Boolean) : [];
+    if (!list.length) {
+      row.innerHTML = '<p class="food-top25__empty">No bars or nightclubs listed yet.</p>';
+      return;
+    }
+    row.innerHTML = list.map(renderNightlifeSpotCard).join('');
+  }
+
   async function initFoodPage() {
     setMeta('Food & Dining – HappyTimes AZ', "Arizona's best restaurants, food pop-ups, chef profiles, and dining guides.");
     const gridEl = document.getElementById('category-grid');
@@ -1909,6 +1974,22 @@
 
     if (cat === 'food') {
       await initFoodPage();
+      return;
+    }
+
+    if (cat === 'nightlife') {
+      showSkeleton(gridEl, 9, 'card');
+      const topRow = initNightlifeTopSection();
+      let posts = await window.getPostsByCategory(cat, 12).catch(() => null);
+      if (!Array.isArray(posts) || !posts.length) {
+        posts = await window.getLatestPosts(12).catch(() => []);
+      }
+      if (!posts || posts.length === 0) {
+        gridEl.innerHTML = '<p class="empty-msg" style="grid-column:1/-1">No articles found yet.</p>';
+      } else {
+        gridEl.innerHTML = posts.map(p => renderArticleCard(p)).join('');
+      }
+      await topRow;
       return;
     }
 

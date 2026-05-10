@@ -89,8 +89,14 @@
     </div>
   </section>
   <div class="ad-slot ad-slot--leaderboard" data-placement="nightlife_listings_top" data-size="leaderboard" style="padding-inline:1.5rem"></div>
-  <main class="category-page-main" style="background:var(--cream)">
-    <div class="container">
+  <main class="category-page-main food-page-main" style="background:var(--cream)">
+    <div class="container" id="nightlife-content">
+      <section class="food-top25" aria-labelledby="nightlife-top-bars-heading">
+        <h2 id="nightlife-top-bars-heading" class="food-top25__title">Top Bars &amp; Nightclubs</h2>
+        <div class="food-top25__scroll-wrap">
+          <div id="nightlife-top25-row" class="food-top25__row"></div>
+        </div>
+      </section>
       <div id="category-grid" class="editorial-grid">
         <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line w-20" style="margin-top:1rem"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-60"></div></div>
         <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line w-20" style="margin-top:1rem"></div><div class="skeleton-line w-80"></div><div class="skeleton-line w-60"></div></div>

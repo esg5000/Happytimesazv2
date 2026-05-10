@@ -2292,7 +2292,8 @@ body[data-page="dispensaries"] #dispensary-grid .dispensary-card__actions .btn {
 }
 
 /* === FOOD PAGE — Top 25 row + article grid === */
-.food-page-main #food-content {
+.food-page-main #food-content,
+.food-page-main #nightlife-content {
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
@@ -2470,6 +2471,16 @@ body[data-page="dispensaries"] #dispensary-grid .dispensary-card__actions .btn {
   font-size: 0.8125rem;
   color: var(--ink-light);
   line-height: 1.35;
+}
+
+.food-spot-card__phone-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.food-spot-card__phone-link:hover {
+  color: var(--brand-orange);
 }
 
 .food-spot-card__meta {
