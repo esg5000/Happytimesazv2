@@ -542,6 +542,6 @@
     init();
   })();
   </script>
-  <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js')}</script>
+  <script>if('serviceWorker' in navigator){navigator.serviceWorker.register(new URL('sw.js',window.location.href).href)}</script>
 </body>
 </html>

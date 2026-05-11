@@ -369,6 +369,6 @@
   <script src="js/radio.js"></script>
   <script src="js/main.js"></script>
   <script src="https://link.xentralcore.com/js/form_embed.js"></script>
-  <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js')}</script>
+  <script>if('serviceWorker' in navigator){navigator.serviceWorker.register(new URL('sw.js',window.location.href).href)}</script>
 </body>
 </html>
