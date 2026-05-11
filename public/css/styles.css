@@ -392,6 +392,9 @@ p:last-child { margin-bottom: 0; }
   text-decoration: none;
   min-width: 0;
   max-width: 100%;
+  position: relative;
+  z-index: 3;
+  touch-action: manipulation;
 }
 
 .site-wordmark__img {
