@@ -1,5 +1,5 @@
-/* HappyTimesAZ — minimal offline shell (paths relative to this script / registration scope) */
-const CACHE = 'happytimes-precache-v2';
+/* HappyTimesAZ — minimal offline shell (paths relative to registration scope) */
+const CACHE = 'happytimes-precache-v3';
 
 function precacheUrls() {
   const scope = self.registration.scope;
@@ -41,6 +41,10 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+function isNavigationOrDocument(req) {
+  return req.mode === 'navigate' || req.destination === 'document';
+}
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
@@ -55,16 +59,33 @@ self.addEventListener('fetch', (event) => {
   const scopePrefix = self.registration.scope;
   if (!url.href.startsWith(scopePrefix)) return;
 
+  if (isNavigationOrDocument(req)) {
+    event.respondWith(
+      fetch(req)
+        .then(async (res) => {
+          if (res && res.ok) return res;
+          const fromCache =
+            (await caches.match(req)) ||
+            (await caches.match(indexFallbackUrl())) ||
+            (await caches.match(rootFallbackUrl()));
+          return fromCache || res;
+        })
+        .catch(async () => {
+          return (
+            (await caches.match(req)) ||
+            (await caches.match(indexFallbackUrl())) ||
+            (await caches.match(rootFallbackUrl())) ||
+            new Response('Offline', { status: 503, statusText: 'Offline' })
+          );
+        })
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) return cached;
-      return fetch(req).catch(() => {
-        const accept = req.headers.get('accept') || '';
-        if (req.mode === 'navigate' || accept.includes('text/html')) {
-          return caches.match(indexFallbackUrl()).then((page) => page || caches.match(rootFallbackUrl()));
-        }
-        return caches.match(req);
-      });
+      return fetch(req).catch(() => caches.match(req));
     })
   );
 });
