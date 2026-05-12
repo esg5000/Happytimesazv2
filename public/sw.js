@@ -2,9 +2,7 @@
 const CACHE_NAME = 'happytimes-v1';
 const ASSETS = [
   './',
-  './index.html',
-  './manifest.webmanifest',
-  './assets/logos/icon.png'
+  './manifest.webmanifest'
 ];
 
 self.addEventListener('install', (event) => {
