@@ -1,11 +1,9 @@
 {
-  "id": "/",
   "name": "HappyTimesAZ",
   "short_name": "HappyTimesAZ",
-  "start_url": "/",
+  "start_url": "/index.html",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "browser"],
   "background_color": "#f3b237",
   "theme_color": "#1b1d1d",
   "icons": [
