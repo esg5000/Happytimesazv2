@@ -1,5 +1,5 @@
 /* Basic offline cache for static site */
-const CACHE_NAME = 'happytimes-v1';
+const CACHE_NAME = 'happytimes-v2';
 const ASSETS = [
   './',
   './manifest.webmanifest'
