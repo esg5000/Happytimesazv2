@@ -6,6 +6,69 @@
 (function() {
   'use strict';
 
+  /**
+   * TEMP: PWA / tap forensics. Enable with ?pwa-debug=1 (logging + red outline on .site-wordmark).
+   * Hard external nav test: ?pwa-debug=test (replaces wordmark label with TEST → https://www.google.com/).
+   * Remove this block after diagnosis.
+   */
+  (function pwaForensic() {
+    try {
+      const qs = window.location.search || '';
+      const debug = /\bpwa-debug=1\b/.test(qs);
+      const hardTest = /\bpwa-debug=test\b/.test(qs);
+      if (!debug && !hardTest) return;
+
+      window.addEventListener('error', (e) => {
+        console.error('[WINDOW ERROR]', e.error, e.message, e.filename, e.lineno);
+      });
+      window.addEventListener('unhandledrejection', (e) => {
+        console.error('[PROMISE ERROR]', e.reason);
+      });
+
+      document.addEventListener(
+        'click',
+        (e) => {
+          console.log('[GLOBAL CLICK]', e.target, e.target && e.target.tagName, 'defaultPrevented:', e.defaultPrevented);
+        },
+        true
+      );
+
+      function arm() {
+        const standalone =
+          (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+          window.navigator.standalone === true;
+        console.log('[PWA-FORENSIC] standalone:', standalone, 'href:', location.href, 'top===self:', window.top === window.self);
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistration().then((reg) => {
+            console.log('[PWA-FORENSIC] SW scope:', reg && reg.scope);
+          });
+        }
+        const wm = document.querySelector('.site-wordmark');
+        if (!wm) {
+          console.warn('[PWA-FORENSIC] no .site-wordmark in DOM');
+          return;
+        }
+        if (hardTest) {
+          wm.setAttribute('href', 'https://www.google.com/');
+          wm.textContent = 'TEST';
+        }
+        wm.addEventListener('click', (e) => {
+          console.log('[WORDMARK CLICK]', e);
+        });
+        const s = document.createElement('style');
+        s.setAttribute('data-pwa-forensic', '1');
+        s.textContent =
+          '.site-wordmark{outline:5px solid red!important;position:relative!important;z-index:999999!important;pointer-events:auto!important}';
+        document.head.appendChild(s);
+      }
+
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arm);
+      else arm();
+    } catch (err) {
+      console.error('[PWA-FORENSIC] failed', err);
+    }
+  })();
+
   // ─── Ad Engine ────────────────────────────────────────────────────────────────
 
   /** Build HTML for a single ad object at a given size variant */
@@ -1904,6 +1967,35 @@
     }
   }
 
+  /**
+   * Wordmark uses href="/". PWA start_url is "/" (manifest.json). On the home document,
+   * activating that link is a same-document navigation and browsers perform no navigation
+   * (feels like "nothing happens"). Reload when target equals current URL so home always responds.
+   */
+  function initSiteWordmarkSameUrlReload() {
+    document.querySelectorAll('a.site-wordmark[href]').forEach((a) => {
+      a.addEventListener('click', (e) => {
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        let u;
+        try {
+          u = new URL(a.getAttribute('href') || '', location.href);
+        } catch {
+          return;
+        }
+        if (
+          u.origin !== location.origin ||
+          u.pathname !== location.pathname ||
+          u.search !== location.search ||
+          u.hash !== location.hash
+        ) {
+          return;
+        }
+        e.preventDefault();
+        location.reload();
+      });
+    });
+  }
+
   // ─── Mobile Nav ───────────────────────────────────────────────────────────────
 
   function initMobileNav() {
@@ -2057,6 +2149,7 @@
 
     initMobileNav();
     initStickyHeader();
+    initSiteWordmarkSameUrlReload();
     initSearch();
     renderHomeMastheadDate();
     void fetchPhoenixWeather();
