@@ -1262,7 +1262,7 @@
   async function initArticlePage() {
     const slug = getArticleSlugFromLocation();
     if (!slug) {
-      document.getElementById('article-main').innerHTML = '<div class="error-state"><h1>Article not found</h1><a href="index.html" class="btn btn--primary">Go Home</a></div>';
+      document.getElementById('article-main').innerHTML = '<div class="error-state"><h1>Article not found</h1><a href="/" class="btn btn--primary">Go Home</a></div>';
       return;
     }
 
@@ -1271,7 +1271,7 @@
     ]);
 
     if (!post) {
-      document.getElementById('article-main').innerHTML = `<div class="error-state"><h1>Article not found</h1><p>The article you're looking for doesn't exist or may have been removed.</p><a href="index.html" class="btn btn--primary">Go Home</a></div>`;
+      document.getElementById('article-main').innerHTML = `<div class="error-state"><h1>Article not found</h1><p>The article you're looking for doesn't exist or may have been removed.</p><a href="/" class="btn btn--primary">Go Home</a></div>`;
       return;
     }
 
