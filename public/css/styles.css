@@ -2346,6 +2346,72 @@ body[data-page="cannabis"] .cannabis-dispensary-scroll #cannabis-dispensary-grid
   line-height: 1.35;
 }
 
+/* Directory / cannabis hub: hybrid card uses `food-spot-card__media` + `dispensary-card__*` body — align with Top 25 `.food-spot-card` */
+.food-spot-card.dispensary-card .food-spot-card__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--sand);
+}
+
+.food-spot-card.dispensary-card .dispensary-card__body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1;
+  min-height: 0;
+}
+
+.food-spot-card.dispensary-card .dispensary-card__name {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.food-spot-card.dispensary-card .dispensary-card__name a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.food-spot-card.dispensary-card .dispensary-card__name a:hover {
+  color: var(--brand-orange);
+}
+
+.food-spot-card.dispensary-card .dispensary-card__address {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ink-light);
+  line-height: 1.35;
+}
+
+.food-spot-card.dispensary-card .dispensary-card__city {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ink-light);
+  line-height: 1.35;
+}
+
+body[data-page="dispensaries"] #dispensary-grid .food-spot-card.dispensary-card,
+body[data-page="cannabis"] .cannabis-dispensary-scroll #cannabis-dispensary-grid .food-spot-card.dispensary-card {
+  width: min(260px, calc(100vw - 3rem));
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--sand);
+  box-shadow: var(--shadow-sm);
+}
+
+body[data-page="dispensaries"] #dispensary-grid .food-spot-card.dispensary-card:hover,
+body[data-page="cannabis"] .cannabis-dispensary-scroll #cannabis-dispensary-grid .food-spot-card.dispensary-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
 .food-spot-card__phone-link {
   color: inherit;
   text-decoration: underline;
