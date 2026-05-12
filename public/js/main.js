@@ -1745,6 +1745,8 @@
 
   // ─── CANNABIS PAGE ────────────────────────────────────────────────────────────
 
+  const CANNABIS_PAGE_DISPENSARY_PREVIEW = 5;
+
   async function initCannabisPage() {
     setMeta('Cannabis – Arizona Dispensaries & Deals');
     const [dispensariesRaw, posts] = await Promise.all([
@@ -1758,7 +1760,10 @@
       if (!dispensaries || dispensaries.length === 0) {
         dispEl.innerHTML = '<p class="empty-msg">No dispensaries found.</p>';
       } else {
-        dispEl.innerHTML = dispensaries.map(d => renderDispensaryCannabisRowCard(d)).join('');
+        dispEl.innerHTML = dispensaries
+          .slice(0, CANNABIS_PAGE_DISPENSARY_PREVIEW)
+          .map(d => renderDispensaryCannabisRowCard(d))
+          .join('');
       }
     }
 
