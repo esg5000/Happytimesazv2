@@ -1741,7 +1741,15 @@ body[data-page="cannabis"] .cannabis-dispensary-scroll #cannabis-dispensary-grid
   flex-wrap: nowrap;
   align-items: stretch;
   gap: var(--space-4);
-  width: max-content;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
   min-height: 0;
   padding-block: var(--space-1);
 }
@@ -1750,6 +1758,7 @@ body[data-page="cannabis"] .cannabis-dispensary-scroll #cannabis-dispensary-grid
   width: 100%;
   max-width: 100%;
   flex-wrap: wrap;
+  overflow-x: visible;
 }
 
 /* Same card component as directory page (`.food-spot-card.dispensary-card`); width from global `.food-spot-card` */
