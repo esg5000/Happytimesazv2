@@ -10,13 +10,19 @@
   "icons": [
     {
       "src": "assets/logos/icon.png",
-      "sizes": "2488x2480",
+      "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
       "src": "assets/logos/icon.png",
-      "sizes": "2488x2480",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/logos/icon.png",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
