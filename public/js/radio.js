@@ -353,7 +353,13 @@
 
   // ─── Boot ─────────────────────────────────────────────────────────────────
 
-  if (document.readyState === 'loading') {
+  function isMinimalBoot() {
+    return /(?:^|[?&])minimal=1(?:&|$)/.test(location.search || '');
+  }
+
+  if (isMinimalBoot()) {
+    console.log('[BOOT] RADIO skipped (minimal=1)');
+  } else if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
     init();

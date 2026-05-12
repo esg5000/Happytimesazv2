@@ -466,3 +466,5 @@ function renderSpan(span, markDefs) {
   });
   return text;
 }
+
+console.log('[BOOT] SANITY MODULE LOADED');

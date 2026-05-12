@@ -6,6 +6,8 @@
 (function() {
   'use strict';
 
+  console.log('[BOOT] MAIN.JS BUNDLE EXECUTING');
+
   /**
    * TEMP: PWA / tap forensics. Enable with ?pwa-debug=1 (logging + red outline on .site-wordmark).
    * Hard external nav test: ?pwa-debug=test (replaces wordmark label with TEST → https://www.google.com/).
@@ -2137,9 +2139,12 @@
     let page = document.body.dataset.page;
     if (!page) return;
 
+    const MINIMAL_BOOT = /(?:^|[?&])minimal=1(?:&|$)/.test(location.search || '');
+
     // Defensive routing: if the HTML has the wrong data-page attribute (or a host rewrite
     // serves the wrong shell), try to infer the intended page from the URL / DOM.
     const path = String(window.location?.pathname || '').toLowerCase();
+    console.log('[BOOT] ROUTE INIT', { page, path, minimal: MINIMAL_BOOT });
     try {
       const hasDispGrid = !!document.getElementById('dispensary-grid');
       if (hasDispGrid || path.endsWith('/dispensaries.html') || path.endsWith('dispensaries.html') || path.includes('/dispensaries')) {
@@ -2147,13 +2152,34 @@
       }
     } catch (e) {}
 
+    if (MINIMAL_BOOT) {
+      console.log('[BOOT] MINIMAL MODE — skip APIs, ads, radio side-effects (radio.js), page data, search, ticker, weather');
+      try {
+        initMobileNav();
+        console.log('[BOOT] NAV INIT');
+        initStickyHeader();
+        console.log('[BOOT] HEADER INIT');
+        initSiteWordmarkSameUrlReload();
+        renderHomeMastheadDate();
+      } catch (err) {
+        console.error('[BOOT] MINIMAL MODE init threw', err);
+        throw err;
+      }
+      console.log('[BOOT] ROUTE DONE (minimal)');
+      return;
+    }
+
     initMobileNav();
+    console.log('[BOOT] NAV INIT');
     initStickyHeader();
+    console.log('[BOOT] HEADER INIT');
     initSiteWordmarkSameUrlReload();
     initSearch();
+    console.log('[BOOT] SEARCH INIT');
     renderHomeMastheadDate();
     void fetchPhoenixWeather();
     void initHeadlineTickerGlobal();
+    console.log('[BOOT] SANITY INIT');
 
     // Run page init then wire up any ad slots that were in the static HTML.
     // Dynamic ad slots (injected by render functions) are picked up by initAds
@@ -2173,11 +2199,13 @@
 
     const fn = pageInits[page];
     if (fn) {
+      console.log('[BOOT] ROUTE — starting page module', page);
       // Init static ad slots immediately (leaderboards etc. in the HTML)
       initAds();
       // Run page content fetch, then re-run initAds to catch dynamically injected slots
       fn()
         .then(() => {
+          console.log('[BOOT] ROUTE — page module resolved', page);
           initAds();
         })
         .catch((e) => {
@@ -2186,11 +2214,16 @@
     } else {
       console.warn('[Route] no init fn for', page);
     }
+    console.log('[BOOT] ROUTE DONE (full)');
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', route);
+    document.addEventListener('DOMContentLoaded', function bootRoute() {
+      console.log('[BOOT] DOMContentLoaded fired');
+      route();
+    });
   } else {
+    console.log('[BOOT] DOM already interactive — route() immediate');
     route();
   }
 

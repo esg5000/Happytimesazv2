@@ -365,10 +365,22 @@
   <!-- GTA Radio Player (persistent) -->
   <!-- radio.js injects this dynamically -->
 
+  <script src="/js/boot-diagnostics.js"></script>
   <script src="js/sanity.js"></script>
   <script src="js/radio.js"></script>
   <script src="js/main.js"></script>
-  <script src="https://link.xentralcore.com/js/form_embed.js"></script>
+  <script>
+    (function () {
+      if (/(?:^|[?&])minimal=1(?:&|$)/.test(location.search || '')) {
+        console.log('[BOOT] form_embed skipped (minimal=1)');
+        return;
+      }
+      var s = document.createElement('script');
+      s.src = 'https://link.xentralcore.com/js/form_embed.js';
+      s.async = true;
+      document.body.appendChild(s);
+    })();
+  </script>
   <script>if ('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(function(e){console.warn('[sw]',e)})}</script>
 </body>
 </html>
