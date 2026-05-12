@@ -8,12 +8,14 @@
   <meta property="og:title" content="HappyTimes AZ – Arizona Lifestyle Magazine">
   <meta property="og:description" content="Arizona's guide to food, news, cannabis, nightlife, health &amp; wellness, events, and culture.">
   <meta property="og:type" content="website">
-  <meta name="theme-color" content="#1b1d1d">
+  <meta name="theme-color" content="#fe8526">
 
   <meta name="awin-site-verification" content="Awin">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/home.css">
   <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="assets/logos/icon.png">
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-M86JBB5YTP"></script>
@@ -365,5 +367,10 @@
   <script src="js/radio.js"></script>
   <script src="js/main.js"></script>
   <script src="https://link.xentralcore.com/js/form_embed.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+    }
+  </script>
 </body>
 </html>
