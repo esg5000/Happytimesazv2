@@ -6,71 +6,6 @@
 (function() {
   'use strict';
 
-  console.log('[BOOT] MAIN.JS BUNDLE EXECUTING');
-
-  /**
-   * TEMP: PWA / tap forensics. Enable with ?pwa-debug=1 (logging + red outline on .site-wordmark).
-   * Hard external nav test: ?pwa-debug=test (replaces wordmark label with TEST → https://www.google.com/).
-   * Remove this block after diagnosis.
-   */
-  (function pwaForensic() {
-    try {
-      const qs = window.location.search || '';
-      const debug = /\bpwa-debug=1\b/.test(qs);
-      const hardTest = /\bpwa-debug=test\b/.test(qs);
-      if (!debug && !hardTest) return;
-
-      window.addEventListener('error', (e) => {
-        console.error('[WINDOW ERROR]', e.error, e.message, e.filename, e.lineno);
-      });
-      window.addEventListener('unhandledrejection', (e) => {
-        console.error('[PROMISE ERROR]', e.reason);
-      });
-
-      document.addEventListener(
-        'click',
-        (e) => {
-          console.log('[GLOBAL CLICK]', e.target, e.target && e.target.tagName, 'defaultPrevented:', e.defaultPrevented);
-        },
-        true
-      );
-
-      function arm() {
-        const standalone =
-          (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
-          window.navigator.standalone === true;
-        console.log('[PWA-FORENSIC] standalone:', standalone, 'href:', location.href, 'top===self:', window.top === window.self);
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.getRegistration().then((reg) => {
-            console.log('[PWA-FORENSIC] SW scope:', reg && reg.scope);
-          });
-        }
-        const wm = document.querySelector('.site-wordmark');
-        if (!wm) {
-          console.warn('[PWA-FORENSIC] no .site-wordmark in DOM');
-          return;
-        }
-        if (hardTest) {
-          wm.setAttribute('href', 'https://www.google.com/');
-          wm.textContent = 'TEST';
-        }
-        wm.addEventListener('click', (e) => {
-          console.log('[WORDMARK CLICK]', e);
-        });
-        const s = document.createElement('style');
-        s.setAttribute('data-pwa-forensic', '1');
-        s.textContent =
-          '.site-wordmark{outline:5px solid red!important;position:relative!important;z-index:999999!important;pointer-events:auto!important}';
-        document.head.appendChild(s);
-      }
-
-      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arm);
-      else arm();
-    } catch (err) {
-      console.error('[PWA-FORENSIC] failed', err);
-    }
-  })();
-
   // ─── Ad Engine ────────────────────────────────────────────────────────────────
 
   /** Build HTML for a single ad object at a given size variant */
@@ -1970,9 +1905,8 @@
   }
 
   /**
-   * Wordmark uses href="/". PWA start_url is "/" (manifest.json). On the home document,
-   * activating that link is a same-document navigation and browsers perform no navigation
-   * (feels like "nothing happens"). Reload when target equals current URL so home always responds.
+   * Wordmark uses href="/". On the home document, same-URL navigation does nothing visible;
+   * reload when the resolved target equals the current document so "home" always responds.
    */
   function initSiteWordmarkSameUrlReload() {
     document.querySelectorAll('a.site-wordmark[href]').forEach((a) => {
@@ -2139,12 +2073,9 @@
     let page = document.body.dataset.page;
     if (!page) return;
 
-    const MINIMAL_BOOT = /(?:^|[?&])minimal=1(?:&|$)/.test(location.search || '');
-
     // Defensive routing: if the HTML has the wrong data-page attribute (or a host rewrite
     // serves the wrong shell), try to infer the intended page from the URL / DOM.
     const path = String(window.location?.pathname || '').toLowerCase();
-    console.log('[BOOT] ROUTE INIT');
     try {
       const hasDispGrid = !!document.getElementById('dispensary-grid');
       if (hasDispGrid || path.endsWith('/dispensaries.html') || path.endsWith('dispensaries.html') || path.includes('/dispensaries')) {
@@ -2152,30 +2083,10 @@
       }
     } catch (e) {}
 
-    if (MINIMAL_BOOT) {
-      console.log('[BOOT] MINIMAL MODE — skip APIs, ads, radio side-effects (radio.js), page data, search, ticker, weather');
-      try {
-        initMobileNav();
-        console.log('[BOOT] NAV INIT');
-        initStickyHeader();
-        console.log('[BOOT] HEADER INIT');
-        initSiteWordmarkSameUrlReload();
-        renderHomeMastheadDate();
-      } catch (err) {
-        console.error('[BOOT] MINIMAL MODE init threw', err);
-        throw err;
-      }
-      console.log('[BOOT] ROUTE DONE (minimal)');
-      return;
-    }
-
     initMobileNav();
-    console.log('[BOOT] NAV INIT');
     initStickyHeader();
-    console.log('[BOOT] HEADER INIT');
     initSiteWordmarkSameUrlReload();
     initSearch();
-    console.log('[BOOT] SEARCH INIT');
     renderHomeMastheadDate();
     void fetchPhoenixWeather();
     void initHeadlineTickerGlobal();
@@ -2198,13 +2109,11 @@
 
     const fn = pageInits[page];
     if (fn) {
-      console.log('[BOOT] ROUTE — starting page module', page);
       // Init static ad slots immediately (leaderboards etc. in the HTML)
       initAds();
       // Run page content fetch, then re-run initAds to catch dynamically injected slots
       fn()
         .then(() => {
-          console.log('[BOOT] ROUTE — page module resolved', page);
           initAds();
         })
         .catch((e) => {
@@ -2213,16 +2122,11 @@
     } else {
       console.warn('[Route] no init fn for', page);
     }
-    console.log('[BOOT] ROUTE DONE (full)');
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function bootRoute() {
-      console.log('[BOOT] DOMContentLoaded fired');
-      route();
-    });
+    document.addEventListener('DOMContentLoaded', route);
   } else {
-    console.log('[BOOT] DOM already interactive — route() immediate');
     route();
   }
 

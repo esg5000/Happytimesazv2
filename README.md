@@ -15,7 +15,7 @@ Static site (HTML/CSS/JS) in the **`public/`** folder.
 
 1. **Project → Settings → Domains** → add your apex and/or `www` domain.
 2. Add the DNS records Vercel shows at your DNS host.
-3. Use **`https://happytimesaz.com`** after SSL is active. Service workers and a reliable PWA install require **HTTPS** (not `http://`).
+3. Use **`https://happytimesaz.com`** after SSL is active.
 
 ### Optional: Root Directory = `public`
 
@@ -28,7 +28,3 @@ If you set **Root Directory** to **`public`** in Vercel, replace the **`rewrites
 ```
 
 (and remove the `/` and `/(.*)` → `/public/...` rules), since files are then served from `/` directly. Keep the **`redirects`** block as-is.
-
-### PWA / service worker
-
-After deploy, open the **`https://`** URL, remove any old home-screen shortcut, then add again so the manifest and `sw.js` match the live origin.

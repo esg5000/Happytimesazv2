@@ -466,5 +466,3 @@ function renderSpan(span, markDefs) {
   });
   return text;
 }
-
-console.log('[BOOT] SANITY INIT');
