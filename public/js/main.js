@@ -691,12 +691,10 @@
     const tags = getDispensaryCategoryTags(d);
     const hours = formatHoursCompact(d.hours);
     return `
-      <article class="dispensary-card">
-        <a href="${esc(primary.href)}" class="dispensary-card__image-link"${primaryRel}>
-          <div class="dispensary-card__image dispensary-card__image--directory">
-            ${dispensaryDirectoryHeroMarkup(d, 960, 720, 'dispensary-card__img')}
-          </div>
-        </a>
+      <article class="food-spot-card dispensary-card">
+        <div class="food-spot-card__media">
+          ${restaurantCardThumbnailHTML(d)}
+        </div>
         <div class="dispensary-card__body">
           <h3 class="dispensary-card__name"><a href="${esc(primary.href)}"${primaryRel}>${esc(name)}</a></h3>
           ${d.address ? `<div class="dispensary-card__address">${esc(d.address)}</div>` : ''}

@@ -1720,6 +1720,12 @@ body[data-page="dispensaries"] #dispensary-grid .dispensary-card__actions .btn {
   gap: var(--space-4);
 }
 
+#dispensary-grid .food-spot-card {
+  flex: unset;
+  width: 100%;
+  scroll-snap-align: unset;
+}
+
 /* Cannabis hub — horizontal dispensary preview row */
 .cannabis-dispensary-scroll {
   overflow-x: auto;
