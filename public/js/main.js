@@ -374,7 +374,7 @@
       }
       return '';
     };
-    const fields = [r && r.thumbnail, r && r.heroImage, r && r.image];
+    const fields = [r && r.logo, r && r.scrapedImage, r && r.thumbnail, r && r.heroImage, r && r.image];
     for (let i = 0; i < fields.length; i++) {
       const url = resolveCardImageUrl(fields[i]);
       if (url) {
