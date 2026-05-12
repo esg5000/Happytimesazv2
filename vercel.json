@@ -1,6 +1,11 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
-    { "source": "/mushrooms.html", "destination": "/health-wellness.html", "permanent": true }
+    {
+      "source": "/mushrooms.html",
+      "destination": "/health-wellness.html",
+      "permanent": true
+    }
   ],
   "rewrites": [
     { "source": "/", "destination": "/public/index.html" },
