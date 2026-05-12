@@ -710,36 +710,6 @@
     `;
   }
 
-  /** Cannabis hub carousel — image block matches directory cards when a hero exists (`imgOrPlaceholder` otherwise). */
-  function renderDispensaryCannabisRowCard(d) {
-    if (!d) return '';
-    const name = d.name || d.dispensaryName || 'Dispensary';
-    const primary = dispensaryPrimaryHref(d);
-    const primaryRel = primary.external ? ' target="_blank" rel="noopener"' : '';
-    const tags = getDispensaryCategoryTags(d);
-    const hours = formatHoursCompact(d.hours);
-    return `
-      <article class="dispensary-card dispensary-card--cannabis-row">
-        <a href="${esc(primary.href)}" class="dispensary-card__image-link"${primaryRel}>
-          <div class="dispensary-card__image dispensary-card__image--directory">
-            ${imgOrPlaceholder(d.heroImage, 960, 720, name, 'dispensary-card__img')}
-          </div>
-        </a>
-        <div class="dispensary-card__body">
-          <h3 class="dispensary-card__name"><a href="${esc(primary.href)}"${primaryRel}>${esc(name)}</a></h3>
-          ${d.address ? `<div class="dispensary-card__address">${esc(d.address)}</div>` : ''}
-          ${d.city ? `<div class="dispensary-card__city"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span class="dispensary-card__city-text">${esc(d.city)}, AZ</span></div>` : ''}
-          ${tags.length ? `<div class="dispensary-card__tags">${tags.map(t => `<span class="badge" style="--badge-color:${t.color}">${esc(t.label)}</span>`).join('')}</div>` : ''}
-          ${hours ? `<div class="dispensary-card__hours"><strong>Hours</strong><div>${esc(hours)}</div></div>` : ''}
-          <div class="dispensary-card__actions">
-            ${d.website ? `<a href="${esc(d.website)}" target="_blank" rel="noopener" class="btn btn--sm btn--outline">Website</a>` : ''}
-            ${d.phone ? `<a href="tel:${esc(d.phone)}" class="btn btn--sm btn--ghost">${esc(d.phone)}</a>` : ''}
-          </div>
-        </div>
-      </article>
-    `;
-  }
-
   function getOpenStatus(hours) {
     if (!hours) return null;
     const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
@@ -1762,7 +1732,7 @@
       } else {
         dispEl.innerHTML = dispensaries
           .slice(0, CANNABIS_PAGE_DISPENSARY_PREVIEW)
-          .map(d => renderDispensaryCannabisRowCard(d))
+          .map(d => renderDispensaryDirectoryCard(d))
           .join('');
       }
     }
