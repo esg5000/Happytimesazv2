@@ -1,6 +1,6 @@
 /**
- * FIRST script on the page — global boot / crash surface for PWA standalone debugging.
- * Keep dependency-free; load before sanity.js / radio.js / main.js.
+ * FIRST external script on the page — before sanity.js / radio.js / main.js.
+ * Template-aligned global handlers for uncaught errors / rejections.
  */
 (function () {
   'use strict';
@@ -23,34 +23,48 @@
   }
 
   window.onerror = function (msg, src, line, col, err) {
-    console.error('[FATAL ERROR]', { msg, src, line, col, err });
+    console.error('[FATAL ERROR]', {
+      msg: msg,
+      src: src,
+      line: line,
+      col: col,
+      err: err
+    });
+
     showFatal(
-      '<div style="background:black;color:red;padding:40px;font-size:28px;font-family:monospace;white-space:pre-wrap;">FATAL ERROR:\n\n' +
+      '<div style="\n      background:black;\n      color:red;\n      padding:40px;\n      font-size:28px;\n      font-family:monospace;\n      white-space:pre-wrap;\n    ">\n      FATAL ERROR:\n\n      ' +
         String(msg) +
-        '\n\nFILE:\n' +
+        '\n\n      FILE:\n      ' +
         String(src) +
-        '\n\nLINE:\n' +
+        '\n\n      LINE:\n      ' +
         String(line) +
-        '</div>'
+        '\n    </div>'
     );
     return false;
   };
 
   window.onunhandledrejection = function (e) {
     console.error('[PROMISE CRASH]', e.reason);
-    var reasonStr = '';
+
+    var reasonText = '';
     try {
-      reasonStr =
-        e.reason && typeof e.reason === 'object'
-          ? JSON.stringify(e.reason, null, 2)
-          : String(e.reason);
+      if (e.reason != null && typeof e.reason === 'object') {
+        if (e.reason instanceof Error) {
+          reasonText = e.reason.message + '\n' + (e.reason.stack || '');
+        } else {
+          reasonText = JSON.stringify(e.reason, null, 2);
+        }
+      } else {
+        reasonText = String(e.reason);
+      }
     } catch (x) {
-      reasonStr = String(e.reason);
+      reasonText = String(e.reason);
     }
+
     showFatal(
-      '<div style="background:black;color:orange;padding:40px;font-size:28px;font-family:monospace;white-space:pre-wrap;">PROMISE ERROR:\n\n' +
-        reasonStr +
-        '</div>'
+      '<div style="\n      background:black;\n      color:orange;\n      padding:40px;\n      font-size:28px;\n      font-family:monospace;\n      white-space:pre-wrap;\n    ">\n      PROMISE ERROR:\n\n      ' +
+        reasonText.replace(/</g, '&lt;') +
+        '\n    </div>'
     );
   };
 

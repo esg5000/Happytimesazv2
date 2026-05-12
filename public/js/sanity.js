@@ -467,4 +467,4 @@ function renderSpan(span, markDefs) {
   return text;
 }
 
-console.log('[BOOT] SANITY MODULE LOADED');
+console.log('[BOOT] SANITY INIT');

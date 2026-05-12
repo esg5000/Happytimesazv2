@@ -18,6 +18,12 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+  // Document navigations: never substitute a non-HTML 503 body — some clients treat that as a broken launch.
+  const isNavigate = event.request.mode === 'navigate';
+  if (isNavigate) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
   event.respondWith(
     fetch(event.request).catch(() => new Response('Offline', { status: 503, statusText: 'Offline' }))
   );

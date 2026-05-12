@@ -56,18 +56,36 @@
     }
   }
 
+  function lsGet(key, fallback) {
+    try {
+      var v = localStorage.getItem(key);
+      return v == null ? fallback : v;
+    } catch (e) {
+      console.warn('[Radio] localStorage.getItem blocked:', key, e && e.message);
+      return fallback;
+    }
+  }
+
+  function lsSet(key, val) {
+    try {
+      localStorage.setItem(key, val);
+    } catch (e) {
+      console.warn('[Radio] localStorage.setItem blocked:', key, e && e.message);
+    }
+  }
+
   function loadState() {
-    currentIdx = parseInt(localStorage.getItem(LS_STATION) || '0', 10) || 0;
+    currentIdx = parseInt(lsGet(LS_STATION, '0'), 10) || 0;
     isPlaying  = false; // don't auto-play on page load (browser restrictions)
-    volume     = parseFloat(localStorage.getItem(LS_VOLUME) || '0.7');
-    isMini     = localStorage.getItem(LS_MINI) === 'true';
+    volume     = parseFloat(lsGet(LS_VOLUME, '0.7'));
+    isMini     = lsGet(LS_MINI, '') === 'true';
   }
 
   function saveState() {
-    localStorage.setItem(LS_STATION, currentIdx);
-    localStorage.setItem(LS_PLAYING, isPlaying);
-    localStorage.setItem(LS_VOLUME, volume);
-    localStorage.setItem(LS_MINI, isMini);
+    lsSet(LS_STATION, String(currentIdx));
+    lsSet(LS_PLAYING, isPlaying ? 'true' : 'false');
+    lsSet(LS_VOLUME, String(volume));
+    lsSet(LS_MINI, isMini ? 'true' : 'false');
   }
 
   // ─── Audio ────────────────────────────────────────────────────────────────

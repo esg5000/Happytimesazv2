@@ -2144,7 +2144,7 @@
     // Defensive routing: if the HTML has the wrong data-page attribute (or a host rewrite
     // serves the wrong shell), try to infer the intended page from the URL / DOM.
     const path = String(window.location?.pathname || '').toLowerCase();
-    console.log('[BOOT] ROUTE INIT', { page, path, minimal: MINIMAL_BOOT });
+    console.log('[BOOT] ROUTE INIT');
     try {
       const hasDispGrid = !!document.getElementById('dispensary-grid');
       if (hasDispGrid || path.endsWith('/dispensaries.html') || path.endsWith('dispensaries.html') || path.includes('/dispensaries')) {
@@ -2179,7 +2179,6 @@
     renderHomeMastheadDate();
     void fetchPhoenixWeather();
     void initHeadlineTickerGlobal();
-    console.log('[BOOT] SANITY INIT');
 
     // Run page init then wire up any ad slots that were in the static HTML.
     // Dynamic ad slots (injected by render functions) are picked up by initAds
