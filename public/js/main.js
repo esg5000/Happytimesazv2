@@ -458,7 +458,7 @@
     const loadCity = async city => {
       setActiveTab(city);
       row.innerHTML = '<p class="food-top25__loading">Loading…</p>';
-      const data = await (window.getRestaurantsByCity ? window.getRestaurantsByCity(city, 25) : Promise.resolve(null));
+      const data = await (window.getRestaurantsByCity ? window.getRestaurantsByCity(city, 20) : Promise.resolve(null));
       const list = Array.isArray(data) ? data.filter(Boolean) : [];
       if (!list.length) {
         row.innerHTML = `<p class="food-top25__empty">No restaurants listed for ${esc(city)} yet.</p>`;
