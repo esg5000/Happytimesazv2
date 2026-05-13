@@ -378,7 +378,7 @@
     for (let i = 0; i < fields.length; i++) {
       const url = resolveCardImageUrl(fields[i]);
       if (url) {
-        return `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy">`;
+        return `<img src="${esc(url)}" alt="${esc(name)}" loading="lazy" referrerpolicy="no-referrer">`;
       }
     }
     let letter = '';
