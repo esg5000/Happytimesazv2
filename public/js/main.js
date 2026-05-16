@@ -128,8 +128,8 @@
     if (!slots.length) return;
     if (typeof window.getActiveAds !== 'function') return;
 
-    const pageType     = (document.body.dataset.page     || 'home').toLowerCase();
-    const categorySlug = (document.body.dataset.category || '').toLowerCase();
+    const pageType     = (document.body.dataset.adPage     || document.body.dataset.page     || 'home').toLowerCase();
+    const categorySlug = (document.body.dataset.adCategory || document.body.dataset.category || '').toLowerCase();
     const device       = window.innerWidth < 768 ? 'mobile' : 'desktop';
 
     let allAds;
