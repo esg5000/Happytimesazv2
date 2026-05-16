@@ -380,7 +380,7 @@ window.getAdByPlacement = (placement) => sanityFetch(`
 window.getActiveAds = () => sanityFetch(`
   *[
     _type in ["ad", "affiliateAd"] &&
-    isActive == true &&
+    isActive != false &&
     (!defined(startDate) || dateTime(startDate + "T00:00:00Z") <= now()) &&
     (!defined(endDate)   || dateTime(endDate   + "T00:00:00Z") >= now())
   ] | order(priority desc) {
