@@ -170,10 +170,18 @@
         return ad.targetCategories.includes(categorySlug);
       });
 
-      // Filter: placement — match data-placement exactly, or include ads with no placement set
+      // Filter: placement — map Sanity placement types to slot ID patterns
       const byPlacement = byCategory.filter(ad => {
         if (!ad.placement) return true;
-        return ad.placement === placement;
+        const p = placement.toLowerCase();
+        switch (ad.placement) {
+          case 'top-banner':    return (p.includes('leaderboard') || p.includes('top')) && !p.includes('footer');
+          case 'bottom-banner': return p.includes('footer');
+          case 'in-feed':      return p.includes('native') || p.includes('grid') || p.includes('sponsored');
+          case 'inline':       return p.includes('inline');
+          case 'partner-mid':  return p.includes('partner');
+          default:             return false;
+        }
       });
 
       if (!byPlacement.length) return;
