@@ -372,6 +372,36 @@ window.getAdByPlacement = (placement) => sanityFetch(`
 
 // ─── New ad models (category-based) ───────────────────────────────────────────
 
+/**
+ * Fetch all currently active ads (both `ad` and `affiliateAd` types) in one request.
+ * Client-side filtering by pageType, targetCategories, deviceTarget, and placement
+ * is handled by initAdSlots() in main.js.
+ */
+window.getActiveAds = () => sanityFetch(`
+  *[
+    _type in ["ad", "affiliateAd"] &&
+    isActive == true &&
+    (!defined(startDate) || dateTime(startDate + "T00:00:00Z") <= now()) &&
+    (!defined(endDate)   || dateTime(endDate   + "T00:00:00Z") >= now())
+  ] | order(priority desc) {
+    _id,
+    _type,
+    title,
+    advertiser,
+    adType,
+    placement,
+    pageType,
+    targetCategories,
+    deviceTarget,
+    priority,
+    headline,
+    cta,
+    "linkUrl": coalesce(linkUrl, url),
+    "image": image{ asset{ _ref }, alt },
+    html
+  }
+`);
+
 /** Fetch the best active category advertisement for a category slug (e.g. "food") */
 window.getCategoryAdvertisement = (categorySlug) => sanityFetch(`
   *[

@@ -118,6 +118,85 @@
     });
   }
 
+  /**
+   * Bulk ad loader — fetches all active ads once, then fills every slot on the
+   * page using client-side filtering by pageType, targetCategories, deviceTarget,
+   * and data-placement. Falls back gracefully if getActiveAds is unavailable.
+   */
+  async function initAdSlots() {
+    const slots = Array.from(document.querySelectorAll('.ad-slot[data-placement]'));
+    if (!slots.length) return;
+    if (typeof window.getActiveAds !== 'function') return;
+
+    const pageType     = (document.body.dataset.page     || 'home').toLowerCase();
+    const categorySlug = (document.body.dataset.category || '').toLowerCase();
+    const device       = window.innerWidth < 768 ? 'mobile' : 'desktop';
+
+    let allAds;
+    try {
+      allAds = await window.getActiveAds();
+    } catch (e) {
+      console.warn('[initAdSlots] getActiveAds failed:', e.message);
+      return;
+    }
+    if (!Array.isArray(allAds) || !allAds.length) return;
+
+    slots.forEach(slot => {
+      // Skip slots already filled by initAds()
+      if (slot.classList.contains('loaded')) return;
+
+      const placement = slot.dataset.placement || '';
+      const size      = slot.dataset.size || 'leaderboard';
+
+      // Filter: pageType match
+      const byPage = allAds.filter(ad => {
+        const pt = (ad.pageType || 'all').toLowerCase();
+        return pt === 'all' || pt === pageType;
+      });
+
+      // Filter: device match
+      const byDevice = byPage.filter(ad => {
+        const dt = (ad.deviceTarget || 'both').toLowerCase();
+        return dt === 'both' || dt === device;
+      });
+
+      // Filter: targetCategories — only enforced when ad has categories set
+      const byCategory = byDevice.filter(ad => {
+        if (!ad.targetCategories || !ad.targetCategories.length) return true;
+        if (!categorySlug) return true;
+        return ad.targetCategories.includes(categorySlug);
+      });
+
+      // Filter: placement — match data-placement exactly, or include ads with no placement set
+      const byPlacement = byCategory.filter(ad => {
+        if (!ad.placement) return true;
+        return ad.placement === placement;
+      });
+
+      if (!byPlacement.length) return;
+
+      // Pick highest priority (already sorted desc from GROQ, but re-sort to be safe)
+      byPlacement.sort((a, b) => (b.priority || 0) - (a.priority || 0));
+      const ad = byPlacement[0];
+
+      // Normalise to the shape renderAdHTML() expects
+      const normalised = {
+        adType:     ad.adType || 'image',
+        image:      ad.image || null,
+        html:       ad.html || null,
+        headline:   ad.headline || ad.title || '',
+        cta:        ad.cta || 'Learn More',
+        url:        ad.linkUrl || null,
+        advertiser: ad.advertiser || 'Partner',
+      };
+
+      const html = renderAdHTML(normalised, size);
+      if (!html) return;
+      slot.innerHTML = html;
+      slot.classList.add('loaded');
+    });
+  }
+
   // ─── Helpers ────────────────────────────────────────────────────────────────
 
   function esc(str) {
@@ -2081,10 +2160,12 @@
     if (fn) {
       // Init static ad slots immediately (leaderboards etc. in the HTML)
       initAds();
-      // Run page content fetch, then re-run initAds to catch dynamically injected slots
+      initAdSlots();
+      // Run page content fetch, then re-run initAds/initAdSlots to catch dynamically injected slots
       fn()
         .then(() => {
           initAds();
+          initAdSlots();
         })
         .catch((e) => {
           console.error('[Route] init failed for', page, e);
