@@ -199,6 +199,7 @@
       slot.classList.add('loaded');
     });
   }
+  window.initAdSlots = initAdSlots;
 
   // ─── Helpers ────────────────────────────────────────────────────────────────
 
