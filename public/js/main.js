@@ -124,7 +124,9 @@
    * and data-placement. Falls back gracefully if getActiveAds is unavailable.
    */
   async function initAdSlots() {
+    console.log('[initAdSlots] called');
     const slots = Array.from(document.querySelectorAll('.ad-slot[data-placement]'));
+    console.log('[initAdSlots] slots found on page:', slots.map(s => s.dataset.placement));
     if (!slots.length) return;
     if (typeof window.getActiveAds !== 'function') return;
 
@@ -139,6 +141,7 @@
       console.warn('[initAdSlots] getActiveAds failed:', e.message);
       return;
     }
+    console.log('[initAdSlots] ads from Sanity:', allAds);
     if (!Array.isArray(allAds) || !allAds.length) return;
 
     slots.forEach(slot => {
