@@ -4033,6 +4033,7 @@ button.event-page-card__toggle {
   border-bottom: 1px solid var(--sand);
   background: var(--cream-dark);
   max-width: 970px;
+  margin: 0 auto;
 }
 
 .ad-slot--leaderboard .ad-inner {
