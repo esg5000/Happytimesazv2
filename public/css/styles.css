@@ -4038,13 +4038,17 @@ button.event-page-card__toggle {
 .ad-slot--leaderboard .ad-inner {
   max-width: 728px;
   margin-inline: auto;
+  text-align: center;
+  overflow: visible;
 }
 
 .ad-slot--leaderboard .ad-inner img {
   border-radius: var(--radius-sm);
   max-height: 120px;
-  width: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  width: auto;
+  object-fit: contain;
+  display: block;
   margin-inline: auto;
 }
 
