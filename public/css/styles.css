@@ -4032,6 +4032,7 @@ button.event-page-card__toggle {
   border-top: 1px solid var(--sand);
   border-bottom: 1px solid var(--sand);
   background: var(--cream-dark);
+  max-width: 1080px;
 }
 
 .ad-slot--leaderboard .ad-inner {
