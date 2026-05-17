@@ -4032,6 +4032,7 @@ button.event-page-card__toggle {
   border-top: 1px solid var(--sand);
   border-bottom: 1px solid var(--sand);
   background: var(--cream-dark);
+  height: 250px;
 }
 
 .ad-slot--leaderboard .ad-inner {
@@ -4048,7 +4049,7 @@ button.event-page-card__toggle {
 .ad-slot--leaderboard .ad-inner img {
   border-radius: var(--radius-sm);
   width: 100%;
-  height: auto;
+  height: 250px;
   object-fit: cover;
   display: block;
 }
