@@ -4032,14 +4032,12 @@ button.event-page-card__toggle {
   border-top: 1px solid var(--sand);
   border-bottom: 1px solid var(--sand);
   background: var(--cream-dark);
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
 }
 
 .ad-slot--leaderboard .ad-inner {
   max-width: 728px;
   width: 100%;
+  margin-inline: auto;
 }
 
 .ad-slot--leaderboard .ad-inner a {
