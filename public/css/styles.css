@@ -4042,6 +4042,11 @@ button.event-page-card__toggle {
   width: 100%;
 }
 
+.ad-slot--leaderboard .ad-inner a {
+  display: block;
+  width: 100%;
+}
+
 .ad-slot--leaderboard .ad-inner img {
   border-radius: var(--radius-sm);
   width: 100%;

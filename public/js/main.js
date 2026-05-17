@@ -24,7 +24,7 @@
     }
 
     // Image ad
-    const imgUrl  = ad.image ? window.sanityImage(ad.image, 800, 200) : null;
+    const imgUrl  = ad.image ? window.sanityImage(ad.image, 728, 90, 'max') : null;
     const imgTag  = imgUrl ? `<img src="${imgUrl}" alt="${headline}" loading="lazy">` : null;
 
     if (size === 'native') {
