@@ -4044,9 +4044,11 @@ button.event-page-card__toggle {
 
 .ad-slot--leaderboard .ad-inner img {
   border-radius: var(--radius-sm);
+  width: 100%;
   max-width: 100%;
   height: auto;
   display: block;
+  margin: 0 auto;
 }
 
 /* ── Footer leaderboard (dark bg) ── */
