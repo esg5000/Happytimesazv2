@@ -4037,7 +4037,7 @@ button.event-page-card__toggle {
 }
 
 .ad-slot--leaderboard .ad-inner {
-  max-width: 728px;
+  max-width: 100%;
   width: 100%;
   margin-inline: auto;
 }
