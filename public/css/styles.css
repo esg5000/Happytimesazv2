@@ -4042,8 +4042,9 @@ button.event-page-card__toggle {
 
 .ad-slot--leaderboard .ad-inner img {
   border-radius: var(--radius-sm);
-  max-height: 90px;
-  width: auto;
+  max-height: 120px;
+  width: 100%;
+  object-fit: cover;
   margin-inline: auto;
 }
 
