@@ -641,12 +641,15 @@
     row.innerHTML = list.map(renderNightlifeSpotCard).join('');
   }
 
-  const INLINE_AD_HTML = '<div class="ad-slot ad-slot--inline" data-placement="category_inline" data-size="leaderboard" style="grid-column: 1 / -1;"></div>';
-
   function renderGridWithInlineAds(posts) {
+    let adCount = 0;
     return posts.map((p, i) => {
       const card = renderArticleCard(p);
-      return ((i + 1) % 6 === 0) ? card + INLINE_AD_HTML : card;
+      if ((i + 1) % 6 === 0 && adCount < 3) {
+        adCount++;
+        return card + `<div class="ad-slot ad-slot--inline" data-placement="category_inline_${adCount}" data-size="leaderboard" style="grid-column: 1 / -1;"></div>`;
+      }
+      return card;
     }).join('');
   }
 
