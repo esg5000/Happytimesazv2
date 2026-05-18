@@ -641,13 +641,27 @@
     row.innerHTML = list.map(renderNightlifeSpotCard).join('');
   }
 
-  function renderGridWithInlineAds(posts) {
+  async function renderGridWithInlineAds(posts) {
+    // Fetch all active in-feed ads and shuffle for random per-slot assignment
+    let inlineAds = [];
+    if (typeof window.getActiveAds === 'function') {
+      const all = await window.getActiveAds().catch(() => []);
+      inlineAds = (all || []).filter(ad => ad.placement === 'in-feed');
+      for (let i = inlineAds.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [inlineAds[i], inlineAds[j]] = [inlineAds[j], inlineAds[i]];
+      }
+    }
+
     let adCount = 0;
     return posts.map((p, i) => {
       const card = renderArticleCard(p);
       if ((i + 1) % 6 === 0 && adCount < 3) {
         adCount++;
-        return card + `<div class="ad-slot ad-slot--inline" data-placement="category_inline_${adCount}" data-size="leaderboard" style="grid-column: 1 / -1;"></div>`;
+        const ad = inlineAds.length > 0 ? inlineAds[(adCount - 1) % inlineAds.length] : null;
+        const adHtml = ad ? renderAdHTML(ad, 'leaderboard') : null;
+        if (!adHtml) return card;
+        return card + `<div class="ad-slot ad-slot--inline ad-slot--active loaded" data-placement="category_inline_${adCount}" data-size="leaderboard" style="grid-column: 1 / -1;">${adHtml}</div>`;
       }
       return card;
     }).join('');
@@ -666,7 +680,7 @@
       if (!foodPosts.length) {
         gridEl.innerHTML = '<p class="empty-msg" style="grid-column:1/-1">No articles found yet.</p>';
       } else {
-        gridEl.innerHTML = renderGridWithInlineAds(foodPosts);
+        gridEl.innerHTML = await renderGridWithInlineAds(foodPosts);
         initAdSlots();
       }
     }
@@ -2090,7 +2104,7 @@
       gridEl.innerHTML = '<p class="empty-msg" style="grid-column:1/-1">No news articles found yet.</p>';
       return;
     }
-    gridEl.innerHTML = renderGridWithInlineAds(posts);
+    gridEl.innerHTML = await renderGridWithInlineAds(posts);
     initAdSlots();
   }
 
@@ -2116,7 +2130,7 @@
       if (!posts || posts.length === 0) {
         gridEl.innerHTML = '<p class="empty-msg" style="grid-column:1/-1">No articles found yet.</p>';
       } else {
-        gridEl.innerHTML = renderGridWithInlineAds(posts);
+        gridEl.innerHTML = await renderGridWithInlineAds(posts);
         initAdSlots();
       }
       await topRow;
@@ -2133,7 +2147,7 @@
       gridEl.innerHTML = '<p class="empty-msg" style="grid-column:1/-1">No articles found yet.</p>';
       return;
     }
-    gridEl.innerHTML = renderGridWithInlineAds(posts);
+    gridEl.innerHTML = await renderGridWithInlineAds(posts);
     initAdSlots();
   }
 
