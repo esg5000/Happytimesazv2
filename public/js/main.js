@@ -184,7 +184,7 @@
         switch (ad.placement) {
           case 'top-banner':    return (p.includes('leaderboard') || p.includes('top')) && !p.includes('footer');
           case 'bottom-banner': return p.includes('footer');
-          case 'in-feed':      return p.includes('native') || p.includes('grid') || p.includes('sponsored');
+          case 'in-feed':      return p.includes('native') || p.includes('grid') || p.includes('sponsored') || p.includes('inline');
           case 'inline':       return p.includes('inline');
           case 'partner-mid':  return p.includes('partner');
           default:             return false;
