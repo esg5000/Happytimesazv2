@@ -641,6 +641,15 @@
     row.innerHTML = list.map(renderNightlifeSpotCard).join('');
   }
 
+  const INLINE_AD_HTML = '<div class="ad-slot ad-slot--inline" data-placement="category_inline" data-size="leaderboard" style="grid-column: 1 / -1;"></div>';
+
+  function renderGridWithInlineAds(posts) {
+    return posts.map((p, i) => {
+      const card = renderArticleCard(p);
+      return ((i + 1) % 6 === 0) ? card + INLINE_AD_HTML : card;
+    }).join('');
+  }
+
   async function initFoodPage() {
     setMeta('Food & Dining – HappyTimes AZ', "Arizona's best restaurants, food pop-ups, chef profiles, and dining guides.");
     const gridEl = document.getElementById('category-grid');
@@ -654,7 +663,8 @@
       if (!foodPosts.length) {
         gridEl.innerHTML = '<p class="empty-msg" style="grid-column:1/-1">No articles found yet.</p>';
       } else {
-        gridEl.innerHTML = foodPosts.map(p => renderArticleCard(p)).join('');
+        gridEl.innerHTML = renderGridWithInlineAds(foodPosts);
+        initAdSlots();
       }
     }
 
@@ -2077,7 +2087,8 @@
       gridEl.innerHTML = '<p class="empty-msg" style="grid-column:1/-1">No news articles found yet.</p>';
       return;
     }
-    gridEl.innerHTML = posts.map(p => renderArticleCard(p)).join('');
+    gridEl.innerHTML = renderGridWithInlineAds(posts);
+    initAdSlots();
   }
 
   // ─── CATEGORY PAGE (food / nightlife / health-wellness / sports / classes) ─
@@ -2102,7 +2113,8 @@
       if (!posts || posts.length === 0) {
         gridEl.innerHTML = '<p class="empty-msg" style="grid-column:1/-1">No articles found yet.</p>';
       } else {
-        gridEl.innerHTML = posts.map(p => renderArticleCard(p)).join('');
+        gridEl.innerHTML = renderGridWithInlineAds(posts);
+        initAdSlots();
       }
       await topRow;
       return;
@@ -2118,7 +2130,8 @@
       gridEl.innerHTML = '<p class="empty-msg" style="grid-column:1/-1">No articles found yet.</p>';
       return;
     }
-    gridEl.innerHTML = posts.map(p => renderArticleCard(p)).join('');
+    gridEl.innerHTML = renderGridWithInlineAds(posts);
+    initAdSlots();
   }
 
   // ─── STATIC PAGES (about / contact / policies) ─────────────────────────────
