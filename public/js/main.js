@@ -1052,7 +1052,7 @@
 
     renderHeadlineTicker(posts);
     renderHomeHero(settings, posts);
-    renderEditorialGrid(pickPostsForEditorialGrid(posts, HOME_HERO_TAKE, 12));
+    await renderEditorialGrid(pickPostsForEditorialGrid(posts, HOME_HERO_TAKE, 12));
     renderEventsSection(events);
     renderCannabisSpotlight(deals);
     renderDispensaryHighlights(dispensaries);
@@ -1094,18 +1094,35 @@
     return out.slice(0, gridLimit);
   }
 
-  function renderEditorialGrid(gridPosts) {
+  async function renderEditorialGrid(gridPosts) {
     const grid = document.getElementById('editorial-grid');
     if (!grid) return;
     if (!gridPosts || gridPosts.length === 0) {
       grid.innerHTML = '<p class="empty-msg">No articles found.</p>';
       return;
     }
+
+    let inlineAds = [];
+    if (typeof window.getActiveAds === 'function') {
+      const all = await window.getActiveAds().catch(() => []);
+      inlineAds = (all || []).filter(ad => ad.placement === 'in-feed');
+      for (let i = inlineAds.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [inlineAds[i], inlineAds[j]] = [inlineAds[j], inlineAds[i]];
+      }
+    }
+
+    let adCount = 0;
     const items = [];
     gridPosts.forEach((p, i) => {
       items.push(renderArticleCard(p));
-      if ((i + 1) % 6 === 0) {
-        items.push(`<div class="ad-slot ad-slot--native" data-placement="homepage_grid_sponsored" data-size="native"></div>`);
+      if ((i + 1) % 6 === 0 && adCount < 3) {
+        adCount++;
+        const ad = inlineAds.length > 0 ? inlineAds[(adCount - 1) % inlineAds.length] : null;
+        const adHtml = ad ? renderAdHTML(ad, 'leaderboard') : null;
+        if (adHtml) {
+          items.push(`<div class="ad-slot ad-slot--inline ad-slot--active loaded" data-placement="category_inline_${adCount}" data-size="leaderboard" style="grid-column: 1 / -1;">${adHtml}</div>`);
+        }
       }
     });
     grid.innerHTML = items.join('');
