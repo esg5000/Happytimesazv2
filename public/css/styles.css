@@ -4178,11 +4178,13 @@ button.event-page-card__toggle {
   border-bottom: 1px solid var(--sand);
   background: var(--cream-dark);
   border-radius: var(--radius-md);
+  max-width: 970px;
+  margin: 0 auto;
 }
 
 .ad-slot--inline .ad-inner img {
-  max-height: 100px;
-  width: auto;
+  max-height: 250px;
+  width: 100%;
   margin-inline: auto;
   border-radius: var(--radius-sm);
 }
