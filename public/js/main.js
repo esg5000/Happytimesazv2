@@ -656,7 +656,7 @@
     let adCount = 0;
     return posts.map((p, i) => {
       const card = renderArticleCard(p);
-      if ((i + 1) % 6 === 0 && adCount < 3) {
+      if ((i + 1) % 6 === 0 && adCount < 3 && i < posts.length - 1) {
         adCount++;
         const ad = inlineAds.length > 0 ? inlineAds[(adCount - 1) % inlineAds.length] : null;
         const adHtml = ad ? renderAdHTML(ad, 'leaderboard') : null;
