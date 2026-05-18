@@ -153,8 +153,14 @@
 
       // Filter: pageType match
       const byPage = allAds.filter(ad => {
-        const pt = (ad.pageType || 'all').toLowerCase();
-        return pt === 'all' || pt === pageType;
+        const pt = (ad.pageType || 'all-pages').toLowerCase();
+        if (pt === 'all-pages') return true;
+        if (pt === 'all-main-pages') return ['home', 'category', 'article'].includes(pageType);
+        if (pt === 'homepage')        return pageType === 'home';
+        if (pt === 'category-pages')  return pageType === 'category';
+        if (pt === 'article-pages')   return pageType === 'article';
+        if (pt === 'dispensary-pages') return pageType === 'dispensary';
+        return false;
       });
 
       // Filter: device match
@@ -163,11 +169,12 @@
         return dt === 'both' || dt === device;
       });
 
-      // Filter: targetCategories — only enforced when ad has categories set
+      // Filter: targetCategory — only enforced when ad has a specific category set
       const byCategory = byDevice.filter(ad => {
-        if (!ad.targetCategories || !ad.targetCategories.length) return true;
+        const tc = (ad.targetCategory || 'all-categories').toLowerCase();
+        if (tc === 'all-categories') return true;
         if (!categorySlug) return true;
-        return ad.targetCategories.includes(categorySlug);
+        return tc === categorySlug;
       });
 
       // Filter: placement — map Sanity placement types to slot ID patterns

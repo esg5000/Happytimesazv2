@@ -391,7 +391,7 @@ window.getActiveAds = () => sanityFetch(`
     adType,
     placement,
     pageType,
-    targetCategories,
+    targetCategory,
     deviceTarget,
     priority,
     headline,
