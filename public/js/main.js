@@ -1494,6 +1494,11 @@
 
   // ─── EVENTS PAGE ──────────────────────────────────────────────────────────────
 
+  function filterEventsByCities(events, cities) {
+    if (!cities || !cities.length) return events;
+    return events.filter(ev => cities.includes(normalizeCityName(ev && ev.city)));
+  }
+
   function eventOccurrenceTime(ev) {
     const raw = ev.dateTime || ev.date;
     if (!raw) return NaN;
@@ -1806,21 +1811,21 @@
       });
     }
 
-    function setActiveCity(city) {
+    function setActiveRegion(activeBtn) {
       if (!cityRoot) return;
       cityRoot.querySelectorAll('.events-city-tab').forEach(btn => {
-        const on = normalizeCityName(btn.dataset.city) === normalizeCityName(city);
+        const on = btn === activeBtn;
         btn.classList.toggle('active', on);
         btn.setAttribute('aria-selected', on ? 'true' : 'false');
       });
     }
 
     let currentRange = 'month';
-    let currentCity = '';
+    let currentCities = [];
 
     function renderFiltered() {
       const byRange = filterEventsByRange(events, currentRange);
-      const filtered = filterEventsByCity(byRange, currentCity);
+      const filtered = filterEventsByCities(byRange, currentCities);
       if (!filtered.length) {
         el.innerHTML = '<p class="empty-msg">No events in this time range.</p>';
         return;
@@ -1843,15 +1848,22 @@
     if (cityRoot) {
       cityRoot.querySelectorAll('.events-city-tab').forEach(btn => {
         btn.addEventListener('click', () => {
-          currentCity = btn.dataset.city || '';
-          setActiveCity(currentCity);
+          const multi = btn.dataset.cities;
+          const single = btn.dataset.city;
+          if (multi) {
+            currentCities = multi.split('|').map(c => normalizeCityName(c)).filter(Boolean);
+          } else {
+            currentCities = single ? [normalizeCityName(single)] : [];
+          }
+          setActiveRegion(btn);
           renderFiltered();
         });
       });
     }
 
     setActiveTab(currentRange);
-    setActiveCity(currentCity);
+    const defaultRegionBtn = cityRoot ? cityRoot.querySelector('.events-city-tab[data-city=""]') : null;
+    if (defaultRegionBtn) setActiveRegion(defaultRegionBtn);
     renderFiltered();
   }
 
