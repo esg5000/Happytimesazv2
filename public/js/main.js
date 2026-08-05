@@ -1820,7 +1820,7 @@
       });
     }
 
-    let currentRange = 'month';
+    let currentRange = 'all';
     let currentCities = [];
 
     function renderFiltered() {
