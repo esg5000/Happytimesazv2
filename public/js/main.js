@@ -1029,10 +1029,28 @@
     const form = document.getElementById('newsletter-form');
     const msg = document.getElementById('newsletter-form-msg');
     if (!form) return;
-    form.addEventListener('submit', e => {
+    form.addEventListener('submit', async e => {
       e.preventDefault();
-      if (msg) msg.textContent = 'Thanks! We will be in touch.';
-      form.reset();
+      const email = form.querySelector('input[type="email"]')?.value.trim();
+      if (!email) return;
+      try {
+        const res = await fetch('https://services.leadconnectorhq.com/hooks/vFVGIf4IcYF1Zn8RI3BR/webhook-trigger/df2ca02d-7e7d-4cba-bf61-50b82db7abbf', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            source: 'html-site',
+            site: 'happytimesaz.com',
+            subscribedAt: new Date().toISOString(),
+            tags: ['newsletter', 'src:html-site']
+          })
+        });
+        if (!res.ok) throw new Error('Request failed');
+        if (msg) msg.textContent = 'Thanks! We will be in touch.';
+        form.reset();
+      } catch (err) {
+        if (msg) msg.textContent = 'Something went wrong. Please try again.';
+      }
     });
   }
 
