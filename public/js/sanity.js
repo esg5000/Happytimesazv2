@@ -351,14 +351,21 @@ window.getRadioStations = () => sanityFetch(`
   }
 `);
 
-/** Fetch a single active ad for a named placement (highest priority wins) */
+/**
+ * Fetch a single active ad for a named placement (highest priority wins).
+ * Date bounds are compared as plain "YYYY-MM-DD" strings (which sort
+ * correctly lexicographically) rather than via dateTime()/now() — GROQ's
+ * comparison operators return null, not false, when now() is compared
+ * against a dateTime()-constructed value in this API version, and a null
+ * filter clause silently drops the document instead of erroring.
+ */
 window.getAdByPlacement = (placement) => sanityFetch(`
   *[
     _type == "ad" &&
     active == true &&
     placement == $placement &&
-    (!defined(startDate) || dateTime(startDate) <= now()) &&
-    (!defined(endDate)   || dateTime(endDate)   >= now())
+    (!defined(startDate) || startDate <= $today) &&
+    (!defined(endDate)   || endDate   >= $today)
   ] | order(priority desc) [0] {
     advertiser,
     adType,
@@ -368,7 +375,7 @@ window.getAdByPlacement = (placement) => sanityFetch(`
     cta,
     url
   }
-`, { placement });
+`, { placement, today: new Date().toISOString().slice(0, 10) });
 
 // ─── New ad models (category-based) ───────────────────────────────────────────
 
@@ -381,8 +388,8 @@ window.getActiveAds = () => sanityFetch(`
   *[
     _type in ["ad", "affiliateAd"] &&
     isActive != false &&
-    (!defined(startDate) || dateTime(startDate + "T00:00:00Z") <= now()) &&
-    (!defined(endDate)   || dateTime(endDate   + "T00:00:00Z") >= now())
+    (!defined(startDate) || startDate <= $today) &&
+    (!defined(endDate)   || endDate   >= $today)
   ] | order(priority desc) {
     _id,
     _type,
@@ -400,15 +407,15 @@ window.getActiveAds = () => sanityFetch(`
     "image": image{ asset{ _ref }, alt },
     html
   }
-`);
+`, { today: new Date().toISOString().slice(0, 10) });
 
 /** Fetch the best active category advertisement for a category slug (e.g. "food") */
 window.getCategoryAdvertisement = (categorySlug) => sanityFetch(`
   *[
     _type == "advertisement" &&
     isActive == true &&
-    (!defined(startDate) || dateTime(startDate) <= now()) &&
-    (!defined(endDate)   || dateTime(endDate)   >= now()) &&
+    (!defined(startDate) || startDate <= $today) &&
+    (!defined(endDate)   || endDate   >= $today) &&
     (
       $categorySlug in targetCategories ||
       "all" in targetCategories
@@ -421,7 +428,7 @@ window.getCategoryAdvertisement = (categorySlug) => sanityFetch(`
     endDate,
     "image": image{ asset{ _ref }, alt }
   }
-`, { categorySlug });
+`, { categorySlug, today: new Date().toISOString().slice(0, 10) });
 
 /** Fetch active affiliate ads for a category slug */
 window.getAffiliateAdsByCategory = (categorySlug, limit = 3) => sanityFetch(`
