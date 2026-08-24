@@ -78,7 +78,7 @@ window.getHomepageSettings = () => sanityFetch(`
 `);
 
 window.getLatestPosts = (limit = 12) => sanityFetch(`
-  *[_type == "post"] | order(coalesce(isFeatured, false) desc, _createdAt desc) [0...${limit}]{
+  *[_type == "post" && isActive == true] | order(coalesce(isFeatured, false) desc, _createdAt desc) [0...${limit}]{
     title,
     "slug": slug.current,
     excerpt,
@@ -92,7 +92,7 @@ window.getLatestPosts = (limit = 12) => sanityFetch(`
 `);
 
 window.getPostsByCategory = (cat, limit = 12) => sanityFetch(`
-  *[_type == "post" && category->slug.current == $cat] | order(coalesce(isFeatured, false) desc, _createdAt desc) [0...${limit}]{
+  *[_type == "post" && category->slug.current == $cat && isActive == true] | order(coalesce(isFeatured, false) desc, _createdAt desc) [0...${limit}]{
     title,
     "slug": slug.current,
     excerpt,
@@ -109,7 +109,8 @@ window.getPostsByCategory = (cat, limit = 12) => sanityFetch(`
 window.getNewsPosts = (limit = 24) => sanityFetch(`
   *[
     _type == "post" &&
-    (source == "newsapi" || category->slug.current == "news")
+    (source == "newsapi" || category->slug.current == "news") &&
+    isActive == true
   ] | order(coalesce(isFeatured, false) desc, _createdAt desc) [0...${limit}]{
     title,
     "slug": slug.current,
@@ -125,7 +126,7 @@ window.getNewsPosts = (limit = 24) => sanityFetch(`
 `);
 
 window.getPostBySlug = (slug) => sanityFetch(`
-  *[_type == "post" && slug.current == $slug][0]{
+  *[_type == "post" && slug.current == $slug && isActive == true][0]{
     title,
     "slug": slug.current,
     excerpt,
@@ -151,7 +152,7 @@ window.getPostBySlug = (slug) => sanityFetch(`
 `, { slug });
 
 window.getRelatedPosts = (slug, categorySlug, limit = 4) => sanityFetch(`
-  *[_type == "post" && slug.current != $slug && category->slug.current == $categorySlug] | order(_createdAt desc) [0...${limit}]{
+  *[_type == "post" && slug.current != $slug && category->slug.current == $categorySlug && isActive == true] | order(_createdAt desc) [0...${limit}]{
     title,
     "slug": slug.current,
     excerpt,
